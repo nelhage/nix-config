@@ -8,6 +8,7 @@
 }
 
 (livegrep) {
+  import base
   proxy / http://livegrep-nginx:80 {
     transparent
   }
@@ -22,7 +23,7 @@ livegrep.com {
 }
 
 crossme.app {
-  import (base)
+  import base
   proxy / http://crossme:3000 {
     transparent
   }
