@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+  crossme:
+    build: ./images/crossme
+    expose:
+     - 3000
+    environment:
+      METEOR_SETTING: '{"public":{"analytics":{"id":"UA-10353960-5","domain": "meteor.com"}}}'
+      ROOT_URL: ${CROSSME_ROOT_URL:-http://localhost}
+      MONGO_URL: mongodb://mongo:27017/meteor?connectTimeoutMS=5000&socketTimeoutMS=5000
+      PORT: 3000
+    links:
+     - mongo
+
+  mongo:
+    image: mongo:3.4
+    command:
+      - --storageEngine=wiredTiger
+    volumes:
+      - data:/data/db
+    expose:
+      - 27017
+
+volumes:
+  data:
