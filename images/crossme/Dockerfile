@@ -34,6 +34,8 @@ COPY --from=0 $APP_BUNDLE_FOLDER/bundle $APP_BUNDLE_FOLDER/bundle/
 RUN bash $SCRIPTS_FOLDER/build-meteor-npm-dependencies.sh \
 	&& apk del .node-gyp-compilation-dependencies
 
+ADD entrypoint.sh /docker/
+
 # Start app
 ENTRYPOINT ["/docker/entrypoint.sh"]
 
