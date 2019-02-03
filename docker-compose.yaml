@@ -1,5 +1,50 @@
 version: "3.3"
 services:
+  livegrep-backend-linux:
+    image: "docker.io/livegrep/base:${image_version}"
+    command:
+      - "/livegrep/bin/codesearch"
+      - "-grpc=0.0.0.0:9898"
+      - "-load_index=/data/index.idx"
+      - "-debug=profile,index"
+      - "-threads=4"
+    ports:
+      - "9898:9898"
+    volumes:
+      - livegrep-data:/data
+    restart: unless-stopped
+
+  livegrep-frontend:
+    image: "docker.io/livegrep/base:${image_version}"
+    command:
+      - "/livegrep/bin/livegrep"
+      - "-docroot"
+      - "/livegrep/web/"
+      - "/conf/livegrep.json"
+    ports:
+      - 8910
+    volumes:
+      - type: bind
+        source: ./livegrep/conf
+        target: /conf
+        read_only: true
+    restart: unless-stopped
+
+  livegrep-nginx:
+    image: "docker.io/livegrep/nginx:${image_version}"
+    entrypoint:
+      - nginx
+      - -c
+      - /conf/nginx.conf
+    volumes:
+      - type: bind
+        source: ./livegrep/conf
+        target: /conf
+        read_only: true
+    expose:
+      - 80
+    restart: unless-stopped
+
   crossme:
     build:
       context: ./images/crossme
@@ -20,9 +65,33 @@ services:
     command:
       - --storageEngine=wiredTiger
     volumes:
-      - data:/data/db
+      - mongo-data:/data/db
     expose:
       - 27017
 
+  caddy:
+    image: "abiosoft/caddy:0.11.1"
+    entrypoint:
+      - caddy
+      - -conf=/conf/Caddyfile
+      - -agree
+    environment:
+      - CADDYPATH=/caddy
+    volumes:
+      - type: bind
+        source: ./caddy/
+        target: /conf
+        read_only: true
+      - caddy:/caddy
+    expose:
+      - 80
+      - 443
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+
 volumes:
-  data:
+  mongo-data:
+  livegrep-data:
+  caddy:
