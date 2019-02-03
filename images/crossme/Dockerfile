@@ -1,7 +1,10 @@
 # The tag here should match the Meteor version of your app, per .meteor/release
-FROM geoffreybooth/meteor-base:1.7.0.5
+FROM geoffreybooth/meteor-base:1.8.0.2
+
+ARG CROSSME_REVISION
 
 RUN git clone https://github.com/nelhage/crossme/ $APP_SOURCE_FOLDER/
+RUN git -C $APP_SOURCE_FOLDER reset --hard ${CROSSME_REVISION-master}
 
 RUN bash $SCRIPTS_FOLDER/build-app-npm-dependencies.sh
 RUN bash $SCRIPTS_FOLDER/build-meteor-bundle.sh

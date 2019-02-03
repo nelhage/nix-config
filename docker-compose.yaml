@@ -1,7 +1,10 @@
 version: "3.3"
 services:
   crossme:
-    build: ./images/crossme
+    build:
+      context: ./images/crossme
+      args:
+        CROSSME_REVISION: ${CROSSME_REVISION:-master}
     expose:
      - 3000
     environment:
@@ -13,7 +16,7 @@ services:
      - mongo
 
   mongo:
-    image: mongo:3.4
+    image: mongo:3.6
     command:
       - --storageEngine=wiredTiger
     volumes:
