@@ -92,8 +92,26 @@ services:
       - "80:80"
       - "443:443"
     restart: unless-stopped
+  taktician:
+    build:
+      context: ./images/taktician
+    command:
+    - playtak
+    - -user=FriendlyBot
+    - -debug=1
+    - -size=6
+    - -limit=30s
+    - -time=15m
+    - -increment=30s
+    - -friendly=true
+    - -log-file=/taktician/friendly.log
+    - -pass=${friendlybot_password}
+    volumes:
+      - taktician:/taktician
+    restart: unless-stopped
 
 volumes:
   mongo-data:
   livegrep-data:
   caddy:
+  taktician:
