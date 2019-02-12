@@ -22,6 +22,10 @@ livegrep.com {
   import livegrep
 }
 
+www.livegrep.com {
+  redir https://livegrep.com/
+}
+
 crossme.app {
   import base
   proxy / http://crossme:3000 {
