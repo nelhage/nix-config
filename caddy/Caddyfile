@@ -1,9 +1,14 @@
-(base) {
+(tls) {
   tls nelhage@nelhage.com
   header / {
     Strict-Transport-Security "max-age=31557600"
     Expect-CT "enforce, max-age=31536000"
   }
+}
+
+(base) {
+  import tls
+  log stdout
 }
 
 (livegrep) {
@@ -23,15 +28,33 @@ livegrep.com {
 }
 
 www.livegrep.com {
+  import base
   redir https://livegrep.com/
 }
 
 crossme.app {
-  import base
+  import tls
   proxy / http://crossme:3000 {
     transparent
   }
   log stdout {
     except /sockjs/
   }
+}
+
+www.crossme.app {
+  import base
+  redir https://crossme.app/
+}
+
+asciisnowmanforyou.com {
+  import base
+  proxy / http://asciisnowmanforyou {
+    transparent
+  }
+}
+
+www.asciisnowmanforyou.com {
+  import base
+  redir https://asciisnowmanforyou.com/
 }
