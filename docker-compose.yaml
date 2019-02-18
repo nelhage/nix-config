@@ -8,8 +8,8 @@ services:
       - "-load_index=/data/index.idx"
       - "-debug=profile,index"
       - "-threads=4"
-    ports:
-      - "9898:9898"
+    expose:
+      - "9898"
     volumes:
       - livegrep-data:/data
     restart: unless-stopped
@@ -21,7 +21,7 @@ services:
       - "-docroot"
       - "/livegrep/web/"
       - "/conf/livegrep.json"
-    ports:
+    expose:
       - 8910
     volumes:
       - type: bind
@@ -85,9 +85,6 @@ services:
         target: /conf
         read_only: true
       - caddy:/caddy
-    expose:
-      - 80
-      - 443
     ports:
       - "80:80"
       - "443:443"
