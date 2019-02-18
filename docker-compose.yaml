@@ -111,6 +111,13 @@ services:
       - taktician:/taktician
     restart: unless-stopped
 
+  asciisnowmanforyou:
+    build:
+      context: ./images/asciisnowmanforyou
+    expose:
+     - "80"
+    restart: unless-stopped
+
 volumes:
   mongo-data:
   livegrep-data:
