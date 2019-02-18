@@ -35,3 +35,20 @@ crossme.app {
     except /sockjs/
   }
 }
+
+www.crossme.app {
+  import base
+  redir https://crossme.app/
+}
+
+asciisnowmanforyou.com {
+  import base
+  proxy / http://asciisnowmanforyou {
+    transparent
+  }
+}
+
+www.asciisnowmanforyou.com {
+  import base
+  redir https://asciisnowmanforyou.com/
+}
