@@ -72,7 +72,11 @@ services:
     restart: unless-stopped
 
   caddy:
-    image: "abiosoft/caddy:0.11.1"
+    build:
+      context: github.com/abiosoft/caddy-docker.git
+      args:
+       - plugins=git,googlecloud,cache,realip
+
     entrypoint:
       - caddy
       - -conf=/conf/Caddyfile

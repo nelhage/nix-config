@@ -1,5 +1,8 @@
 (tls) {
   tls nelhage@nelhage.com
+  tls {
+    dns googlecloud
+  }
   header / {
     Strict-Transport-Security "max-age=31557600"
     Expect-CT "enforce, max-age=31536000"
