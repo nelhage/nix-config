@@ -112,6 +112,24 @@ services:
       - taktician:/taktician
     restart: unless-stopped
 
+  taktician:
+    build:
+      context: ./images/taktician
+    command:
+    - playtak
+    - -user=Taktician
+    - -debug=1
+    - -size=
+    - -depth=0
+    - -limit=30s
+    - -time=20m
+    - -increment=30s
+    - -multi-cut=true
+    - -pass=${taktician_password}
+    volumes:
+      - taktician:/taktician
+    restart: unless-stopped
+
   asciisnowmanforyou:
     build:
       context: ./images/asciisnowmanforyou
