@@ -134,7 +134,7 @@ services:
     - playtak
     - -user=Taktician
     - -debug=1
-    - -size=
+    - -size=6
     - -depth=0
     - -limit=30s
     - -time=20m
