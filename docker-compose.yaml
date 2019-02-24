@@ -132,7 +132,7 @@ services:
       context: ./images/taktician
     command:
     - playtak
-    - -user=Taktician
+    - -user=TakticianBot
     - -debug=1
     - -size=6
     - -depth=0
