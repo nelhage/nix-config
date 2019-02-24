@@ -45,6 +45,21 @@ services:
       - 80
     restart: unless-stopped
 
+  livegrep-indexer:
+    image: docker.io/livegrep/indexer:${image_version}
+    command:
+     - /livegrep/bin/livegrep-github-reindex
+     - "-name=Linux $linux_version"
+     - -repo=torvalds/linux
+     - -revparse=false
+     - "-revision=v$linux_version"
+     - -dir=/data/
+     - -out=/data/index.idx
+     - -http
+    volumes:
+     - livegrep-data:/data
+    restart: never
+
   crossme:
     build:
       context: ./images/crossme
