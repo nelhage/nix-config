@@ -58,7 +58,7 @@ services:
      - -http
     volumes:
      - livegrep-data:/data
-    restart: never
+    restart: "no"
 
   crossme:
     build:
