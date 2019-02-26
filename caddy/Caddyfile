@@ -65,7 +65,17 @@ www.asciisnowmanforyou.com {
 
 nelhage.com {
   import base
+  header / {
+    Strict-Transport-Security "max-age=31557600; preload; includeSubDomains"
+  }
   proxy / http://nelhage.com {
+    transparent
+  }
+}
+
+blog.nelhage.com {
+  import base
+  proxy / http://blog.nelhage.com {
     transparent
   }
 }

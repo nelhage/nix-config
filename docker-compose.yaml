@@ -164,6 +164,18 @@ services:
         read_only: true
     restart: unless-stopped
 
+  blog.nelhage.com:
+    build:
+      context: ./images/blog.nelhage.com
+    expose:
+     - "80"
+    volumes:
+      - type: bind
+        source: /opt/www/blog.nelhage.com
+        target: /opt/www/blog.nelhage.com
+        read_only: true
+    restart: unless-stopped
+
 volumes:
   mongo-data:
   livegrep-data:
