@@ -152,6 +152,18 @@ services:
      - "80"
     restart: unless-stopped
 
+  nelhage.com:
+    build:
+      context: ./images/nelhage.com
+    expose:
+     - "80"
+    volumes:
+      - type: bind
+        source: /opt/www/nelhage.com
+        target: /opt/www/nelhage.com
+        read_only: true
+    restart: unless-stopped
+
 volumes:
   mongo-data:
   livegrep-data:

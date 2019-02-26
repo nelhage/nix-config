@@ -62,3 +62,10 @@ www.asciisnowmanforyou.com {
   import base
   redir https://asciisnowmanforyou.com/
 }
+
+nelhage.com {
+  import base
+  proxy / http://nelhage.com {
+    transparent
+  }
+}
