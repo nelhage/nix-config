@@ -40,6 +40,7 @@ crossme.app {
   import tls
   proxy / http://crossme:3000 {
     transparent
+    websocket
   }
   log stdout {
     except /sockjs/
