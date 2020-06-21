@@ -85,3 +85,18 @@ blog.nelhage.com {
     transparent
   }
 }
+
+www.minimax.dev {
+  import base
+  header / {
+    Strict-Transport-Security "max-age=31557600; preload; includeSubDomains"
+  }
+  proxy / http://minimax.dev {
+    transparent
+  }
+}
+
+minimax.dev {
+  import base
+  redir https://www.minimax.dev/
+}

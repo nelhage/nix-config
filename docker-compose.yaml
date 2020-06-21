@@ -176,6 +176,13 @@ services:
         read_only: true
     restart: unless-stopped
 
+  minimax.dev:
+    build:
+      context: github.com/nelhage/minimax.dev#${MINIMAX_DEV_REVISION-master}
+    expose:
+      - "80"
+    restart: unless-stopped
+
 volumes:
   mongo-data:
   livegrep-data:
