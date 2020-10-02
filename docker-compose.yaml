@@ -1,5 +1,11 @@
 version: "3.3"
 services:
+  admin:
+    image: ubuntu:latest
+    command:
+      - "true"
+    restart: "no"
+
   livegrep-backend-linux:
     image: "docker.io/livegrep/base:${image_version}"
     command:
@@ -84,6 +90,38 @@ services:
       - mongo-data:/data/db
     expose:
       - 27017
+    restart: unless-stopped
+
+  crossme-mariadb:
+    image: mariadb:10
+    volumes:
+      - crossme-data:/var/lib/mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_DATABASE=crossme
+    restart: unless-stopped
+
+  crossme-statics:
+    build:
+      context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}:client"
+
+  crossme-api:
+    build:
+      context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}"
+    command:
+      - /crossme/bin/crossme
+      - -bind=0.0.0.0:80
+      - "-db=root@tcp(crossme-mariadb)/crossme"
+    restart: unless-stopped
+
+  crossme-grpc-proxy:
+    image: envoyproxy/envoy-dev
+    volumes:
+      - type: bind
+        source: ./images/crossme/envoy.yaml
+        target: /etc/envoy/envoy.yaml
+        read_only: true
     restart: unless-stopped
 
   caddy:
@@ -185,6 +223,7 @@ services:
 
 volumes:
   mongo-data:
+  crossme-data:
   livegrep-data:
   caddy:
   taktician:

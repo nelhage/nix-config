@@ -52,6 +52,15 @@ www.crossme.app {
   redir https://crossme.app/
 }
 
+beta.crossme.app {
+  import tls
+  proxy / http://crossme-statics {
+    transparent
+    websocket
+  }
+  log stdout
+}
+
 asciisnowmanforyou.com {
   import base
   proxy / http://asciisnowmanforyou {
