@@ -1,0 +1,30 @@
+#!/bin/bash
+set -eu
+domains=($@)
+
+export GCE_PROPAGATION_TIMEOUT=$((10*60))
+# server=https://acme-staging-v02.api.letsencrypt.org/directory
+server=https://acme-v02.api.letsencrypt.org/directory
+run_lego() {
+    lego --path /lego --server "$server" --dns gcloud --accept-tos --email nelhage@nelhage.com "$@"
+}
+
+while :; do
+    err=
+    for domain in "${domains[@]}"; do
+        if ! test -f "/lego/certificates/${domain}.crt"; then
+            echo "Issuing initial cert for ${domain}..."
+            run_lego --domains "$domain" run || err=1
+        else
+            run_lego --domains "$domain" renew || :
+        fi
+    done
+
+    if [ "$err" ]; then
+        echo "An error occurred. Trying again in 5m..."
+        sleep 5m
+    else
+        echo "Certificates up-to-date. Will review in 1d"
+        sleep 1d
+    fi
+done

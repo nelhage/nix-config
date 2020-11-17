@@ -124,6 +124,35 @@ services:
         read_only: true
     restart: unless-stopped
 
+  lego-certs:
+    build:
+      context: ./images/lego-certs
+    volumes:
+      - "lego-certs:/lego"
+    command:
+      - nelhage.com
+      - www.nelhage.com
+      - blog.nelhage.com
+      - livegrep.com
+      - www.livegrep.com
+      - minimax.dev
+      - www.minimax.dev
+      - asciisnowmanforyou.com
+      - www.asciisnowmanforyou.com
+      - crossme.app
+      - beta.crossme.app
+      - www.crossme.app
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./images/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "lego-certs:/lego"
+
   caddy:
     build:
       context: github.com/abiosoft/caddy-docker.git
@@ -143,8 +172,8 @@ services:
         read_only: true
       - caddy:/caddy
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "4443:443"
     restart: unless-stopped
 
   friendlybot:
@@ -227,3 +256,4 @@ volumes:
   livegrep-data:
   caddy:
   taktician:
+  lego-certs:
