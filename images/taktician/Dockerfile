@@ -1,4 +1,4 @@
-FROM golang:1.11-stretch
+FROM golang:1.15-buster
 RUN git clone https://github.com/nelhage/taktician /src/
 WORKDIR /src
 RUN go build -o taktician ./cmd/taktician
