@@ -111,17 +111,13 @@ services:
       context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}"
     command:
       - /crossme/bin/crossme
-      - -bind=0.0.0.0:80
+      - -bind=0.0.0.0:4000
       - "-db=root@tcp(crossme-mariadb)/crossme"
     restart: unless-stopped
 
   crossme-grpc-proxy:
-    image: envoyproxy/envoy-dev
-    volumes:
-      - type: bind
-        source: ./images/crossme/envoy.yaml
-        target: /etc/envoy/envoy.yaml
-        read_only: true
+    build:
+      context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}:proxy"
     restart: unless-stopped
 
   lego-certs:
