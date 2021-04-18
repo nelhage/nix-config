@@ -6,7 +6,6 @@
             "addr": "livegrep-backend-linux:9898"
         }
     ],
-    "google_analytics_id": "UA-10353960-3",
     "footer_html": "<script async defer src=\"https://sa.livegrep.com/latest.js\"></script>\n<noscript><img src=\"https://sa.livegrep.com/noscript.gif\" alt=\"\"/></noscript>",
     "feedback": {
       "mailto": "nelhage@nelhage.com"
