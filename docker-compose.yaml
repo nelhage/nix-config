@@ -7,7 +7,7 @@ services:
     restart: "no"
 
   livegrep-backend-linux:
-    image: "docker.io/livegrep/base:${livegrep_image_version}"
+    image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
     command:
       - "/livegrep/bin/codesearch"
       - "-grpc=0.0.0.0:9898"
@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   livegrep-frontend:
-    image: "docker.io/livegrep/base:${livegrep_image_version}"
+    image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
     command:
       - "/livegrep/bin/livegrep"
       - "-docroot"
@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
 
   livegrep-nginx:
-    image: "docker.io/livegrep/nginx:${livegrep_image_version}"
+    image: "ghcr.io/livegrep/livegrep/nginx:${livegrep_image_version}"
     entrypoint:
       - nginx
       - -c
@@ -52,7 +52,7 @@ services:
     restart: unless-stopped
 
   livegrep-indexer:
-    image: docker.io/livegrep/indexer:${livegrep_image_version}
+    image: ghcr.io/livegrep/livegrep/indexer:${livegrep_image_version}
     command:
      - /livegrep/bin/livegrep-github-reindex
      - "-name=Linux $linux_version"
