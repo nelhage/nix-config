@@ -61,18 +61,6 @@ beta.crossme.app {
   log stdout
 }
 
-asciisnowmanforyou.com {
-  import base
-  proxy / http://asciisnowmanforyou {
-    transparent
-  }
-}
-
-www.asciisnowmanforyou.com {
-  import base
-  redir https://asciisnowmanforyou.com/
-}
-
 nelhage.com {
   import base
   header / {
@@ -93,19 +81,4 @@ blog.nelhage.com {
   proxy / http://blog.nelhage.com {
     transparent
   }
-}
-
-www.minimax.dev {
-  import base
-  header / {
-    Strict-Transport-Security "max-age=31557600; preload; includeSubDomains"
-  }
-  proxy / http://minimax.dev {
-    transparent
-  }
-}
-
-minimax.dev {
-  import base
-  redir https://www.minimax.dev/
 }

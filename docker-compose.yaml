@@ -131,10 +131,6 @@ services:
       - blog.nelhage.com
       - livegrep.com
       - www.livegrep.com
-      - minimax.dev
-      - www.minimax.dev
-      - asciisnowmanforyou.com
-      - www.asciisnowmanforyou.com
       - crossme.app
       - beta.crossme.app
       - www.crossme.app
@@ -208,13 +204,6 @@ services:
       - taktician:/taktician
     restart: unless-stopped
 
-  asciisnowmanforyou:
-    build:
-      context: ./images/asciisnowmanforyou
-    expose:
-     - "80"
-    restart: unless-stopped
-
   nelhage.com:
     build:
       context: ./images/nelhage.com
@@ -237,13 +226,6 @@ services:
         source: /opt/www/blog.nelhage.com
         target: /opt/www/blog.nelhage.com
         read_only: true
-    restart: unless-stopped
-
-  minimax.dev:
-    build:
-      context: github.com/nelhage/minimax.dev#${MINIMAX_DEV_REVISION-master}
-    expose:
-      - "80"
     restart: unless-stopped
 
 volumes:
