@@ -3,7 +3,8 @@
 {
   home = {
     username = "nelhage";
-    homeDirectory = if pkgs.stdenv.isLinux then "/home/nelhage" else  "/Users/nelhage";
+    homeDirectory =
+      if pkgs.stdenv.isLinux then "/home/nelhage" else "/Users/nelhage";
 
     stateVersion = "23.11";
     packages = with pkgs; [
@@ -14,6 +15,7 @@
 
       hugo
       gh
+      nixfmt
     ];
   };
 
