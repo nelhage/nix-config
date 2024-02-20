@@ -3,6 +3,10 @@ let
   nvmconf = {
     type = "gpt";
     partitions = {
+      grub = {
+        size = "1M";
+        type = "EF02";
+      };
       boot = {
         size = "1G";
         type = "EF00";
