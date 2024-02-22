@@ -24,7 +24,8 @@ let
       };
     };
   };
-in {
+in
+{
   disko.devices = {
     disk = {
       nvme1n1 = {
