@@ -16,6 +16,7 @@
       hugo
       gh
       nixfmt
+      nixos-rebuild
     ];
   };
 
