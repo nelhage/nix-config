@@ -22,13 +22,14 @@
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
-          modules = [ ./home.nix ];
+          modules = [ ./modules/home.nix ];
         };
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           disko.nixosModules.disko
+          ./modules/nelhage.com.nix
           ./hw4.nelhage.com/configuration.nix
           ./hw4.nelhage.com/hardware-configuration.nix
         ];

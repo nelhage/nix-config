@@ -15,8 +15,11 @@
 
       hugo
       gh
+
+      # Nix stuff
       nixfmt
       nixos-rebuild
+      nil
     ];
   };
 
