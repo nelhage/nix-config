@@ -3,6 +3,8 @@
 
   environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal ];
 
+  environment.defaultPackages = import ./dev-pkgs.nix {inherit pkgs;};
+
   users.users =
     let
       pubkeys = [
