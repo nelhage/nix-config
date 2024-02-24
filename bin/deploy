@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -eu
+
+die() {
+    echo "$@" >&2
+    exit 1
+}
+
+if [ "$#" -lt 2 ]; then
+    die "Usage: $0 COMMAND TARGET"
+fi
+
+cmd="$1"
+target="$2"
+shift 2
+
+hostname="$(ssh "$target" hostname -s)"
+
+nixos-rebuild "$cmd" --fast \
+              --build-host "${target}" \
+              --target-host "${target}" \
+              --flake ".#${hostname}" \
+              --use-remote-sudo \
+              "$@"
