@@ -181,7 +181,6 @@ services:
     - -increment=30s
     - -friendly=true
     - -log-file=/taktician/friendly.log
-    - -pass=${friendlybot_password}
     volumes:
       - taktician:/taktician
     restart: unless-stopped
@@ -199,7 +198,6 @@ services:
     - -time=20m
     - -increment=30s
     - -multi-cut=true
-    - -pass=${taktician_password}
     volumes:
       - taktician:/taktician
     restart: unless-stopped

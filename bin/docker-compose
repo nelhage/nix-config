@@ -1,5 +1,4 @@
 #!/bin/bash
 set -eu
 cd "$(dirname "$0")/.."
-. taktician.env
-exec docker-compose -f docker-compose.yaml  -f docker-compose.credentials.yaml "$@"
+exec docker-compose -f docker-compose.yaml  -f secrets/docker-compose.credentials.yaml "$@"
