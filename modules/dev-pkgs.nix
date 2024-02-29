@@ -11,4 +11,6 @@
   nixfmt
   nixos-rebuild
   nil
+
+  tmux
 ]

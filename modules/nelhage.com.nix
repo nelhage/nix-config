@@ -1,9 +1,13 @@
 { modulesPath, config, lib, pkgs, ... }: {
   services.openssh.enable = true;
 
-  environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal pkgs.emacs pkgs.mosh pkgs.vim];
+  environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal pkgs.vim];
 
-  environment.defaultPackages = import ./dev-pkgs.nix {inherit pkgs;};
+  environment.defaultPackages = (import ./dev-pkgs.nix {inherit pkgs;}) ++ [
+    pkgs.emacs
+    pkgs.mosh
+    pkgs.strace
+  ];
 
   users.users =
     let

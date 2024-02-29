@@ -30,6 +30,7 @@
         modules = [
           disko.nixosModules.disko
           ./modules/nelhage.com.nix
+          ./modules/common.nix
           ./hw4.nelhage.com/configuration.nix
           ./hw4.nelhage.com/hardware-configuration.nix
         ];
