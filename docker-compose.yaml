@@ -13,6 +13,7 @@ services:
       - "-grpc=0.0.0.0:9898"
       - "-load_index=/data/index.idx"
       - "-debug=profile,index"
+      - "-reload_rpc"
       - "-threads=4"
     expose:
       - "9898"
@@ -52,16 +53,12 @@ services:
     restart: unless-stopped
 
   livegrep-indexer:
-    image: ghcr.io/livegrep/livegrep/indexer:${livegrep_image_version}
+    build:
+      context: ./images/livegrep-indexer
+      args:
+        livegrep_image_version: ${livegrep_image_version}
     command:
-     - /livegrep/bin/livegrep-github-reindex
-     - "-name=Linux $linux_version"
-     - -repo=torvalds/linux
-     - -revparse=false
-     - "-revision=v$linux_version"
-     - -dir=/data/
-     - -out=/data/index.idx
-     - -http
+     - /usr/local/bin/rebuild-index
     volumes:
      - livegrep-data:/data
     restart: "no"
