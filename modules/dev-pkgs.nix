@@ -7,10 +7,11 @@
   hugo
   gh
 
+  starship
+  tmux
+
   # Nix stuff
   nixfmt
   nixos-rebuild
   nil
-
-  tmux
 ]
