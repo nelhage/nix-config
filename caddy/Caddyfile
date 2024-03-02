@@ -75,10 +75,3 @@ www.nelhage.com {
   import base
   redir https://nelhage.com/
 }
-
-blog.nelhage.com {
-  import base
-  proxy / http://blog.nelhage.com {
-    transparent
-  }
-}
