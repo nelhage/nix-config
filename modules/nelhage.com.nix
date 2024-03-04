@@ -54,4 +54,6 @@
     dataDir = "/data/git/";
     adminPubkey = builtins.elemAt config.users.users.nelhage.openssh.authorizedKeys.keys 0;
   };
+
+  services.tailscale.enable = true;
 }
