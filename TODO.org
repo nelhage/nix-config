@@ -4,8 +4,10 @@
  - [X] switch to home-manager for devtools etc
  - [X] set MAILADDR or PROGRAM in mdadm.conf
  - [X] reinstall with better partitioning
+ - [-] gitolite
+   - [X] nix config
+   - [ ] manual clone data
  - [ ] Syncthing
- - [ ] gitolite
  - [ ] tailscale
  - [ ] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker

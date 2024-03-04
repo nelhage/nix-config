@@ -41,4 +41,17 @@
   };
 
   security.sudo.extraConfig = "nelhage   ALL=(ALL:ALL) NOPASSWD: ALL";
+
+  systemd.tmpfiles.rules = [
+    "d /data/ 0755 root root"
+    "d /data/git 0700 git git"
+  ];
+
+  services.gitolite = {
+    enable = true;
+    user = "git";
+    group = "git";
+    dataDir = "/data/git/";
+    adminPubkey = builtins.elemAt config.users.users.nelhage.openssh.authorizedKeys.keys 0;
+  };
 }
