@@ -5,6 +5,7 @@
  - [X] set MAILADDR or PROGRAM in mdadm.conf
  - [X] reinstall with better partitioning
  - [ ] Syncthing
+ - [ ] gitolite
  - [ ] tailscale
  - [ ] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
