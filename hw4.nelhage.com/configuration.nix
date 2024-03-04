@@ -10,18 +10,15 @@
     efiInstallAsRemovable = true;
   };
 
-  users.users.root.home = lib.mkForce "/data/home/root";
-  users.users.nelhage.home = "/data/home/nelhage";
-
   networking = {
     hostName = "hw4";
     domain = "nelhage.com";
   };
 
   boot.swraid.mdadmConf = ''
-  MAILADDR nelhage@nelhage.com
-  MAILFROM hw4.nelhage.com
-'';
+    MAILADDR nelhage@nelhage.com
+    MAILFROM hw4.nelhage.com
+  '';
 
   system.stateVersion = "23.11";
 }

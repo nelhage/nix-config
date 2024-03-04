@@ -3,14 +3,22 @@
 * nelhage.com rebuild
  - [X] switch to home-manager for devtools etc
  - [X] set MAILADDR or PROGRAM in mdadm.conf
+ - [X] reinstall with better partitioning
+ - [ ] Syncthing
+ - [ ] tailscale
  - [ ] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/
 * general
  - [ ] figure out optimized Python
+ - [ ] colorize tmux by machine
 * darwin
  - [X] configure completions etc. for nix-installed packages on system
    zsh
 * backlog
  - [ ] bashrc/environment bankruptcy
    - [ ] can I make tmux open a login shell?
+* notes
+** rebuild command
+nix run github:nix-community/nixos-anywhere -- \
+  --flake '.#hw4' root@hw4.nelhage.com  --build-on-remote --copy-host-keys

@@ -64,20 +64,20 @@ in
       vg00 = {
         type = "lvm_vg";
         lvs = {
-          root = {
-            size = "30G";
+          nix = {
+            size = "50G";
             content = {
               type = "filesystem";
               format = "xfs";
-              mountpoint = "/";
+              mountpoint = "/nix";
             };
           };
-          data = {
+          root = {
             size = "300G";
             content = {
               type = "filesystem";
               format = "xfs";
-              mountpoint = "/data";
+              mountpoint = "/";
             };
           };
         };
