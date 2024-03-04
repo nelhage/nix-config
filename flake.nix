@@ -9,10 +9,16 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, home-manager, disko, flake-utils, ... }:
+  outputs = { nixpkgs, home-manager, disko, ... }@attrs:
+    let
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
+    in
     {
       homeConfigurations."nelhage@mythique" =
         let
@@ -22,11 +28,15 @@
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
-          modules = [ ./modules/home.nix ];
+          modules = [
+            ./modules/home.nix
+            ./modules/home/darwin.nix
+          ];
         };
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = attrs;
         modules = [
           disko.nixosModules.disko
           ./modules/nelhage.com.nix
@@ -35,7 +45,7 @@
           ./hw4.nelhage.com/hardware-configuration.nix
         ];
       };
-    } // flake-utils.lib.eachDefaultSystem (system: {
-      formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
-    });
+
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+    };
 }

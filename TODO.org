@@ -1,10 +1,16 @@
 * infra
  - [ ] debug "The interpretation of store paths arguments ending in `.drv` recently changed."
 * nelhage.com rebuild
- - [ ] switch to home-manager for devtools etc
+ - [X] switch to home-manager for devtools etc
  - [ ] set MAILADDR or PROGRAM in mdadm.conf
  - [ ] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/
 * general
  - [ ] figure out optimized Python
+* darwin
+ - [X] configure completions etc. for nix-installed packages on system
+   zsh
+* backlog
+ - [ ] bashrc/environment bankruptcy
+   - [ ] can I make tmux open a login shell?

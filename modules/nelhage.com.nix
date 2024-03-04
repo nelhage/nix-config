@@ -1,10 +1,14 @@
-{ modulesPath, config, lib, pkgs, ... }: {
+{ modulesPath, config, lib, pkgs, home-manager, ... }: {
+  imports = [
+    home-manager.nixosModules.default
+  ];
+
   services.openssh.enable = true;
   programs.mosh.enable = true;
 
-  environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal pkgs.vim];
+  environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal pkgs.vim ];
 
-  environment.defaultPackages = (import ./dev-pkgs.nix {inherit pkgs;}) ++ [
+  environment.defaultPackages = [
     pkgs.emacs
     pkgs.strace
   ];
@@ -22,14 +26,19 @@
       };
       nelhage = {
         openssh.authorizedKeys.keys = pubkeys;
-        extraGroups = ["wheel" "docker"];
+        extraGroups = [ "wheel" "docker" ];
         group = "nelhage";
         uid = 1000;
         isNormalUser = true;
         description = "Nelson Elhage";
       };
     };
+
   users.groups.nelhage = { gid = 1000; };
+
+  home-manager.users.nelhage = { ... }: {
+    imports = [ ./home.nix ];
+  };
 
   security.sudo.extraConfig = "nelhage   ALL=(ALL:ALL) NOPASSWD: ALL";
 }
