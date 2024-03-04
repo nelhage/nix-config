@@ -2,7 +2,7 @@
  - [ ] debug "The interpretation of store paths arguments ending in `.drv` recently changed."
 * nelhage.com rebuild
  - [X] switch to home-manager for devtools etc
- - [ ] set MAILADDR or PROGRAM in mdadm.conf
+ - [X] set MAILADDR or PROGRAM in mdadm.conf
  - [ ] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/

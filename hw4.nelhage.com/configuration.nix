@@ -18,5 +18,10 @@
     domain = "nelhage.com";
   };
 
+  boot.swraid.mdadmConf = ''
+  MAILADDR nelhage@nelhage.com
+  MAILFROM hw4.nelhage.com
+'';
+
   system.stateVersion = "23.11";
 }
