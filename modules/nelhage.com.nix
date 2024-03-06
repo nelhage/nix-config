@@ -11,6 +11,8 @@
   environment.defaultPackages = [
     pkgs.emacs
     pkgs.strace
+    pkgs.file
+    pkgs.lsof
     pkgs.docker-compose
   ];
 
