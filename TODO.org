@@ -9,7 +9,7 @@
    - [ ] manual clone data
  - [X] tailscale
  - [ ] Syncthing
- - [ ] set up docker-compose stuff
+ - [X] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/
 * general

@@ -11,6 +11,7 @@
   environment.defaultPackages = [
     pkgs.emacs
     pkgs.strace
+    pkgs.docker-compose
   ];
 
   users.users =
@@ -56,4 +57,9 @@
   };
 
   services.tailscale.enable = true;
+
+  virtualisation.docker.enable = true;
+  virtualisation.docker.daemon.settings = {
+    data-root = "/data/docker";
+  };
 }
