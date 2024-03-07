@@ -16,6 +16,7 @@
 
       starship
       tmux
+      ripgrep
 
       # Nix stuff
       nixfmt

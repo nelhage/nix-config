@@ -14,6 +14,7 @@
     pkgs.file
     pkgs.lsof
     pkgs.docker-compose
+    pkgs.rsync
   ];
 
   users.users =
