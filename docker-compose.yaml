@@ -124,7 +124,6 @@ services:
     command:
       - nelhage.com
       - www.nelhage.com
-      - blog.nelhage.com
       - livegrep.com
       - www.livegrep.com
       - crossme.app
@@ -205,20 +204,8 @@ services:
      - "80"
     volumes:
       - type: bind
-        source: /opt/www/nelhage.com
-        target: /opt/www/nelhage.com
-        read_only: true
-    restart: unless-stopped
-
-  blog.nelhage.com:
-    build:
-      context: ./images/blog.nelhage.com
-    expose:
-     - "80"
-    volumes:
-      - type: bind
-        source: /opt/www/blog.nelhage.com
-        target: /opt/www/blog.nelhage.com
+        source: /data/www/nelhage.com
+        target: /data/www/nelhage.com
         read_only: true
     restart: unless-stopped
 
