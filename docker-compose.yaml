@@ -93,7 +93,6 @@ services:
     image: mariadb:10
     volumes:
       - crossme-data:/var/lib/mysql
-    restart: unless-stopped
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
       - MYSQL_DATABASE=crossme
