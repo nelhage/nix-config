@@ -120,7 +120,7 @@ services:
     build:
       context: ./images/lego-certs
     volumes:
-      - "lego-certs:/lego"
+      - "lego-certs:/opt/lego"
     command:
       - nelhage.com
       - www.nelhage.com
