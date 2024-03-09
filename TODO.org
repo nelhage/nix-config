@@ -7,7 +7,7 @@
    - [X] nix config
    - [ ] manual clone data
  - [X] tailscale
- - [ ] Syncthing
+ - [X] Syncthing
  - [X] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/
