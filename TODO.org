@@ -11,10 +11,13 @@
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/
 ** non-Nix operations
-  - [ ] clone gitolite data
-  - [ ] re-point DNS
-  - [ ] test livegrep latency
-  - [ ] backup old crossme database
+  - [X] clone gitolite data
+  - [-] re-point DNS
+    - [X] livegrep
+    - [ ] nelhage.com
+    - [ ] what else??
+  - [X] test livegrep latency
+  - [X] backup old crossme database
   - [ ] figure out what else to backup
 * general
 * darwin
@@ -23,9 +26,12 @@
 * backlog
  - [ ] bashrc/environment bankruptcy
    - [ ] can I make tmux open a login shell?
+     - apparently it does by default. Do I need all my .environment
+       shenanigans?
  - [ ] figure out optimized Python
  - [ ] colorize tmux or shells by machine
  - [ ] switch to zsh
+ - [ ] ... dare I shave the 256color yak
 * notes
 ** rebuild command
 nix run github:nix-community/nixos-anywhere -- \
