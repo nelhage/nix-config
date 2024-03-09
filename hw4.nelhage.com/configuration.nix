@@ -20,5 +20,8 @@
     MAILFROM hw4.nelhage.com
   '';
 
+  services.syncthing.guiAddress = "100.78.93.125:8384";
+
+
   system.stateVersion = "23.11";
 }

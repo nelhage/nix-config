@@ -59,6 +59,13 @@
     adminPubkey = builtins.elemAt config.users.users.nelhage.openssh.authorizedKeys.keys 0;
   };
 
+  services.syncthing = {
+        enable = true;
+        user = "nelhage";
+        dataDir = "/home/nelhage/Sync";
+        configDir = "/home/nelhage/.config/syncthing";
+  };
+
   services.tailscale.enable = true;
 
   virtualisation.docker.enable = true;
