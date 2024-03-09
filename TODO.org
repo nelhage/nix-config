@@ -5,21 +5,27 @@
  - [X] reinstall with better partitioning
  - [-] gitolite
    - [X] nix config
-   - [ ] manual clone data
  - [X] tailscale
  - [X] Syncthing
  - [X] set up docker-compose stuff
    - https://nixos.wiki/wiki/Docker
    - https://docs.hercules-ci.com/arion/
+** non-Nix operations
+  - [ ] clone gitolite data
+  - [ ] re-point DNS
+  - [ ] test livegrep latency
+  - [ ] backup old crossme database
+  - [ ] figure out what else to backup
 * general
- - [ ] figure out optimized Python
- - [ ] colorize tmux by machine
 * darwin
  - [X] configure completions etc. for nix-installed packages on system
    zsh
 * backlog
  - [ ] bashrc/environment bankruptcy
    - [ ] can I make tmux open a login shell?
+ - [ ] figure out optimized Python
+ - [ ] colorize tmux or shells by machine
+ - [ ] switch to zsh
 * notes
 ** rebuild command
 nix run github:nix-community/nixos-anywhere -- \
