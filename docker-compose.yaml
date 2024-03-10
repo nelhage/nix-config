@@ -63,59 +63,6 @@ services:
      - livegrep-data:/data
     restart: "no"
 
-  crossme:
-    build:
-      context: ./images/crossme
-      args:
-        CROSSME_REVISION: ${CROSSME_REVISION:-master}
-    expose:
-     - 3000
-    environment:
-      METEOR_SETTING: '{"public":{"analytics":{"id":"UA-10353960-5","domain": "meteor.com"}}}'
-      ROOT_URL: ${CROSSME_ROOT_URL:-http://localhost}
-      MONGO_URL: mongodb://mongo:27017/meteor?connectTimeoutMS=5000&socketTimeoutMS=5000&ssl=false
-      PORT: 3000
-    links:
-     - mongo
-    restart: unless-stopped
-
-  mongo:
-    image: mongo:3.6
-    command:
-      - --storageEngine=wiredTiger
-    volumes:
-      - mongo-data:/data/db
-    expose:
-      - 27017
-    restart: unless-stopped
-
-  crossme-mariadb:
-    image: mariadb:10
-    volumes:
-      - crossme-data:/var/lib/mysql
-    environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=1
-      - MYSQL_DATABASE=crossme
-    restart: unless-stopped
-
-  crossme-statics:
-    build:
-      context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}:client"
-
-  crossme-api:
-    build:
-      context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}"
-    command:
-      - /crossme/bin/crossme
-      - -bind=0.0.0.0:4000
-      - "-db=root@tcp(crossme-mariadb)/crossme"
-    restart: unless-stopped
-
-  crossme-grpc-proxy:
-    build:
-      context: "github.com/nelhage/crossme#${CROSSME_V2_REVISION-master}:proxy"
-    restart: unless-stopped
-
   lego-certs:
     build:
       context: ./images/lego-certs
@@ -126,9 +73,7 @@ services:
       - www.nelhage.com
       - livegrep.com
       - www.livegrep.com
-      - crossme.app
-      - beta.crossme.app
-      - www.crossme.app
+      - beta.livegrep.com
     restart: unless-stopped
 
   nginx:
@@ -139,29 +84,6 @@ services:
       - "443:443"
     volumes:
       - "lego-certs:/lego"
-
-  caddy:
-    build:
-      context: github.com/abiosoft/caddy-docker.git
-      args:
-       - plugins=git,googlecloud,cache,realip
-
-    entrypoint:
-      - caddy
-      - -conf=/conf/Caddyfile
-      - -agree
-    environment:
-      - CADDYPATH=/caddy
-    volumes:
-      - type: bind
-        source: ./caddy/
-        target: /conf
-        read_only: true
-      - caddy:/caddy
-    ports:
-      - "8080:80"
-      - "4443:443"
-    restart: unless-stopped
 
   friendlybot:
     build:
@@ -210,9 +132,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  mongo-data:
-  crossme-data:
   livegrep-data:
-  caddy:
   taktician:
   lego-certs:
