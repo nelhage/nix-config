@@ -14,7 +14,7 @@
   - [X] clone gitolite data
   - [-] re-point DNS
     - [X] livegrep
-    - [ ] nelhage.com
+    - [X] nelhage.com
     - [ ] what else??
   - [X] test livegrep latency
   - [X] backup old crossme database
