@@ -17,6 +17,8 @@
       starship
       tmux
       ripgrep
+      pyenv
+      go
 
       # Nix stuff
       nixfmt

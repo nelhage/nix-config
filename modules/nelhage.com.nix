@@ -5,6 +5,7 @@
 
   services.openssh.enable = true;
   programs.mosh.enable = true;
+  programs.zsh.enable = true;
 
   environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal pkgs.vim ];
 
@@ -15,6 +16,7 @@
     pkgs.lsof
     pkgs.docker-compose
     pkgs.rsync
+    pkgs.zsh
   ];
 
   users.users =
@@ -35,6 +37,7 @@
         uid = 1000;
         isNormalUser = true;
         description = "Nelson Elhage";
+        shell = pkgs.zsh;
       };
     };
 
