@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgsMythique.url = "github:nixos/nixpkgs/nixos-unstable";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     home-manager = {
@@ -23,7 +25,7 @@
       homeConfigurations."nelhage@mythique" =
         let
           system = "aarch64-darwin";
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = attrs.nixpkgsMythique.legacyPackages.${system};
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
