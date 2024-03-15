@@ -32,6 +32,8 @@
  - [ ] colorize tmux or shells by machine
  - [ ] switch to zsh
  - [ ] ... dare I shave the 256color yak
+ - [ ] migrate off `docker build` or docker entirely for infra?
+ - [ ] ml.livegrep.com
 * notes
 ** rebuild command
 nix run github:nix-community/nixos-anywhere -- \
