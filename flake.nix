@@ -49,5 +49,11 @@
       };
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+
+      templates.default = {
+        path = ./template;
+        description = "Development template";
+        welcomeText = "Add your packages to flake.nix";
+      };
     };
 }
