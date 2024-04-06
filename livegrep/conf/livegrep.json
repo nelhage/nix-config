@@ -4,6 +4,10 @@
         {
             "id": "linux",
             "addr": "livegrep-backend-linux:9898"
+        },
+        {
+            "id": "ml",
+            "addr": "livegrep-backend-ml:9898"
         }
     ],
     "footer_html": "<script async defer src=\"https://sa.livegrep.com/latest.js\"></script>\n<noscript><img src=\"https://sa.livegrep.com/noscript.gif\" alt=\"\"/></noscript>",

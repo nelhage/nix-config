@@ -21,6 +21,21 @@ services:
       - livegrep-data:/data
     restart: unless-stopped
 
+  livegrep-backend-ml:
+    image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
+    command:
+      - "/livegrep/bin/codesearch"
+      - "-grpc=0.0.0.0:9898"
+      - "-load_index=/data/ml.idx"
+      - "-debug=profile,index"
+      - "-reload_rpc"
+      - "-threads=4"
+    expose:
+      - "9898"
+    volumes:
+      - livegrep-data:/data
+    restart: unless-stopped
+
   livegrep-frontend:
     image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
     command:
@@ -59,6 +74,24 @@ services:
         livegrep_image_version: ${livegrep_image_version}
     command:
      - /usr/local/bin/rebuild-index
+    volumes:
+     - livegrep-data:/data
+    restart: "no"
+
+  livegrep-indexer-ml:
+    image: "ghcr.io/livegrep/livegrep/indexer:${livegrep_image_version}"
+    command:
+     - /livegrep/bin/livegrep-github-reindex
+     - -name=ML Libraries
+     - -repo=pytorch/pytorch
+     - -repo=google/jax
+     - -repo=huggingface/transformers
+     - -repo=openxla/xla
+     - -repo=openxla/stablehlo
+     - -repo=openai/triton
+     - -dir=/data/
+     - -out=/data/ml.idx
+     - -http
     volumes:
      - livegrep-data:/data
     restart: "no"
