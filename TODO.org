@@ -15,10 +15,9 @@
   - [-] re-point DNS
     - [X] livegrep
     - [X] nelhage.com
-    - [ ] what else??
   - [X] test livegrep latency
   - [X] backup old crossme database
-  - [ ] figure out what else to backup
+  - [X] figure out what else to backup
 * general
 * darwin
  - [X] configure completions etc. for nix-installed packages on system
@@ -33,7 +32,8 @@
  - [ ] switch to zsh
  - [ ] ... dare I shave the 256color yak
  - [ ] migrate off `docker build` or docker entirely for infra?
- - [ ] ml.livegrep.com
+ - [X] ml.livegrep.com
+   - [ ] auto-rebuild ml.livegrep.com
 * notes
 ** rebuild command
 nix run github:nix-community/nixos-anywhere -- \
