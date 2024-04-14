@@ -17,6 +17,9 @@
     pkgs.docker-compose
     pkgs.rsync
     pkgs.zsh
+    pkgs.zip
+    pkgs.unzip
+    pkgs.ncdu
   ];
 
   users.users =
