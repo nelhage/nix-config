@@ -12,7 +12,13 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, disko, ... }@attrs:
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      disko,
+      ...
+    }@attrs:
     let
       forAllSystems = nixpkgs.lib.genAttrs [
         "aarch64-linux"

@@ -1,6 +1,15 @@
-{ modulesPath, config, lib, pkgs, ... }: {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix") ./disk-config.nix ];
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./disk-config.nix
+  ];
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a
     # EF02 partition to the list already
@@ -21,7 +30,6 @@
   '';
 
   services.syncthing.guiAddress = "100.78.93.125:8384";
-
 
   system.stateVersion = "23.11";
 }

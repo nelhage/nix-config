@@ -1,13 +1,23 @@
-{ modulesPath, config, lib, pkgs, home-manager, ... }: {
-  imports = [
-    home-manager.nixosModules.default
-  ];
+{
+  modulesPath,
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  ...
+}:
+{
+  imports = [ home-manager.nixosModules.default ];
 
   services.openssh.enable = true;
   programs.mosh.enable = true;
   programs.zsh.enable = true;
 
-  environment.systemPackages = map lib.lowPrio [ pkgs.curl pkgs.gitMinimal pkgs.vim ];
+  environment.systemPackages = map lib.lowPrio [
+    pkgs.curl
+    pkgs.gitMinimal
+    pkgs.vim
+  ];
 
   environment.defaultPackages = [
     pkgs.emacs
@@ -35,7 +45,10 @@
       };
       nelhage = {
         openssh.authorizedKeys.keys = pubkeys;
-        extraGroups = [ "wheel" "docker" ];
+        extraGroups = [
+          "wheel"
+          "docker"
+        ];
         group = "nelhage";
         uid = 1000;
         isNormalUser = true;
@@ -44,11 +57,15 @@
       };
     };
 
-  users.groups.nelhage = { gid = 1000; };
-
-  home-manager.users.nelhage = { ... }: {
-    imports = [ ./home.nix ];
+  users.groups.nelhage = {
+    gid = 1000;
   };
+
+  home-manager.users.nelhage =
+    { ... }:
+    {
+      imports = [ ./home.nix ];
+    };
 
   security.sudo.extraConfig = "nelhage   ALL=(ALL:ALL) NOPASSWD: ALL";
 
@@ -66,10 +83,10 @@
   };
 
   services.syncthing = {
-        enable = true;
-        user = "nelhage";
-        dataDir = "/home/nelhage/Sync";
-        configDir = "/home/nelhage/.config/syncthing";
+    enable = true;
+    user = "nelhage";
+    dataDir = "/home/nelhage/Sync";
+    configDir = "/home/nelhage/.config/syncthing";
   };
 
   services.tailscale.enable = true;
