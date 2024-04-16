@@ -23,7 +23,7 @@
       go
 
       # Nix stuff
-      nixfmt
+      nixfmt-rfc-style
       nixos-rebuild
       nil
     ];
