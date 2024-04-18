@@ -39,8 +39,8 @@
           };
 
           modules = [
-            ./modules/home.nix
-            ./modules/home/darwin.nix
+            ./home-manager/home.nix
+            ./home-manager/darwin.nix
           ];
         };
 

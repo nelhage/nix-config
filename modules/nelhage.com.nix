@@ -64,7 +64,7 @@
   home-manager.users.nelhage =
     { ... }:
     {
-      imports = [ ./home.nix ];
+      imports = [ ../home-manager/home.nix ];
     };
 
   security.sudo.extraConfig = "nelhage   ALL=(ALL:ALL) NOPASSWD: ALL";
