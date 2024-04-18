@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./bin.nix ];
 
   home = {
     username = "nelhage";
