@@ -1,4 +1,4 @@
-{ config, pkgs, nixpkgs, ... }:
+{ config, pkgs, ... }:
 
 {
 
@@ -34,21 +34,6 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
-    };
-  };
-
-  nix.registry = {
-    nixpkgs = {
-      from = {
-        type = "indirect";
-        id = "nixpkgs";
-      };
-      to = {
-        type = "github";
-        owner = "nixos";
-        repo = "nixpkgs";
-        inherit (nixpkgs) rev lastModified narHash;
-      };
     };
   };
 

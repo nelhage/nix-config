@@ -5,12 +5,9 @@
   pkgs,
   home-manager,
   ...
-}@attrs:
+}:
 {
   imports = [ home-manager.nixosModules.default ];
-  home-manager.extraSpecialArgs = {
-    inherit (attrs) nixpkgs;
-  };
 
   services.openssh.enable = true;
   programs.mosh.enable = true;

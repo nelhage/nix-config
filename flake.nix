@@ -34,7 +34,9 @@
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = attrs;
+          extraSpecialArgs = {
+            nixpkgs = nixpkgs;
+          };
 
           modules = [
             ./modules/home.nix
@@ -44,7 +46,9 @@
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = attrs;
+        specialArgs = {
+          inherit home-manager;
+        };
         modules = [
           disko.nixosModules.disko
           ./modules/nelhage.com.nix
