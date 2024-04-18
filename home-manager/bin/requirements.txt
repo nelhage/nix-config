@@ -1,5 +1,0 @@
-PyYAML
-Cython
-lxml
-boto3
-requests

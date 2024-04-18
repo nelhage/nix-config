@@ -1,5 +1,0 @@
-#!/bin/sh
-
-if health=$(curl -s https://api.stripe.com/healthcheck); then
-    echo "${health%at your service*}"
-fi

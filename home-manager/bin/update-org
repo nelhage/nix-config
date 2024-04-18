@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-cd ~/nelhage/org/
-if [ -f ".git/MERGE_HEAD" ]; then
-   exit 0
-fi
-git add -A
-git commit -m 'Update.'
-git push
