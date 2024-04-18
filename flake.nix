@@ -34,6 +34,7 @@
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
+          extraSpecialArgs = attrs;
 
           modules = [
             ./modules/home.nix
