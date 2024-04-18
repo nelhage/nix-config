@@ -1,0 +1,2 @@
+#!/bin/sh
+kinit -R && test -d /afs/athena.mit.edu && aklog
