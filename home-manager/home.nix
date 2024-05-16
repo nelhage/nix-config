@@ -23,6 +23,7 @@
       # Language stuff
       pyenv
       go
+      nodejs_20
 
       # Nix stuff
       nixfmt-rfc-style
