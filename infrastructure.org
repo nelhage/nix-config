@@ -27,12 +27,12 @@
    - [ ] can I make tmux open a login shell?
      - apparently it does by default. Do I need all my .environment
        shenanigans?
+ - [ ] switch to atuin
  - [ ] figure out optimized Python
  - [ ] colorize tmux or shells by machine
- - [ ] switch to zsh
  - [ ] ... dare I shave the 256color yak
  - [ ] migrate off `docker build` or docker entirely for infra?
- - [X] ml.livegrep.com
+ - [ ] ml.livegrep.com
    - [ ] auto-rebuild ml.livegrep.com
 * notes
 ** rebuild command
