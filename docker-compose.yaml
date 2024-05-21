@@ -1,4 +1,3 @@
-version: "3.3"
 services:
   admin:
     image: ubuntu:latest
