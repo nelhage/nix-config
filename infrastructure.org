@@ -24,7 +24,6 @@
    zsh
 * backlog
  - [ ] bashrc/environment bankruptcy
- - [ ] switch personal launchd services to nix
    - [ ] can I make tmux open a login shell?
      - apparently it does by default. Do I need all my .environment
        shenanigans?
