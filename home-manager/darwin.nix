@@ -72,6 +72,9 @@
             "${pkgs.hugo}/bin/hugo"
             "serve"
             "-D"
+            "-F"
+            "cleanDestinationDir"
+            "--disableFastRender"
             "--destination"
             "_preview"
           ];
