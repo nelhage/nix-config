@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -eux
+PATH=$PATH:/livegrep/bin/
+livegrep-github-reindex \
+  -name="ML Libraries" \
+  -repo=pytorch/pytorch \
+  -repo=google/jax \
+  -repo=huggingface/transformers \
+  -repo=openxla/xla \
+  -repo=openxla/stablehlo \
+  -repo=openai/triton \
+  -dir=/data/ \
+  -out=/data/ml.idx \
+  -http
+
+livegrep-reload "livegrep-backend-ml:9898" || :

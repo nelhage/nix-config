@@ -66,31 +66,21 @@ services:
       - 80
     restart: unless-stopped
 
-  livegrep-indexer:
+  livegrep-indexer-linux:
     build:
-      context: ./images/livegrep-indexer
+      context: ./images/livegrep-indexer-linux
       args:
         livegrep_image_version: ${livegrep_image_version}
-    command:
-     - /usr/local/bin/rebuild-index
     volumes:
      - livegrep-data:/data
     restart: "no"
 
+
   livegrep-indexer-ml:
-    image: "ghcr.io/livegrep/livegrep/indexer:${livegrep_image_version}"
-    command:
-     - /livegrep/bin/livegrep-github-reindex
-     - -name=ML Libraries
-     - -repo=pytorch/pytorch
-     - -repo=google/jax
-     - -repo=huggingface/transformers
-     - -repo=openxla/xla
-     - -repo=openxla/stablehlo
-     - -repo=openai/triton
-     - -dir=/data/
-     - -out=/data/ml.idx
-     - -http
+    build:
+      context: ./images/livegrep-indexer-ml
+      args:
+        livegrep_image_version: ${livegrep_image_version}
     volumes:
      - livegrep-data:/data
     restart: "no"

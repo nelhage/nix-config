@@ -9,3 +9,4 @@ RUN go build -o fetch-linux-version main.go
 FROM ghcr.io/livegrep/livegrep/indexer:${livegrep_image_version}
 COPY --from=0 /src/fetch-linux-version /usr/local/bin/
 ADD rebuild-index /usr/local/bin/
+CMD /usr/local/bin/rebuild-index
