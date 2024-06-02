@@ -34,6 +34,8 @@
  - [ ] migrate off `docker build` or docker entirely for infra?
  - [ ] ml.livegrep.com
    - [ ] auto-rebuild ml.livegrep.com
+ - [ ] migrate infra-config into this repository
+   - cronjobs to rebuild backends
 * notes
 ** rebuild command
 nix run github:nix-community/nixos-anywhere -- \
