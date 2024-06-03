@@ -17,6 +17,7 @@
       starship
       tmux
       ripgrep
+      tree
 
       hugo
 
