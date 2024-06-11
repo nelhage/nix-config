@@ -26,6 +26,9 @@
       go
       nodejs_20
 
+      # Development tools
+      git
+
       # Nix stuff
       nixfmt-rfc-style
       nixos-rebuild
