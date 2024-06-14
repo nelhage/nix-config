@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./bin.nix ];
+  imports = [
+    ./bin.nix
+    ./tailscale-completion.nix
+  ];
 
   home = {
     username = "nelhage";
