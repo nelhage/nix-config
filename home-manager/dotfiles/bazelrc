@@ -1,0 +1,3 @@
+build --repository_cache ~/.cache/bazel/repository_cache
+build --disk_cache ~/.cache/bazel/action_cache
+test --test_output=errors

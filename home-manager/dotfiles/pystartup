@@ -1,0 +1,34 @@
+# -*- mode: python -*-
+# Add auto-completion and a stored history file of commands to the Python
+# interactive interpreter. Requires Python 2.0+, readline. Autocomplete is
+# bound to the Esc key by default (you can change it - see readline docs).
+
+# Edited from the example at http://docs.python.org/tutorial/interactive.html#key-bindings
+from __future__ import print_function
+
+def startup():
+    import atexit
+    import os, sys
+    import math
+    import readline
+    import rlcompleter
+
+    historyPath = os.path.expanduser("~/.pyhistory")
+
+    def save_history(historyPath=historyPath):
+        import readline
+        readline.write_history_file(historyPath)
+
+    if os.path.exists(historyPath):
+        readline.read_history_file(historyPath)
+
+    readline.parse_and_bind('tab: complete')
+
+    atexit.register(save_history)
+try:
+    import math
+    import os, sys
+    import pprint as pp
+    startup()
+finally:
+    del startup

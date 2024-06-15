@@ -1,0 +1,92 @@
+; -*- mode: conf-windows -*-
+[sendemail]
+	smtpserver=/usr/bin/msmtp
+	confirm = always
+	chainreplyto = false
+[alias]
+	st=status
+	ci=commit
+	co=checkout
+	br=branch
+	rb=rebase
+	signoff = commit --amend --signoff -C HEAD
+	sign = commit -S --amend -C HEAD
+	extend = commit --amend -C HEAD
+        amend = commit --amend
+	reword = commit --amend --only
+	git = !git
+	rc = rebase --continue
+        rbi = rebase --interactive
+	c-p = cherry-pick
+	pl = log --graph --oneline
+	k = !gitk
+	pff = pull --ff-only
+	mff = merge --ff-only
+	fixup = commit --fixup
+        rbb = !git rebase -i $(git merge-base origin/HEAD HEAD)
+	diffb = !git diff $(git merge-base origin/HEAD HEAD)
+[core]
+	excludesfile=~/.gitexclude
+	preloadindex = true
+[user]
+	name=Nelson Elhage
+	email = nelhage@nelhage.com
+[color]
+	ui = auto
+[merge]
+	conflictstyle = diff3
+	defaultToUpstream = true
+[push]
+	default = current
+[pull]
+	rebase = true
+[web]
+	browser = chrome
+[browser "chrome"]
+	cmd = /usr/bin/google-chrome
+[pager]
+	grep = false
+	branch = false
+[rebase]
+	autoSquash = true
+[rerere]
+	enabled = true
+[branch]
+	autosetupmerge = false
+[remote]
+	pushdefault = origin
+# [transfer]
+# 	fsckobjects = true
+# [fetch]
+# 	fsckobjects = true
+# [receive]
+# 	fsckobjects = true
+[hub]
+	protocol = ssh
+[http]
+	cookiefile = /Users/nelhage/.gitcookies
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge --skip -- %f
+	process = git-lfs filter-process --skip
+	required = true
+
+[protocol "ext"]
+    allow = always
+
+[stash]
+	showPatch = true
+[fetch]
+	prune = true
+
+[protocol]
+	version = 2
+[github]
+	user = nelhage
+
+[include]
+        path = ~/.gitconfig.local
+[init]
+	defaultBranch = main
+[advice]
+	addEmptyPathspec = false

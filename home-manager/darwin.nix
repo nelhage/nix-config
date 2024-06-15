@@ -22,6 +22,8 @@
 
   home.packages = [ pkgs.reattach-to-user-namespace ];
 
+  dotfiles.symlink = true;
+
   home.file = {
     tailscale = {
       target = "bin/tailscale";

@@ -1,0 +1,4 @@
+# source .bashrc if it's there
+if [ -r $HOME/.bashrc ]; then
+    . $HOME/.bashrc
+fi

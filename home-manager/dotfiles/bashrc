@@ -1,0 +1,95 @@
+# -*- mode: sh -*-
+source "$HOME/.environment"
+
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+if [ "$BASH_VERSION" ]; then
+    HISTSIZE=100000
+    shopt -s histappend checkhash no_empty_cmd_completion lithist
+    PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+fi
+
+if [ -n "$PS1" ] && [ "$BASH_VERSION" ]; then
+    prefix=/
+    if type brew >&/dev/null; then
+        prefix=$(brew --prefix)
+    fi
+    if [ -r "$prefix/etc/bash_completion" ]; then
+      # Source completion code.
+        . "$prefix/etc/bash_completion"
+        complete -F _known_hosts mosh
+        complete -F _ssh sc-ssh
+        if type aws_completer >/dev/null 2>&1; then
+            complete -C aws_completer aws
+        fi
+        if type kubectl >/dev/null 2>&1; then
+            source <(kubectl completion bash)
+        fi
+
+        complete -o default -o bashdefault -C 'pw -do-completion' pw
+    fi
+fi
+
+maybe_source() {
+    local path=$1;
+    if test -f "$path"; then
+        source "$path"
+    fi
+}
+
+# It annoys me when typos hang on apt sucking. And I know how to use
+# apt-cache/apt-file if that's what I meant.
+unset command_not_found_handle
+
+if test -n "$ZSH_VERSION"; then
+    shell_flavor=zsh
+elif test -n "$BASH_VERSION"; then
+    shell_flavor=bash
+else
+    shell_flavor=
+fi
+
+if [ "$shell_flavor" ]; then
+    if type starship >&/dev/null; then
+        eval "$(starship init "$shell_flavor")"
+    fi
+
+    if type direnv >&/dev/null; then
+        eval "$(direnv hook "$shell_flavor")"
+    fi
+
+    if type hugo >&/dev/null; then
+        source <(hugo completion "$shell_flavor")
+        if [ "$shell_flavor" = "zsh" ]; then
+            compdef _hugo hugo
+        fi
+    fi
+fi
+
+#aliases
+alias ls='ls -FBh --color=if-tty'
+alias l='ls'
+alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias pd='pushd'
+alias who='who -T'
+alias rot13='tr a-zA-Z n-za-mN-ZA-M'
+alias ec=emacsclient
+alias uc='perl -CS -nle "print uc"'
+alias lc='perl -CS -nle "print lc"'
+resume () { exec tmux attach -dt "$@"; }
+alias tree='tree -FC --charset=utf-8 -I "*~"'
+
+case $TERM in
+    dumb)
+        export PAGER=cat
+        unset COLUMNS
+        ;;
+esac
+
+maybe_source '/home/nelhage/sw/google-cloud-sdk/path.bash.inc'
+maybe_source '/home/nelhage/sw/google-cloud-sdk/completion.bash.inc'

@@ -1,0 +1,22 @@
+Host *
+
+ServerAliveInterval 30
+NoHostAuthenticationForLocalhost yes
+ControlPath ~/.ssh/sockets/%C
+ControlPersist yes
+
+Include ~/.ssh/config.local
+
+Host github.com
+Hostname ssh.github.com
+Port 443
+
+# Specific host settings
+Host sercon.onlinehome-server.com
+User u68427114
+
+Host el-hage.com
+user el0hage0
+
+Host hw4 hw4.nelhage.com
+ControlMaster auto

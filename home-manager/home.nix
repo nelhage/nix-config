@@ -3,6 +3,7 @@
 {
   imports = [
     ./bin.nix
+    ./dotfiles.nix
     ./tailscale-completion.nix
   ];
 

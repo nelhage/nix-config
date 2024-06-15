@@ -1,0 +1,133 @@
+# -*- mode: sh; -*-
+
+if test -d "$HOME/.nix-profile/share/zsh/site-functions"; then
+    fpath=(${fpath} "$HOME/.nix-profile/share/zsh/site-functions")
+fi
+
+# autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+
+do_init_path() {
+    #setup environment variables
+    export PATH
+
+    case "$PATH" in
+        */nix/store*)
+            return
+            ;;
+    esac
+
+    if test -x /usr/libexec/path_helper; then
+        eval "$(PATH= /usr/libexec/path_helper -s)"
+    fi
+
+    PATH=$HOME/bin:$HOME/sw/bin:$HOME/.cabal/bin:/usr/local/bin/:$PATH
+    PATH=$PATH:/usr/sbin
+    PATH=$PATH:/usr/local/go/bin
+    PATH=$PATH:$HOME/.local/bin/
+
+    if test -x /opt/homebrew/bin/brew; then
+        eval "$(env -u HOMEBREW_SHELLENV_PREFIX /opt/homebrew/bin/brew shellenv)"
+    fi
+
+    if $(type pyenv >&/dev/null); then
+        eval "$(pyenv init -)"
+    fi
+
+    if test -d "$HOME/.rbenv"; then
+        PATH=$PATH:$HOME/.rbenv/bin/
+        test -d ~/.rbenv && eval "$(rbenv init -)"
+    fi
+
+    if [ -d "/Applications/" ]; then
+        PATH=/Applications/Emacs.app/Contents/MacOS/bin/:$PATH
+        PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    fi
+
+    if test -f /etc/profile.d/nix.sh; then
+        . /etc/profile.d/nix.sh
+    fi
+}
+
+do_init_path
+
+export CVS_RSH=ssh
+export EDITOR="$HOME/bin/edit"
+export EMAIL="nelhage@nelhage.com"
+export DEBEMAIL=$EMAIL
+export PYTHONSTARTUP=$HOME/.pystartup
+export PAGER=less
+
+if locale -a | grep -q en_GB.UTF-8; then
+    export LC_TIME=en_GB.UTF-8 # 24-hour time
+fi
+
+case "$(uname)" in
+    darwin)
+        export JAVA_HOME="$(/usr/libexec/java_home)"
+        ;;
+    linux)
+        test -d /usr/lib/jvm/default-java && export JAVA_HOME=/usr/lib/jvm/default-java
+        ;;
+esac
+export GOPATH=$HOME/go
+unset GOBIN
+unset GOROOT
+
+PATH=$PATH:$GOPATH/bin
+
+export LESS='-SRin'
+
+unset AWS_CONFIG_FILE
+
+if [ -d "$HOME/sw/perl5" ]; then
+    eval "$(perl -I $HOME/sw/perl5/lib/perl5 -Mlocal::lib=$HOME/sw/perl5/)"
+fi
+
+# It annoys me when typos hang on apt sucking. And I know how to use
+# apt-cache/apt-file if that's what I meant.
+unset command_not_found_handle
+
+if type starship >&/dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+if type direnv >&/dev/null; then
+    eval "$(direnv hook zsh)"
+fi
+
+#aliases
+alias ls='ls -FBh --color=if-tty'
+alias l='ls'
+alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias pd='pushd'
+alias who='who -T'
+alias rot13='tr a-zA-Z n-za-mN-ZA-M'
+alias ec=emacsclient
+alias uc='perl -CS -nle "print uc"'
+alias lc='perl -CS -nle "print lc"'
+alias tree='tree -FC --charset=utf-8 -I "*~"'
+
+autoload -U select-word-style
+select-word-style bash
+bindkey \^U backward-kill-line
+
+if type kubectl >/dev/null 2>&1; then
+    source <(kubectl completion zsh)
+fi
+
+if test -f ~/code/anthropic/config/local/zsh/zshrc; then
+    conda activate py311
+    export USE_ANTUP=0
+
+    source ~/code/anthropic/config/local/zsh/zshrc </dev/null
+    eval "$(python -m tabber.zsh_completion)"
+fi
+
+setopt interactivecomments rmstarsilent
+
+autoload edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line

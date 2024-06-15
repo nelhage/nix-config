@@ -1,0 +1,19 @@
+[email]
+from = Nelson Elhage <nelhage@mit.edu>
+
+[extensions]
+fetch =
+hgext.patchbomb =
+hgext.purge =
+color =
+graphlog =
+pager =
+
+[pager]
+pager = less
+ignore = diff
+
+[ui]
+
+[email]
+method = /usr/bin/msmtp
