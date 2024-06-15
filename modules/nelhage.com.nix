@@ -66,6 +66,7 @@
     {
       imports = [ ../home-manager/home.nix ];
     };
+  home-manager.backupFileExtension = "hm-backup";
 
   security.sudo.extraConfig = "nelhage   ALL=(ALL:ALL) NOPASSWD: ALL";
 
