@@ -4,6 +4,7 @@
   imports = [
     ./bin.nix
     ./dotfiles.nix
+    ./sync.nix
     ./tailscale-completion.nix
   ];
 

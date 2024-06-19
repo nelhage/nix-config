@@ -32,4 +32,10 @@
   services.syncthing.guiAddress = "100.78.93.125:8384";
 
   system.stateVersion = "23.11";
+
+  home-manager.users.nelhage =
+    { ... }:
+    {
+      sync.autocommit.enable = true;
+    };
 }
