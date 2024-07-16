@@ -40,6 +40,7 @@
 
           modules = [
             ./home-manager/home.nix
+            ./home-manager/laptop.nix
             ./home-manager/darwin.nix
           ];
         };
