@@ -35,6 +35,8 @@
       git
 
       # Nix stuff
+      nix
+      nix-zsh-completions
       nixfmt-rfc-style
       nixos-rebuild
       nil
