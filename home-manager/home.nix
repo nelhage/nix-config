@@ -23,6 +23,7 @@
       tmux
       ripgrep
       tree
+      atuin
 
       hugo
 
