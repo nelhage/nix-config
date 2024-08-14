@@ -46,7 +46,7 @@ dialect = "uk"
 
 ## With workspace filtering enabled, Atuin will filter for commands executed
 ## in any directory within a git repository tree (default: false)
-# workspaces = false
+workspaces = true
 
 ## which filter mode to use when atuin is invoked from a shell up-key binding
 ## the accepted values are identical to those of "filter_mode"
@@ -60,7 +60,7 @@ filter_mode_shell_up_key_binding = "directory"
 
 ## which style to use
 ## possible values: auto, full, compact
-# style = "compact"
+style = "compact"
 
 ## the maximum number of lines the interface should take up
 ## set it to 0 to always go full screen
@@ -133,9 +133,11 @@ filter_mode_shell_up_key_binding = "directory"
 ## 5. Stripe live/test keys
 # secrets_filter = true
 
-## Defaults to true. If enabled, upon hitting enter Atuin will immediately execute the command. Press tab to return to the shell and edit.
+## Defaults to true. If enabled, upon hitting enter Atuin will
+## immediately execute the command. Press tab to return to the shell
+## and edit.
 # This applies for new installs. Old installs will keep the old behaviour unless configured otherwise.
-enter_accept = true
+enter_accept = false
 
 ## Defaults to "emacs".  This specifies the keymap on the startup of `atuin
 ## search`.  If this is set to "auto", the startup keymap mode in the Atuin

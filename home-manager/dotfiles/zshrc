@@ -98,6 +98,7 @@ fi
 
 if type atuin >&/dev/null; then
     eval "$(atuin init zsh)"
+    bindkey '^p' atuin-up-search
 fi
 
 #aliases
