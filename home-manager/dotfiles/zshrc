@@ -45,6 +45,7 @@ do_init_path() {
     fi
 
     if test -f /etc/profile.d/nix.sh; then
+        unset __ETC_PROFILE_NIX_SOURCED
         . /etc/profile.d/nix.sh
     fi
 }
