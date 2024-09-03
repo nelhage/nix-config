@@ -10,6 +10,7 @@ livegrep-github-reindex \
   -repo=openxla/stablehlo \
   -repo=openai/triton \
   -dir=/data/ \
+  -dir=/data/ml \
   -out=/data/ml.idx \
   -http
 
