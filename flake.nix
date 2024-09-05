@@ -10,12 +10,17 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
+      self,
       nixpkgs,
       home-manager,
+      nix-darwin,
       disko,
       ...
     }@attrs:
@@ -25,8 +30,18 @@
         "x86_64-linux"
         "aarch64-darwin"
       ];
+      darwinRevisionConfig = {
+        system.configurationRevision = self.rev or self.dirtyRev or null;
+      };
     in
     {
+      darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
+        modules = [
+          ./darwin/common.nix
+          darwinRevisionConfig
+        ];
+      };
+
       homeConfigurations."nelhage@mythique" =
         let
           system = "aarch64-darwin";
