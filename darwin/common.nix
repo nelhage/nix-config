@@ -27,4 +27,6 @@
     isHidden = false;
     description = "Nelson Elhage";
   };
+
+  nix.linux-builder.enable = true;
 }
