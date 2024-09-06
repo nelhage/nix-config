@@ -48,7 +48,7 @@ in
         OnUnitActiveSec = "${opts.autocommit.interval}";
       };
       Install = {
-        WantedBy = ["timers.target"];
+        WantedBy = [ "timers.target" ];
       };
     };
     systemd.user.services."${unit}" = {

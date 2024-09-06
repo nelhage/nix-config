@@ -8,22 +8,11 @@ fi
 autoload -Uz compinit && compinit
 
 do_init_path() {
-    #setup environment variables
-    export PATH
-
-    case "$PATH" in
-        */nix/store*)
-            return
-            ;;
-    esac
-
-    if test -x /usr/libexec/path_helper; then
-        eval "$(PATH= /usr/libexec/path_helper -s)"
-    fi
-
-    PATH=$HOME/bin:$HOME/sw/bin:$HOME/.cabal/bin:/usr/local/bin/:$PATH
+    PATH=$HOME/bin:$HOME/sw/bin:/usr/local/bin/:$PATH
     PATH=$PATH:/usr/sbin
-    PATH=$PATH:/usr/local/go/bin
+    if test -d /usr/local/go/bin; then
+        PATH=$PATH:/usr/local/go/bin
+    fi
     PATH=$PATH:$HOME/.local/bin/
 
     if test -x /opt/homebrew/bin/brew; then
@@ -40,13 +29,8 @@ do_init_path() {
     fi
 
     if [ -d "/Applications/" ]; then
-        PATH=/Applications/Emacs.app/Contents/MacOS/bin/:$PATH
+        PATH=/Applications/Emacs.app/Contents/MacOS/bin:$PATH
         PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-    fi
-
-    if test -f /etc/profile.d/nix.sh; then
-        unset __ETC_PROFILE_NIX_SOURCED
-        . /etc/profile.d/nix.sh
     fi
 }
 

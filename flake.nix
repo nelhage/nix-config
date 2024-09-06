@@ -33,32 +33,33 @@
       darwinRevisionConfig = {
         system.configurationRevision = self.rev or self.dirtyRev or null;
       };
+      nixRegistryConfig = {
+        nix.registry = {
+          nixpkgs = {
+            from = {
+              type = "indirect";
+              id = "nixpkgs";
+            };
+            to = {
+              type = "path";
+              path = nixpkgs.outPath;
+            };
+          };
+        };
+      };
     in
     {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
+        specialArgs = {
+          inherit home-manager;
+        };
         modules = [
           ./darwin/common.nix
+          ./darwin/home-manager.nix
           darwinRevisionConfig
+          nixRegistryConfig
         ];
       };
-
-      homeConfigurations."nelhage@mythique" =
-        let
-          system = "aarch64-darwin";
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          extraSpecialArgs = {
-            nixpkgs = nixpkgs;
-          };
-
-          modules = [
-            ./home-manager/home.nix
-            ./home-manager/laptop.nix
-            ./home-manager/darwin.nix
-          ];
-        };
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";

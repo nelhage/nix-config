@@ -1,25 +1,9 @@
 {
   pkgs,
-  nixpkgs,
   config,
   ...
 }:
 {
-  home.homeDirectory = "/Users/nelhage";
-
-  nix.registry = {
-    nixpkgs = {
-      from = {
-        type = "indirect";
-        id = "nixpkgs";
-      };
-      to = {
-        type = "path";
-        path = nixpkgs.outPath;
-      };
-    };
-  };
-
   home.packages = [ pkgs.reattach-to-user-namespace ];
 
   dotfiles.symlink = true;
