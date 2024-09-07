@@ -75,6 +75,25 @@
         ];
       };
 
+      nixosConfigurations.darwinVM = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = [
+          ./modules/vm-base.nix
+          {
+            virtualisation.vmVariant.virtualisation = {
+              graphics = false;
+              host.pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+              sharedDirectories = {
+                nix-config = {
+                  source = "/Users/nelhage/code/nix-config";
+                  target = "/mnt/nix-config";
+                };
+              };
+            };
+          }
+        ];
+      };
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       templates.default = {
