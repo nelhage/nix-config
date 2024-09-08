@@ -32,6 +32,8 @@
     serviceConfig = {
       RunAtLoad = lib.mkForce false;
       KeepAlive = lib.mkForce false;
+      StandardOutPath = "/var/log/linux-builder.log";
+      StandardErrorPath = "/var/log/linux-builder.log";
     };
   };
 
