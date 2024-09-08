@@ -33,38 +33,24 @@
       darwinRevisionConfig = {
         system.configurationRevision = self.rev or self.dirtyRev or null;
       };
-      nixRegistryConfig = {
-        nix.registry = {
-          nixpkgs = {
-            from = {
-              type = "indirect";
-              id = "nixpkgs";
-            };
-            to = {
-              type = "path";
-              path = nixpkgs.outPath;
-            };
-          };
-        };
-      };
     in
     {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
         specialArgs = {
-          inherit home-manager;
+          inherit home-manager nixpkgs;
         };
         modules = [
           ./darwin/common.nix
           ./darwin/home-manager.nix
+          ./modules/pin-nixpkgs.nix
           darwinRevisionConfig
-          nixRegistryConfig
         ];
       };
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit home-manager;
+          inherit home-manager nixpkgs;
         };
         modules = [
           disko.nixosModules.disko
@@ -75,22 +61,13 @@
         ];
       };
 
-      nixosConfigurations.darwinVM = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.avdVM = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
+        specialArgs = { inherit nixpkgs; };
         modules = [
           ./modules/vm-base.nix
-          {
-            virtualisation.vmVariant.virtualisation = {
-              graphics = false;
-              host.pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-              sharedDirectories = {
-                nix-config = {
-                  source = "/Users/nelhage/code/nix-config";
-                  target = "/mnt/nix-config";
-                };
-              };
-            };
-          }
+          ./modules/darwin-vm.nix
+          ./modules/avd-vm.nix
         ];
       };
 
