@@ -31,6 +31,7 @@
   launchd.daemons.linux-builder = {
     serviceConfig = {
       RunAtLoad = lib.mkForce false;
+      KeepAlive = lib.mkForce false;
     };
   };
 
@@ -46,6 +47,10 @@
         };
         cores = 6;
       };
+      services.logind.extraConfig = builtins.concatStringsSep "\n" [
+        "IdleAction=poweroff"
+        "IdleActionSec=30m"
+      ];
     };
   };
 }
