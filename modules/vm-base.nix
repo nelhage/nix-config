@@ -1,4 +1,8 @@
 {pkgs, ...}: {
+  imports = [
+    ../modules/common.nix
+  ];
+
   system.stateVersion = "22.05";
 
   # Configure networking
