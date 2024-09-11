@@ -63,7 +63,9 @@
 
       nixosConfigurations.avdVM = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
-        specialArgs = { inherit nixpkgs; };
+        specialArgs = {
+          inherit nixpkgs;
+        };
         modules = [
           ./modules/vm-base.nix
           ./modules/darwin-vm.nix

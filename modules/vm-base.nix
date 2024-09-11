@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     ../modules/common.nix
   ];
@@ -12,6 +13,6 @@
   services.getty.autologinUser = "nelhage";
   users.users.nelhage.isNormalUser = true;
 
-  users.users.nelhage.extraGroups = ["wheel"];
+  users.users.nelhage.extraGroups = [ "wheel" ];
   security.sudo.wheelNeedsPassword = false;
 }

@@ -1,4 +1,5 @@
-{nixpkgs, ...}: {
+{ nixpkgs, ... }:
+{
   nix.registry = {
     nixpkgs = {
       from = {

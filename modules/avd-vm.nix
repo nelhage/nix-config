@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   virtualisation.vmVariant.virtualisation = {
     sharedDirectories = {
       nix-config = {
