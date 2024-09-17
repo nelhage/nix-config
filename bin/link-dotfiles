@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -e
+
+root=$(cd "$(dirname "$0")/.."; pwd)
+dotfiles="$root/home-manager/dotfiles"
+
+cd "$root"
+mkdir -p replaced
+touch replaced/.ignore
+
+dry=
+
+do_dir() {
+    local dir="$1"
+
+    for i in "$dir"*; do
+        if [ -e "$i/.ignore" ]; then
+            continue
+        fi
+
+        local dest="${dotfiles}/$i"
+
+        if [ -L "$HOME/.$i" ] && [ "$(readlink "$HOME/.$i")" = "$dest" ]; then
+            echo "SKIP $i"
+        elif [ -d "$i" ]; then
+            echo "RECURSE $i"
+            mkdir -p "$HOME/.$i/"
+            do_dir "$i/"
+        else
+            if [ -e "$HOME/.$i" ]; then
+                echo "BACKUP $i"
+                mkdir -p "${root}/replaced/$(dirname "$i")"
+                ${dry} mv "$HOME/.$i" "${root}/replaced/$i"
+            fi
+            echo "SYMLINK $i"
+            ${dry} ln -s "$dest" "$HOME/.$i"
+        fi
+    done
+}
+
+cd "$dotfiles"
+do_dir ""
