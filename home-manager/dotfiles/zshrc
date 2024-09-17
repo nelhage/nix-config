@@ -4,6 +4,10 @@ if test -d "$HOME/.nix-profile/share/zsh/site-functions"; then
     fpath=(${fpath} "$HOME/.nix-profile/share/zsh/site-functions")
 fi
 
+if test -f ~/code/anthropic/config/local/zsh/zshrc; then
+    source ~/code/anthropic/config/local/zsh/zshrc </dev/null
+fi
+
 # autoload bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
 
@@ -106,14 +110,6 @@ bindkey \^U backward-kill-line
 
 if type kubectl >/dev/null 2>&1; then
     source <(kubectl completion zsh)
-fi
-
-if test -f ~/code/anthropic/config/local/zsh/zshrc; then
-    conda activate py311
-    export USE_ANTUP=0
-
-    source ~/code/anthropic/config/local/zsh/zshrc </dev/null
-    eval "$(python -m tabber.zsh_completion)"
 fi
 
 setopt interactivecomments rmstarsilent
