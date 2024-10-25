@@ -49,6 +49,8 @@
 	branch = false
 [rebase]
 	autoSquash = true
+	missingCommitsCheck = ignore
+	updateRefs = false
 [rerere]
 	enabled = true
 [branch]
