@@ -1,0 +1,160 @@
+services:
+  admin:
+    image: ubuntu:latest
+    command:
+      - "true"
+    restart: "no"
+
+  livegrep-backend-linux:
+    image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
+    command:
+      - "/livegrep/bin/codesearch"
+      - "-grpc=0.0.0.0:9898"
+      - "-load_index=/data/index.idx"
+      - "-debug=profile,index"
+      - "-reload_rpc"
+      - "-threads=4"
+    expose:
+      - "9898"
+    volumes:
+      - livegrep-data:/data
+    restart: unless-stopped
+
+  livegrep-backend-ml:
+    image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
+    command:
+      - "/livegrep/bin/codesearch"
+      - "-grpc=0.0.0.0:9898"
+      - "-load_index=/data/ml.idx"
+      - "-debug=profile,index"
+      - "-reload_rpc"
+      - "-threads=4"
+    expose:
+      - "9898"
+    volumes:
+      - livegrep-data:/data
+    restart: unless-stopped
+
+  livegrep-frontend:
+    image: "ghcr.io/livegrep/livegrep/base:${livegrep_image_version}"
+    command:
+      - "/livegrep/bin/livegrep"
+      - "-docroot"
+      - "/livegrep/web/"
+      - "/conf/livegrep.json"
+    expose:
+      - 8910
+    volumes:
+      - type: bind
+        source: ./livegrep/conf
+        target: /conf
+        read_only: true
+    restart: unless-stopped
+
+  livegrep-nginx:
+    image: "ghcr.io/livegrep/livegrep/nginx:${livegrep_image_version}"
+    entrypoint:
+      - nginx
+      - -c
+      - /conf/nginx.conf
+    volumes:
+      - type: bind
+        source: ./livegrep/conf
+        target: /conf
+        read_only: true
+    expose:
+      - 80
+    restart: unless-stopped
+
+  livegrep-indexer-linux:
+    build:
+      context: ./images/livegrep-indexer-linux
+      args:
+        livegrep_image_version: ${livegrep_image_version}
+    volumes:
+     - livegrep-data:/data
+    restart: "no"
+
+
+  livegrep-indexer-ml:
+    build:
+      context: ./images/livegrep-indexer-ml
+      args:
+        livegrep_image_version: ${livegrep_image_version}
+    volumes:
+     - livegrep-data:/data
+    restart: "no"
+
+  lego-certs:
+    build:
+      context: ./images/lego-certs
+    volumes:
+      - "lego-certs:/opt/lego"
+    command:
+      - nelhage.com
+      - www.nelhage.com
+      - livegrep.com
+      - www.livegrep.com
+      - beta.livegrep.com
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./images/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "lego-certs:/lego"
+    restart: unless-stopped
+
+  friendlybot:
+    build:
+      context: ./images/taktician
+    command:
+    - playtak
+    - -user=FriendlyBot
+    - -debug=1
+    - -size=6
+    - -limit=30s
+    - -time=15m
+    - -increment=30s
+    - -friendly=true
+    - -log-file=/taktician/friendly.log
+    volumes:
+      - taktician:/taktician
+    restart: unless-stopped
+
+  taktician:
+    build:
+      context: ./images/taktician
+    command:
+    - playtak
+    - -user=TakticianBot
+    - -debug=1
+    - -size=6
+    - -depth=0
+    - -limit=30s
+    - -time=20m
+    - -increment=30s
+    - -multi-cut=true
+    volumes:
+      - taktician:/taktician
+    restart: unless-stopped
+
+  nelhage.com:
+    build:
+      context: ./images/nelhage.com
+    expose:
+     - "80"
+    volumes:
+      - type: bind
+        source: /data/www/nelhage.com
+        target: /data/www/nelhage.com
+        read_only: true
+    restart: unless-stopped
+
+volumes:
+  livegrep-data:
+  taktician:
+  lego-certs:
