@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eu
+remote="$1"
+
+cd $(dirname "$0")/..
+
+rsync --delete \
+      --exclude='*.qcow2' \
+      --exclude=.git/ \
+      --exclude=secrets/ \
+      --exclude=result \
+      -Pax . "${remote}:/etc/nixos/"
