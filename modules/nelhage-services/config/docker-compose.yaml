@@ -1,3 +1,5 @@
+name: nelhage-services
+
 services:
   admin:
     image: ubuntu:latest

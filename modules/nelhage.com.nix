@@ -7,7 +7,9 @@
   ...
 }:
 {
-  imports = [ home-manager.nixosModules.default ];
+  imports = [
+    home-manager.nixosModules.default
+  ];
 
   services.openssh.enable = true;
   programs.mosh.enable = true;
@@ -30,6 +32,8 @@
     pkgs.zip
     pkgs.unzip
     pkgs.ncdu
+
+    (pkgs.callPackage ./nelhage-services {})
   ];
 
   users.users =
