@@ -1,44 +1,34 @@
-{ stdenv,
-  writeTextFile,
-  bash,
-  docker-compose,
+{
+  config,
+  lib,
+  pkgs,
   ...
 }:
 let
-  binScript = ''
-#!${bash}/bin/bash
-exec ${docker-compose}/bin/docker-compose \
-  -f ${config.outPath}/docker-compose.yaml \
-  -f $HOME/nelhage.com/secrets/docker-compose.credentials.yaml \
-  "$@"
-'';
-  binFile = writeTextFile {
-    name = "nelhage.com-docker-compose";
-    text = binScript;
-    executable = true;
-    destination = "/bin/nelhage.com-docker-compose";
-  };
-  config = stdenv.mkDerivation {
-    name = "nelhage.com-service-config-0.1";
-    src = ./config;
-    buildInputs = [ ];
-    dontPatchShebangs = true;
-    installPhase = ''
-      cp -a ./ $out/
-    '';
-  };
-  bin = stdenv.mkDerivation {
-    name = "nelhage.com-service-bin-0.1";
-    src = ./config;
-    buildInputs = [ ];
-    buildPhase = ''
-      mkdir -p bin/
-      ln -nsf ${binFile}/bin/* bin/
-    '';
-
-    installPhase = ''
-      cp -a ./ $out/
-    '';
-  };
+  config-package = (pkgs.callPackage ./config-package.nix {});
+  indexes = ["ml" "linux"];
 in
-bin
+{
+  environment.systemPackages = [
+    config-package
+  ];
+
+  systemd.services = builtins.listToAttrs (
+    builtins.map (name: lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+      description = "Regenerate the livegrep ${name} index.";
+      script = "${config-package.binary} up -d livegrep-indexer-${name}";
+      serviceConfig = {
+        User="nelhage";
+      };
+    }) indexes);
+
+  systemd.timers = builtins.listToAttrs (
+    builtins.map (name: lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+      wantedBy = [ "timers.target" ];
+      after = [ "time-set.target" "time-sync.target" ];
+      timerConfig = {
+        OnCalendar = "*-*-03 12:00:00";
+        Service = "livegrep-reindex-${name}";
+      };
+    }) indexes);
+}

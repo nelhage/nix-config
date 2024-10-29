@@ -1,5 +1,4 @@
 {
-  modulesPath,
   config,
   lib,
   pkgs,
@@ -9,6 +8,7 @@
 {
   imports = [
     home-manager.nixosModules.default
+    ./nelhage-services
   ];
 
   services.openssh.enable = true;
@@ -32,8 +32,6 @@
     pkgs.zip
     pkgs.unzip
     pkgs.ncdu
-
-    (pkgs.callPackage ./nelhage-services {})
   ];
 
   users.users =
