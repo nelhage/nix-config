@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -eux
+PATH=$PATH:/livegrep/bin/
+linux_version=$(fetch-linux-version)
+
+livegrep-github-reindex \
+    "-name=Linux $linux_version" \
+    -repo=torvalds/linux \
+    -revparse=false \
+    "-revision=v$linux_version" \
+    -dir=/data/ \
+    -out=/data/index.idx \
+    -http
+
+livegrep-reload "livegrep-backend-linux:9898" || :

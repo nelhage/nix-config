@@ -1,5 +1,4 @@
 {
-  modulesPath,
   config,
   lib,
   pkgs,
@@ -7,7 +6,10 @@
   ...
 }:
 {
-  imports = [ home-manager.nixosModules.default ];
+  imports = [
+    home-manager.nixosModules.default
+    ./nelhage-services
+  ];
 
   services.openssh.enable = true;
   programs.mosh.enable = true;
