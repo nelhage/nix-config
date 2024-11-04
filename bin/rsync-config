@@ -7,6 +7,6 @@ cd $(dirname "$0")/..
 rsync --delete \
       --exclude='*.qcow2' \
       --exclude=.git/ \
-      --exclude=secrets/ \
+      --exclude=secrets.old/ \
       --exclude=result \
       -Pax . "${remote}:/etc/nixos/"

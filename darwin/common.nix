@@ -4,7 +4,9 @@
     ../modules/common.nix
   ];
 
-  environment.systemPackages = [ ];
+  environment.systemPackages = [
+    pkgs.agenix
+  ];
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;

@@ -1,4 +1,4 @@
 result
-secrets
+secrets.old/
 *.qcow2
 replaced/

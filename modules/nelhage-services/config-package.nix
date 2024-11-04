@@ -2,6 +2,7 @@
   writeTextFile,
   bash,
   docker-compose,
+  credentials ? "$HOME/nelhage.com/secrets/docker-compose.credentials.yaml",
   ...
 }:
 let
@@ -9,7 +10,7 @@ let
 #!${bash}/bin/bash
 exec ${docker-compose}/bin/docker-compose \
   -f ${config.outPath}/docker-compose.yaml \
-  -f $HOME/nelhage.com/secrets/docker-compose.credentials.yaml \
+  -f ${credentials} \
   "$@"
 '';
   binFile = writeTextFile {
