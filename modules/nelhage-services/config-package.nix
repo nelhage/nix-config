@@ -1,4 +1,5 @@
-{ stdenv,
+{
+  stdenv,
   writeTextFile,
   bash,
   docker-compose,
@@ -7,12 +8,12 @@
 }:
 let
   binScript = ''
-#!${bash}/bin/bash
-exec ${docker-compose}/bin/docker-compose \
-  -f ${config.outPath}/docker-compose.yaml \
-  -f ${credentials} \
-  "$@"
-'';
+    #!${bash}/bin/bash
+    exec ${docker-compose}/bin/docker-compose \
+      -f ${config.outPath}/docker-compose.yaml \
+      -f ${credentials} \
+      "$@"
+  '';
   binFile = writeTextFile {
     name = "nelhage.com-docker-compose";
     text = binScript;
@@ -42,4 +43,4 @@ exec ${docker-compose}/bin/docker-compose \
     '';
   };
 in
-bin // {binary = "${bin}/bin/${binFile.name}";}
+bin // { binary = "${bin}/bin/${binFile.name}"; }

@@ -5,10 +5,15 @@
   ...
 }:
 let
-  config-package = (pkgs.callPackage ./config-package.nix {
-    credentials = config.age.secrets."nelhage-services.yaml".path;
-  });
-  indexes = ["ml" "linux"];
+  config-package = (
+    pkgs.callPackage ./config-package.nix {
+      credentials = config.age.secrets."nelhage-services.yaml".path;
+    }
+  );
+  indexes = [
+    "ml"
+    "linux"
+  ];
 in
 {
   environment.systemPackages = [
@@ -26,21 +31,32 @@ in
   };
 
   systemd.services = builtins.listToAttrs (
-    builtins.map (name: lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
-      description = "Regenerate the livegrep ${name} index.";
-      script = "${config-package.binary} up -d livegrep-indexer-${name}";
-      serviceConfig = {
-        User="nelhage";
-      };
-    }) indexes);
+    builtins.map (
+      name:
+      lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+        description = "Regenerate the livegrep ${name} index.";
+        script = "${config-package.binary} up -d livegrep-indexer-${name}";
+        serviceConfig = {
+          User = "nelhage";
+        };
+      }
+    ) indexes
+  );
 
   systemd.timers = builtins.listToAttrs (
-    builtins.map (name: lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
-      wantedBy = [ "timers.target" ];
-      after = [ "time-set.target" "time-sync.target" ];
-      timerConfig = {
-        OnCalendar = "*-*-03 12:00:00";
-        Service = "livegrep-reindex-${name}";
-      };
-    }) indexes);
+    builtins.map (
+      name:
+      lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+        wantedBy = [ "timers.target" ];
+        after = [
+          "time-set.target"
+          "time-sync.target"
+        ];
+        timerConfig = {
+          OnCalendar = "*-*-03 12:00:00";
+          Service = "livegrep-reindex-${name}";
+        };
+      }
+    ) indexes
+  );
 }
