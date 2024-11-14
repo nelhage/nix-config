@@ -2,3 +2,4 @@ result
 secrets.old/
 *.qcow2
 replaced/
+.direnv/

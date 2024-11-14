@@ -40,8 +40,9 @@
       overlayConfig = {
         nixpkgs.overlays = overlays;
       };
+      lib = nixpkgs.lib;
     in
-    {
+    lib.attrsets.recursiveUpdate {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit home-manager nixpkgs;
@@ -91,5 +92,5 @@
         description = "Development template";
         welcomeText = "Add your packages to flake.nix";
       };
-    };
+    } (import ./src/obsidian-scan attrs);
 }
