@@ -17,6 +17,7 @@ in
         packages = [
           pkgs.bashInteractive
           pkgs.cargo
+          pkgs.rustfmt
         ];
       };
     }
