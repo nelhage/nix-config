@@ -1,8 +1,14 @@
-use std::path::PathBuf;
-
 use clap::Parser;
+use std::collections::HashSet;
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::vec::Vec;
 
+use lazy_static::lazy_static;
+use regex::Regex;
 use walkdir::{DirEntry, WalkDir};
+
+use anyhow::Result;
 
 #[derive(Parser)]
 #[command(name = "obsidian-scan")]
@@ -24,6 +30,29 @@ fn should_walk(ent: &DirEntry) -> bool {
     }
 }
 
+lazy_static! {
+    static ref TAG_REGEX: Regex = Regex::new(r"#[[:alnum:]-_/+]+").unwrap();
+}
+
+struct Note {
+    file: PathBuf,
+    tags: HashSet<String>,
+    aliases: Vec<String>,
+}
+
+fn parse_note(_cli: &Cli, e: DirEntry, rel: &Path) -> Result<Note> {
+    let contents = fs::read_to_string(e.path())?;
+    let mut tags = HashSet::new();
+    for m in TAG_REGEX.find_iter(&contents) {
+        tags.insert(m.as_str().to_owned());
+    }
+    Ok(Note {
+        file: rel.to_owned(),
+        tags,
+        aliases: Vec::new(),
+    })
+}
+
 fn main() {
     let cli = Cli::parse();
 
@@ -40,9 +69,12 @@ fn main() {
                 Ok(p) => Some((e.clone(), p.to_owned())),
                 Err(_) => None,
             }
-        });
+        })
+        .map(|(e, p)| parse_note(&cli, e, &p));
 
-    for (_ent, rel) in walker {
-        println!("Found: {}", rel.display());
+    for note in walker {
+        if let Ok(note) = note {
+            println!("Found: {}\n  tags: {:?}", note.file.display(), note.tags);
+        }
     }
 }
