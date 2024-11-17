@@ -27,7 +27,7 @@ fn find_frontmatter(note: &str) -> Option<&str> {
     return frontmatter;
 }
 
-pub fn yaml_to_strvec(yaml: &Yaml) -> Option<Vec<String>> {
+fn yaml_to_strvec(yaml: &Yaml) -> Option<Vec<String>> {
     let vec = yaml.as_vec()?;
     Some(
         vec.into_iter()
@@ -37,7 +37,7 @@ pub fn yaml_to_strvec(yaml: &Yaml) -> Option<Vec<String>> {
     )
 }
 
-pub fn extract_frontmatter(text: &str) -> Result<FrontMatter> {
+pub fn extract(text: &str) -> Result<FrontMatter> {
     let yaml_text = find_frontmatter(text).ok_or(anyhow!("No front matter found"))?;
     let yaml = Yaml::load_from_str(yaml_text)?;
     let doc = yaml[0]
@@ -121,8 +121,8 @@ key: value
     }
 
     #[test]
-    fn test_extract_frontmatter() {
-        let front = extract_frontmatter(
+    fn test_extract() {
+        let front = extract(
             r#"---
 tags: [lemons, {}, cars]
 ---
@@ -132,7 +132,7 @@ some nonsense
         .unwrap();
         assert_eq!(front.tags, vec!("lemons".to_owned(), "cars".to_owned()));
 
-        let front = extract_frontmatter(
+        let front = extract(
             r#"---
 tags: [lemons, {}, cars]
 aliases: [otherdoc, newdoc]

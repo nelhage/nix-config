@@ -49,10 +49,17 @@ fn parse_note(_cli: &Cli, e: DirEntry, rel: &Path) -> Result<Note> {
     for m in TAG_REGEX.find_iter(&contents) {
         tags.insert(m.as_str().to_owned());
     }
+    let mut aliases = Vec::new();
+    if let Ok(frontmatter) = frontmatter::extract(&contents) {
+        for tag in frontmatter.tags.iter() {
+            tags.insert(tag.to_owned());
+        }
+        aliases = frontmatter.aliases;
+    }
     Ok(Note {
         file: rel.to_owned(),
         tags,
-        aliases: Vec::new(),
+        aliases,
     })
 }
 
