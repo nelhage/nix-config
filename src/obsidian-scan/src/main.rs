@@ -11,6 +11,9 @@ use walkdir::{DirEntry, WalkDir};
 
 use anyhow::Result;
 
+use serde::Serialize;
+use serde_json;
+
 mod frontmatter;
 
 #[derive(Parser)]
@@ -37,9 +40,12 @@ lazy_static! {
     static ref TAG_REGEX: Regex = Regex::new(r"#[[:alnum:]-_/+]+").unwrap();
 }
 
+#[derive(Serialize)]
 struct Note {
     file: PathBuf,
+    #[serde(skip_serializing_if = "HashSet::is_empty")]
     tags: HashSet<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     aliases: Vec<String>,
 }
 
@@ -63,12 +69,12 @@ fn parse_note(_cli: &Cli, e: DirEntry, rel: &Path) -> Result<Note> {
     })
 }
 
-fn main() {
+fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    println!("Scanning: {}", cli.vault.display());
+    eprintln!("Scanning: {}", cli.vault.display());
 
-    let walker = WalkDir::new(&cli.vault)
+    let notes = WalkDir::new(&cli.vault)
         .into_iter()
         .filter_entry(should_walk)
         .filter_map(|e| e.ok())
@@ -80,11 +86,10 @@ fn main() {
                 Err(_) => None,
             }
         })
-        .map(|(e, p)| parse_note(&cli, e, &p));
+        .filter_map(|(e, p)| parse_note(&cli, e, &p).ok())
+        .collect::<Vec<Note>>();
 
-    for note in walker {
-        if let Ok(note) = note {
-            println!("Found: {}\n  tags: {:?}", note.file.display(), note.tags);
-        }
-    }
+    println!("{}", serde_json::to_string(&notes)?);
+
+    Ok(())
 }
