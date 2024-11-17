@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use clap::Parser;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::vec::Vec;
@@ -72,8 +72,6 @@ fn parse_note(_cli: &Cli, e: DirEntry, rel: &Path) -> Result<Note> {
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    eprintln!("Scanning: {}", cli.vault.display());
-
     let notes = WalkDir::new(&cli.vault)
         .into_iter()
         .filter_entry(should_walk)
@@ -89,7 +87,10 @@ fn main() -> Result<()> {
         .filter_map(|(e, p)| parse_note(&cli, e, &p).ok())
         .collect::<Vec<Note>>();
 
-    println!("{}", serde_json::to_string(&notes)?);
+    let mut obj: HashMap<&'static str, &Vec<Note>> = HashMap::new();
+    obj.insert("notes", &notes);
+
+    println!("{}", serde_json::to_string(&obj)?);
 
     Ok(())
 }
