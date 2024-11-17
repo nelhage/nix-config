@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use clap::Parser;
 use std::collections::HashSet;
 use std::fs;
@@ -9,6 +10,8 @@ use regex::Regex;
 use walkdir::{DirEntry, WalkDir};
 
 use anyhow::Result;
+
+mod frontmatter;
 
 #[derive(Parser)]
 #[command(name = "obsidian-scan")]
