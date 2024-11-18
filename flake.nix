@@ -36,7 +36,11 @@
       darwinRevisionConfig = {
         system.configurationRevision = self.rev or self.dirtyRev or null;
       };
-      overlays = [ agenix.overlays.default ];
+      obsidian-scan = import ./src/obsidian-scan attrs;
+      overlays = [
+        agenix.overlays.default
+        obsidian-scan.overlays.obsidian-scan
+      ];
       overlayConfig = {
         nixpkgs.overlays = overlays;
       };
@@ -92,5 +96,5 @@
         description = "Development template";
         welcomeText = "Add your packages to flake.nix";
       };
-    } (import ./src/obsidian-scan attrs);
+    } obsidian-scan;
 }

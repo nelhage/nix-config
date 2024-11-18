@@ -41,6 +41,9 @@
       nixfmt-rfc-style
       nixos-rebuild
       nil
+
+      # My custom obsidian.el helper
+      obsidian-scan
     ];
   };
 
