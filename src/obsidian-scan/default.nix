@@ -17,8 +17,13 @@ rec {
         packages = [
           pkgs.bashInteractive
           pkgs.cargo
+          pkgs.rustc
+          pkgs.rust-analyzer
           pkgs.rustfmt
+          pkgs.clippy
         ];
+
+        RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
       };
     }
   );
