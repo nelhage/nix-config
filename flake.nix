@@ -37,12 +37,11 @@
         system.configurationRevision = self.rev or self.dirtyRev or null;
       };
       obsidian-scan = import ./src/obsidian-scan attrs;
-      overlays = [
-        agenix.overlays.default
-        obsidian-scan.overlays.obsidian-scan
-      ];
       overlayConfig = {
-        nixpkgs.overlays = overlays;
+        nixpkgs.overlays = [
+          agenix.overlays.default
+          obsidian-scan.overlays.obsidian-scan
+        ];
       };
       lib = nixpkgs.lib;
     in
