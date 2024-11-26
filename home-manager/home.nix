@@ -24,6 +24,7 @@
       ripgrep
       tree
       atuin
+      ispell
 
       hugo
 

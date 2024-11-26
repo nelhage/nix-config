@@ -6,6 +6,7 @@
 
   environment.systemPackages = [
     pkgs.agenix
+    pkgs.coreutils-prefixed
   ];
 
   # Auto upgrade nix package and the daemon service.
