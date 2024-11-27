@@ -25,6 +25,7 @@
       tree
       atuin
       ispell
+      base16-shell
 
       hugo
 

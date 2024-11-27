@@ -37,21 +37,15 @@
         system.configurationRevision = self.rev or self.dirtyRev or null;
       };
       obsidian-scan = import ./src/obsidian-scan attrs;
-      overlayConfig = {
-        nixpkgs.overlays = [
-          agenix.overlays.default
-          obsidian-scan.overlays.obsidian-scan
-        ];
-      };
       lib = nixpkgs.lib;
     in
-    lib.attrsets.recursiveUpdate {
+    lib.attrsets.recursiveUpdate rec {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit home-manager nixpkgs;
         };
         modules = [
-          overlayConfig
+          nixosModules.overlays
           agenix.darwinModules.default
           ./darwin/common.nix
           ./darwin/home-manager.nix
@@ -66,7 +60,7 @@
           inherit home-manager nixpkgs;
         };
         modules = [
-          overlayConfig
+          nixosModules.overlays
           disko.nixosModules.disko
           agenix.nixosModules.default
           ./modules/nelhage.com.nix
@@ -87,6 +81,25 @@
           ./modules/avd-vm.nix
         ];
       };
+
+      nixosModules.overlays = {
+        nixpkgs.overlays = [
+          agenix.overlays.default
+          overlays.default
+          obsidian-scan.overlays.obsidian-scan
+        ];
+      };
+
+      overlays.default = final: prev: {
+        base16-shell = packages.${prev.system}.base16-shell;
+      };
+
+      packages = forAllSystems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in
+          {
+            base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix {};
+          });
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
