@@ -40,7 +40,7 @@
             "_preview"
           ];
 
-          WorkingDirectory = "${config.home.homeDirectory}/code/writing";
+          WorkingDirectory = "${config.home.homeDirectory}/code/notebook";
           KeepAlive = true;
           RunAtLoad = true;
 
