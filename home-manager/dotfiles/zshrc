@@ -40,6 +40,8 @@ do_init_path() {
 
 do_init_path
 
+base16-framer
+
 export CVS_RSH=ssh
 export EDITOR="$HOME/bin/edit"
 export EMAIL="nelhage@nelhage.com"
