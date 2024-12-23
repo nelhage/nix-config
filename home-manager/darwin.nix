@@ -21,7 +21,7 @@
 
   launchd.agents =
     let
-      logdir = "${config.home.homeDirectory}/Library/Logs/";
+      logdir = "${config.home.homeDirectory}/Library/Logs";
     in
     {
       "hugo-notes" = {
