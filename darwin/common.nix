@@ -27,7 +27,7 @@
   users.users.nelhage = {
     uid = 501;
     gid = 20;
-    home = "/Users/nelhage/";
+    home = "/Users/nelhage";
     isHidden = false;
     description = "Nelson Elhage";
   };
