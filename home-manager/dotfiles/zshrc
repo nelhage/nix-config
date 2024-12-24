@@ -1,8 +1,10 @@
 # -*- mode: sh; -*-
 
-if test -d "$HOME/.nix-profile/share/zsh/site-functions"; then
-    fpath=(${fpath} "$HOME/.nix-profile/share/zsh/site-functions")
-fi
+for profile in "$HOME/.nix-profile" "/etc/profiles/per-user/$USER"; do
+    if test -d "${profile}/share/zsh/site-functions"; then
+        fpath=(${fpath} "${profile}/share/zsh/site-functions")
+    fi
+done
 
 if test -f ~/code/anthropic/config/local/zsh/zshrc; then
     source ~/code/anthropic/config/local/zsh/zshrc </dev/null
