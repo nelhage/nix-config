@@ -63,12 +63,15 @@
     gid = 1000;
   };
 
-  home-manager.users.nelhage =
-    { ... }:
-    {
-      imports = [ ../home-manager/home.nix ];
-    };
-  home-manager.backupFileExtension = "hm-backup";
+  home-manager = {
+    useGlobalPkgs = true;
+    users.nelhage =
+      { ... }:
+      {
+        imports = [ ../home-manager/home.nix ];
+      };
+    backupFileExtension = "hm-backup";
+  };
 
   security.sudo.extraConfig = "nelhage   ALL=(ALL:ALL) NOPASSWD: ALL";
 
