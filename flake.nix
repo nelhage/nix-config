@@ -95,12 +95,15 @@
         base16-shell = packages.${prev.system}.base16-shell;
       };
 
-      packages = forAllSystems (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
         in
-          {
-            base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix {};
-          });
+        {
+          base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix { };
+        }
+      );
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
