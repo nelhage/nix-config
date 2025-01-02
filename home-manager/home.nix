@@ -13,21 +13,22 @@
 
     stateVersion = "23.11";
     packages = with pkgs; [
-      # N.B. see https://nixos.wiki/wiki/Google_Cloud_SDK
-      google-cloud-sdk
-
       # Shell utilities and their ilk
-      pv
+      atuin
+      base16-shell
       gh
+      ispell
+      mosh
+      pv
+      ripgrep
       starship
       tmux
-      ripgrep
       tree
-      atuin
-      ispell
-      base16-shell
 
+      # Other tooling
       hugo
+      ## N.B. see https://nixos.wiki/wiki/Google_Cloud_SDK
+      google-cloud-sdk
 
       # Language stuff
       pyenv
