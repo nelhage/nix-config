@@ -48,8 +48,7 @@
         modules = [
           nixosModules.overlays
           agenix.darwinModules.default
-          ./darwin/common.nix
-          ./darwin/home-manager.nix
+          ./darwin/mythique.nix
           ./modules/pin-nixpkgs.nix
           darwinRevisionConfig
         ];

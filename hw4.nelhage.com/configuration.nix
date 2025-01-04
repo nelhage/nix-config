@@ -33,9 +33,5 @@
 
   system.stateVersion = "23.11";
 
-  home-manager.users.nelhage =
-    { ... }:
-    {
-      sync.autocommit.enable = true;
-    };
+  home-manager.users.nelhage = { ... }: { };
 }

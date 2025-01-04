@@ -19,9 +19,9 @@ in
       };
 
       interval = lib.mkOption {
-        type = types.str;
-        default = "10m";
-        description = "Frequency of the autocommit job";
+        type = types.int;
+        default = 10 * 60;
+        description = "Interval between autocommit jobs, in seconds";
       };
 
       path = lib.mkOption {
@@ -43,10 +43,14 @@ in
 
     systemd.user.timers."${unit}" = {
       Unit = { };
-      Timer = {
-        OnStartupSec = "${opts.autocommit.interval}";
-        OnUnitActiveSec = "${opts.autocommit.interval}";
-      };
+      Timer =
+        let
+          interval = "${builtins.toString opts.autocommit.interval}s";
+        in
+        {
+          OnStartupSec = interval;
+          OnUnitActiveSec = interval;
+        };
       Install = {
         WantedBy = [ "timers.target" ];
       };
@@ -58,6 +62,18 @@ in
       Service = {
         Environment = "PATH=${config.home.profileDirectory}/bin";
         ExecStart = "${opts.autocommit.path}/scripts/git-commit.sh";
+      };
+    };
+
+    launchd.agents."${unit}" = {
+      enable = true;
+      config = {
+        ProgramArguments = [ "${opts.autocommit.path}/scripts/git-commit.sh" ];
+        EnvironmentVariables = {
+          PATH = "${config.home.profileDirectory}/bin";
+        };
+        WorkingDirectory = "${opts.autocommit.path}";
+        StartInterval = opts.autocommit.interval;
       };
     };
   };
