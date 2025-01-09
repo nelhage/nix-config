@@ -108,6 +108,16 @@
         }
       );
 
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          rules_boost = pkgs.callPackage ./shells/rules_boost.nix { };
+        }
+      );
+
       formatter = forAllSystems (
         system:
         let
