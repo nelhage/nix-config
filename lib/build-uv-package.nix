@@ -32,6 +32,7 @@ let
     UV_NO_PROGRESS = "1";
     UV_LOCKED = "1";
     UV_NO_CACHE = "1";
+    UV_OFFLINE = "1";
   };
   requirements = stdenv.mkDerivation {
     pname = "${name}-requirements";
@@ -77,9 +78,10 @@ let
     version = version;
     src = src;
     buildPhase = ''
-      uv venv --no-project $out --seed
+      uv venv --no-project $out
+      env UV_PYTHON=$out/bin/python3 VIRTUAL_ENV=$out \
       uv --offline pip install \
-       --prefix $out \
+       --no-index \
        --find-links ${pkgs}/ \
        -r ${requirements}/requirements.txt
     '';
