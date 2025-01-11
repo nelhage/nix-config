@@ -105,6 +105,7 @@
         in
         {
           base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix { };
+          garmindb = pkgs.callPackage ./pkgs/garmindb { python = pkgs.python312; };
         }
       );
 
