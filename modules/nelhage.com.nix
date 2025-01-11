@@ -9,6 +9,7 @@
   imports = [
     home-manager.nixosModules.default
     ./nelhage-services
+    ./garmindb.nix
   ];
 
   services.openssh.enable = true;

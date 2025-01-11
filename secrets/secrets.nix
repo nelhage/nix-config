@@ -14,4 +14,5 @@ in
 {
   "nelhage-services.age".publicKeys = nelhage_com ++ me;
   "gcp-service.json.age".publicKeys = nelhage_com ++ me;
+  "GarminConnectConfig.json.age".publicKeys = nelhage_com ++ me;
 }

@@ -1,3 +1,4 @@
+
 {
   modulesPath,
   config,
@@ -34,4 +35,6 @@
   system.stateVersion = "23.11";
 
   home-manager.users.nelhage = { ... }: { };
+
+  garmindb.enable = true;
 }

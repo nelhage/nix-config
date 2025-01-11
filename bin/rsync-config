@@ -9,4 +9,6 @@ rsync --delete \
       --exclude=.git/ \
       --exclude=secrets.old/ \
       --exclude=result \
+      --exclude=.direnv \
+      --exclude='src/*/target' \
       -Pax . "${remote}:/etc/nixos/"
