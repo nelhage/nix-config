@@ -27,7 +27,7 @@
       disko,
       agenix,
       ...
-    }@attrs:
+    }@inputs:
     let
       forAllSystems = nixpkgs.lib.genAttrs [
         "aarch64-linux"
@@ -43,15 +43,17 @@
           host.pkgs = nixpkgs.legacyPackages.aarch64-darwin;
         };
       };
-      obsidian-scan = import ./src/obsidian-scan attrs;
+      obsidian-scan = import ./src/obsidian-scan inputs;
+      specialArgs = {
+        inherit inputs;
+      };
       lib = nixpkgs.lib;
     in
     lib.attrsets.recursiveUpdate rec {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
-        specialArgs = { };
+        inherit specialArgs;
         modules = [
           nixosModules.overlays
-          agenix.darwinModules.default
           home-manager.darwinModules.default
           darwinRevisionConfig
           ./darwin/mythique.nix
@@ -60,11 +62,10 @@
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { };
+        inherit specialArgs;
         modules = [
           nixosModules.overlays
           disko.nixosModules.disko
-          agenix.nixosModules.default
           home-manager.nixosModules.default
 
           ./modules/nelhage.com.nix
@@ -76,7 +77,7 @@
 
       nixosConfigurations.avdVM = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
-        specialArgs = { };
+        inherit specialArgs;
         modules = [
           darwinVMHost
           ./modules/vm-base.nix
