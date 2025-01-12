@@ -37,27 +37,32 @@
       darwinRevisionConfig = {
         system.configurationRevision = self.rev or self.dirtyRev or null;
       };
+      darwinVMHost = {
+        virtualisation.vmVariant.virtualisation = {
+          graphics = false;
+          host.pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+        };
+      };
       obsidian-scan = import ./src/obsidian-scan attrs;
       lib = nixpkgs.lib;
     in
     lib.attrsets.recursiveUpdate rec {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
         specialArgs = {
-          inherit home-manager nixpkgs;
+          inherit home-manager;
         };
         modules = [
           nixosModules.overlays
           agenix.darwinModules.default
-          ./darwin/mythique.nix
-          ./modules/pin-nixpkgs.nix
           darwinRevisionConfig
+          ./darwin/mythique.nix
         ];
       };
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit home-manager nixpkgs;
+          inherit home-manager;
         };
         modules = [
           nixosModules.overlays
@@ -76,8 +81,8 @@
           inherit nixpkgs;
         };
         modules = [
+          darwinVMHost
           ./modules/vm-base.nix
-          ./modules/darwin-vm.nix
           ./modules/avd-vm.nix
         ];
       };
