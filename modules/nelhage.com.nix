@@ -2,12 +2,10 @@
   config,
   lib,
   pkgs,
-  home-manager,
   ...
 }:
 {
   imports = [
-    home-manager.nixosModules.default
     ./nelhage-services
     ./garmindb.nix
   ];

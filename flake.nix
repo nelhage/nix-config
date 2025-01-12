@@ -48,12 +48,11 @@
     in
     lib.attrsets.recursiveUpdate rec {
       darwinConfigurations."mythique" = nix-darwin.lib.darwinSystem {
-        specialArgs = {
-          inherit home-manager;
-        };
+        specialArgs = { };
         modules = [
           nixosModules.overlays
           agenix.darwinModules.default
+          home-manager.darwinModules.default
           darwinRevisionConfig
           ./darwin/mythique.nix
         ];
@@ -61,13 +60,13 @@
 
       nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = {
-          inherit home-manager;
-        };
+        specialArgs = { };
         modules = [
           nixosModules.overlays
           disko.nixosModules.disko
           agenix.nixosModules.default
+          home-manager.nixosModules.default
+
           ./modules/nelhage.com.nix
           ./modules/common.nix
           ./hw4.nelhage.com/configuration.nix
@@ -77,9 +76,7 @@
 
       nixosConfigurations.avdVM = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
-        specialArgs = {
-          inherit nixpkgs;
-        };
+        specialArgs = { };
         modules = [
           darwinVMHost
           ./modules/vm-base.nix
