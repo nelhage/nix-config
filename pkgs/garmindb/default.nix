@@ -1,4 +1,4 @@
-{callPackage, python3, ...}:
+{ callPackage, python3, ... }:
 callPackage ../../lib/build-uv-package.nix {
   name = "garmin";
   version = "0.1.0";

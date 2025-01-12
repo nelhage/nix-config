@@ -2,7 +2,7 @@
   mkShell,
   bazel_7,
   # llvmPackages,
-  gcc14
+  gcc14,
 }:
 mkShell {
   packages = [
