@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ ... }:
 {
   home-manager = {
     users.nelhage =
