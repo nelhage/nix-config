@@ -5,7 +5,6 @@
   ];
 
   environment.systemPackages = [
-    pkgs.agenix
     pkgs.coreutils-prefixed
   ];
 

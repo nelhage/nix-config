@@ -44,6 +44,7 @@
       nixfmt-rfc-style
       nixos-rebuild
       nil
+      agenix
 
       # My custom obsidian.el helper
       obsidian-scan
