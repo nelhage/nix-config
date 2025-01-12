@@ -16,9 +16,6 @@
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.home-manager.follows = "home-manager";
-
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -29,7 +26,6 @@
       nix-darwin,
       disko,
       agenix,
-      treefmt-nix,
       ...
     }@attrs:
     let
@@ -117,15 +113,6 @@
         {
           rules_boost = pkgs.callPackage ./shells/rules_boost.nix { };
         }
-      );
-
-      formatter = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-        in
-        treefmtEval.config.build.wrapper
       );
 
       templates.default = {

@@ -21,6 +21,5 @@
           default = pkgs.mkShell { packages = [ pkgs.bashInteractive ]; };
         }
       );
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
     };
 }
