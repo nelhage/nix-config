@@ -7,7 +7,6 @@
 {
   imports = [
     ./nelhage-services
-    ./garmindb.nix
   ];
 
   services.openssh.enable = true;
@@ -67,7 +66,10 @@
     users.nelhage =
       { ... }:
       {
-        imports = [ ../home-manager/home.nix ];
+        imports = [
+          ../home-manager/home.nix
+          ../home-manager/nelhage.com.nix
+        ];
       };
     backupFileExtension = "hm-backup";
   };

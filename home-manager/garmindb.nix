@@ -36,46 +36,41 @@ in
 
     path = lib.mkOption {
       type = types.str;
-      default = "${config.users.users.nelhage.home}/garmin/";
+      default = "${config.home.homeDirectory}/garmin/";
       defaultText = "~/garmin/";
       description = "Path to store imported Garmin data files.";
     };
   };
 
   config = lib.mkIf opts.enable {
-    systemd.timers."${unit}" = {
-      timerConfig = {
+    systemd.user.timers."${unit}" = {
+      Timer = {
         OnCalendar = opts.schedule;
-        Service = "${unit}";
       };
-      wantedBy = [ "timers.target" ];
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
     };
-    systemd.services."${unit}" = {
-      description = "Import Garmin Connect data";
-      serviceConfig = {
-        User = "nelhage";
-        WorkingDirectory = opts.path;
+    systemd.user.services."${unit}" = {
+      Unit = {
+        Description = "Import Garmin Connect data";
+        After = [ "agenix.service" ];
       };
-      script = "${opts.pkg}/bin/garmindb_cli.py ${opts.args}";
+      Service = {
+        WorkingDirectory = opts.path;
+        ExecStart = "${opts.pkg}/bin/garmindb_cli.py ${opts.args}";
+      };
     };
 
     age.secrets."GarminConnectConfig.json" = {
       file = ../secrets/GarminConnectConfig.json.age;
-      owner = "nelhage";
     };
 
-    home-manager.users.nelhage =
-      let
-        secretPath = config.age.secrets."GarminConnectConfig.json".path;
-      in
-      { config, ... }:
-      {
-        home.file = {
-          "GarminConnectConfig.json" = {
-            target = ".GarminDb/GarminConnectConfig.json";
-            source = config.lib.file.mkOutOfStoreSymlink secretPath;
-          };
-        };
+    home.file = {
+      "GarminConnectConfig.json" = {
+        target = ".GarminDb/GarminConnectConfig.json";
+        source = config.lib.file.mkOutOfStoreSymlink config.age.secrets."GarminConnectConfig.json".path;
       };
+    };
   };
 }
