@@ -18,6 +18,13 @@
       base16-shell
       gh
       ispell
+      (aspellWithDicts (
+        dicts: with dicts; [
+          en
+          en-computers
+          en-science
+        ]
+      ))
       mosh
       pv
       ripgrep
