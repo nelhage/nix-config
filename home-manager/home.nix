@@ -24,6 +24,7 @@
       starship
       tmux
       tree
+      jq
 
       # Other tooling
       hugo
