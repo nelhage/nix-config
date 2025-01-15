@@ -36,12 +36,22 @@ rec {
     system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
+      fs = pkgs.lib.fileset;
     in
     {
       obsidian-scan = pkgs.rustPlatform.buildRustPackage {
         pname = "obsidian-scan";
         version = "0.1.0";
-        src = ./.;
+        src = fs.toSource {
+          root = ./.;
+          fileset = (
+            fs.unions [
+              ./Cargo.lock
+              ./Cargo.toml
+              ./src
+            ]
+          );
+        };
 
         cargoHash = "sha256-MaUsOKp+xpYMA3nLsLpN7LyLX5+qrF+PQ8DlnN6Zrvo=";
 
