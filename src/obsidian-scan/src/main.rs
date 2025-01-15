@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 use std::fs;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use regex::Regex;
 use rayon::prelude::*;
@@ -20,6 +20,7 @@ struct VaultData {
     tags: Vec<String>,
     aliases: HashMap<String, String>,
     files: Vec<PathBuf>,
+    file_tags: HashMap<String, Vec<String>>,  // New field: maps file paths to their tags
 }
 
 #[derive(Debug, Deserialize)]
@@ -67,10 +68,18 @@ fn extract_front_matter(content: &str) -> Option<FrontMatter> {
     serde_yaml::from_str(parts[1]).ok()
 }
 
-fn process_file(path: &Path, vault_path: &Path) -> Result<(Vec<String>, Vec<(String, String)>), Box<dyn Error>> {
+#[derive(Debug)]
+struct FileProcessResult {
+    tags: Vec<String>,
+    aliases: Vec<(String, String)>,
+    file_path: PathBuf,
+}
+
+fn process_file(path: &Path, vault_path: &Path) -> Result<FileProcessResult, Box<dyn Error + Send + Sync>> {
     let content = fs::read_to_string(path)?;
     let mut tags = extract_tags(&content);
     let mut aliases = Vec::new();
+    let rel_path = path.strip_prefix(vault_path)?.to_string_lossy().to_string();
 
     if let Some(front_matter) = extract_front_matter(&content) {
         // Add tags from front matter
@@ -79,8 +88,6 @@ fn process_file(path: &Path, vault_path: &Path) -> Result<(Vec<String>, Vec<(Str
         }
 
         // Process aliases
-        let rel_path = path.strip_prefix(vault_path)?.to_string_lossy().to_string();
-        
         if let Some(alias_list) = front_matter.aliases {
             for alias in alias_list {
                 aliases.push((alias.to_string(), rel_path.clone()));
@@ -92,7 +99,11 @@ fn process_file(path: &Path, vault_path: &Path) -> Result<(Vec<String>, Vec<(Str
         }
     }
 
-    Ok((tags, aliases))
+    Ok(FileProcessResult {
+        tags,
+        aliases,
+        file_path: path.to_path_buf(),
+    })
 }
 
 fn scan_vault(vault_path: &Path) -> Result<VaultData, Box<dyn Error>> {
@@ -118,24 +129,36 @@ fn scan_vault(vault_path: &Path) -> Result<VaultData, Box<dyn Error>> {
         .collect();
 
     // Combine results
-    let mut all_tags = Vec::new();
+    let mut all_tags = HashSet::new();
     let mut all_aliases = HashMap::new();
+    let mut file_tags = HashMap::new();
 
-    for (tags, aliases) in results {
-        all_tags.extend(tags);
-        for (alias, path) in aliases {
+    for result in results {
+        // Add to all_tags
+        all_tags.extend(result.tags.iter().cloned());
+        
+        // Add to file_tags
+        let rel_path = result.file_path.strip_prefix(vault_path)
+            .unwrap_or(&result.file_path)
+            .to_string_lossy()
+            .to_string();
+        file_tags.insert(rel_path, result.tags);
+        
+        // Add aliases
+        for (alias, path) in result.aliases {
             all_aliases.insert(alias, path);
         }
     }
 
-    // Remove duplicates from tags
-    all_tags.sort();
-    all_tags.dedup();
+    // Convert HashSet to sorted Vec for consistent output
+    let mut tags_vec: Vec<_> = all_tags.into_iter().collect();
+    tags_vec.sort();
 
     Ok(VaultData {
-        tags: all_tags,
+        tags: tags_vec,
         aliases: all_aliases,
-        files: files,
+        files,
+        file_tags,
     })
 }
 

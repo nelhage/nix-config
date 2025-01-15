@@ -10,6 +10,9 @@ If just the binary name is given, it must be present in your PATH."
 (defvar obsidian--scanner-process-output nil
   "Temporary storage for scanner process output.")
 
+(defvar obsidian--file-tags (make-hash-table :test 'equal)
+  "Hash table mapping file paths to their tags.")
+
 (defun obsidian--call-scanner ()
   "Call the Rust-based obsidian-scan binary and return its output as a parsed JSON object.
 Falls back to the original implementation if the binary is not available."
@@ -24,7 +27,7 @@ Falls back to the original implementation if the binary is not available."
                 (json-read))
             (error "obsidian-scan failed with exit code %d" exit-code))))
     (error
-     (message "Failed to run obsidian-scan: %s. Falling back to original implementation." 
+     (message "Failed to run obsidian-scan: %s. Falling back to original implementation."
               (error-message-string err))
      nil)))
 
@@ -34,17 +37,23 @@ Falls back to the original implementation if the binary is not available."
     ;; Update tags list
     (setq obsidian--tags-list
           (gethash "tags" data))
-    
+
     ;; Clear and repopulate aliases map
     (obsidian--clear-aliases-map)
     (maphash (lambda (alias path)
                (obsidian--add-alias alias path))
              (gethash "aliases" data))
-    
+
     ;; Update files cache
     (setq obsidian-files-cache
           (append (gethash "files" data) nil))
-    (setq obsidian-cache-timestamp (float-time))))
+    (setq obsidian-cache-timestamp (float-time))
+
+    ;; Update file tags mapping
+    (setq obsidian--file-tags (make-hash-table :test 'equal))
+    (maphash (lambda (file tags)
+               (puthash file tags obsidian--file-tags))
+             (gethash "file_tags" data))))
 
 (defun obsidian--update-with-scanner ()
   "Update obsidian data using the Rust scanner if available."
@@ -72,3 +81,23 @@ Falls back to the original implementation if the scanner is not available."
 (define-advice obsidian--update-all-from-front-matter (:before-while () check-scanner)
   "Skip front matter update if we're using the scanner."
   (not (obsidian--update-with-scanner)))
+
+(define-advice obsidian-tag-find (:override () use-scanner-data)
+  "Find all notes with a tag using the scanner's file_tags data."
+  (interactive)
+  (obsidian-update)
+  (let* ((tag (concat "#" (completing-read "Select tag: "
+                                         (->> obsidian--tags-list
+                                              (-map (lambda (tag) (substring tag 1)))
+                                              -distinct
+                                              (-sort 'string-lessp)))))
+         (matching-files nil))
+    ;; Collect files that have this tag
+    (maphash (lambda (file tags)
+               (when (seq-contains-p tags tag)
+                 (push file matching-files)))
+             obsidian--file-tags)
+    (if matching-files
+        (let ((choice (completing-read "Select file: " matching-files)))
+          (obsidian-find-file choice))
+      (message "No files found with tag %s" tag))))
