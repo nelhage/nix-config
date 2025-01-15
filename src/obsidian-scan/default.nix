@@ -39,7 +39,7 @@ rec {
         version = "0.0.1";
         src = ./.;
 
-        cargoHash = "sha256-dy6jX5FaH8zoLbQMr3bT2P9OaGSUGw3gosQobpjoOdg";
+        cargoHash = "sha256-hJcpt3AuVvs0qkeZ7PiZ750zhmBokbWEe5XTAh3iEcU";
       };
     }
   );
