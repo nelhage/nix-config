@@ -18,7 +18,13 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          default = pkgs.mkShell { packages = [ pkgs.bashInteractive ]; };
+          default = pkgs.mkShell {
+            packages = [ pkgs.bashInteractive ];
+            shellHook = ''
+                # Git on macos misbehaves when this is set.
+                unset DEVELOPER_DIR
+            '';
+          };
         }
       );
     };
