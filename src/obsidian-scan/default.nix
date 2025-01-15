@@ -15,7 +15,6 @@ rec {
     {
       obsidian-scan = pkgs.mkShell {
         packages = [
-          pkgs.bashInteractive
           pkgs.cargo
           pkgs.rustc
           pkgs.rust-analyzer

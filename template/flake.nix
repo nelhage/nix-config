@@ -19,7 +19,8 @@
         in
         {
           default = pkgs.mkShell {
-            packages = [ pkgs.bashInteractive ];
+            packages = [
+            ];
             shellHook = ''
                 # Git on macos misbehaves when this is set.
                 unset DEVELOPER_DIR
