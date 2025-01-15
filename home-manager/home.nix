@@ -5,6 +5,7 @@
     ./bin.nix
     ./dotfiles.nix
     ./sync.nix
+    ./obsidian-scan.nix
     ./tailscale-completion.nix
   ];
 
@@ -53,9 +54,6 @@
       nixos-rebuild
       nil
       agenix
-
-      # My custom obsidian.el helper
-      obsidian-scan
     ];
   };
 

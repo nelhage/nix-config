@@ -38,12 +38,25 @@ rec {
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      obsidian-scan = pkgs.rustPlatform.buildRustPackage rec {
+      obsidian-scan = pkgs.rustPlatform.buildRustPackage {
         pname = "obsidian-scan";
-        version = "0.0.1";
+        version = "0.1.0";
         src = ./.;
 
-        cargoHash = "sha256-hJcpt3AuVvs0qkeZ7PiZ750zhmBokbWEe5XTAh3iEcU";
+        cargoHash = "sha256-MaUsOKp+xpYMA3nLsLpN7LyLX5+qrF+PQ8DlnN6Zrvo=";
+
+        passthru = {
+          elisp = pkgs.stdenv.mkDerivation {
+            pname = "obsidian-scan";
+            version = "0.1.0";
+            src = ./emacs;
+            installPhase = ''
+              install -d $out
+              install *.el $out/
+            '';
+          };
+
+        };
       };
     }
   );

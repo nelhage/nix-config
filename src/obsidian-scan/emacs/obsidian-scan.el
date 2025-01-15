@@ -101,3 +101,5 @@ Falls back to the original implementation if the scanner is not available."
         (let ((choice (completing-read "Select file: " matching-files)))
           (obsidian-find-file choice))
       (message "No files found with tag %s" tag))))
+
+(provide 'obsidian-scan)
