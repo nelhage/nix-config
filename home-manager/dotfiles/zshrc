@@ -42,7 +42,7 @@ do_init_path() {
 
 do_init_path
 
-base16-framer
+base16-isotope
 
 export CVS_RSH=ssh
 export EDITOR="$HOME/bin/edit"
