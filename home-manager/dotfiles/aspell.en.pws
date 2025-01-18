@@ -1,4 +1,5 @@
-personal_ws-1.1 en 7 
+personal_ws-1.1 en 95 
+APIs
 AWS
 Bergson's
 CI
@@ -8,6 +9,7 @@ EC
 EFS
 IDE
 IPC
+JSON
 Kate's
 LSP
 Naur
@@ -16,8 +18,11 @@ Quine
 SSL
 San
 Stripe's
+TK
 TKTK
+TODO
 UI
+Workflowy
 affordances
 al
 alright
@@ -35,9 +40,12 @@ devboxes
 devprod
 distrusting
 doula
+el
+elisp
 endians
 equilibria
 ergonomic
+filesystem
 frontend
 gonna
 launchd
@@ -45,6 +53,7 @@ learnings
 linters
 markdown
 maxing
+md
 microservices
 mo
 monorepo
@@ -55,13 +64,16 @@ onesie
 overprovisioned
 pareto
 pdf
+performant
 piggybacked
 plateaued
 pre
+prepending
 reprovisioning
 rsync
 runtimes
 satisficing
+serde
 sorbet
 spitup
 spoliation
@@ -72,10 +84,13 @@ structs
 throughs
 timeframe
 tmux
+toml
 toybox
 typecheck
 typechecker
 undogmatic
 unphased
+unusably
 vim
 watchman's
+workflowy
