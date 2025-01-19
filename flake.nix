@@ -90,12 +90,16 @@
           nixpkgs.overlays = [
             agenix.overlays.default
             self.overlays.default
+            self.overlays.pin-hugo
           ];
         };
 
         overlays.default = final: prev: {
           base16-shell = self.packages.${prev.system}.base16-shell;
           obsidian-scan = self.packages.${prev.system}.obsidian-scan;
+        };
+        overlays.pin-hugo = final: prev: {
+          hugo = self.packages.${prev.system}.hugo-pinned;
         };
 
         packages = forAllSystems (
