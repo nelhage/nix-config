@@ -106,6 +106,7 @@
           {
             base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix { };
             garmindb = pkgs.callPackage ./pkgs/garmindb { python = pkgs.python312; };
+            hugo-pinned = pkgs.callPackage ./pkgs/hugo-pinned.nix { };
           }
         );
 
