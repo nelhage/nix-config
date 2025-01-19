@@ -5,6 +5,7 @@
     ./bin.nix
     ./dotfiles.nix
     ./sync.nix
+    ./hugo-servers.nix
     ./obsidian-scan.nix
     ./tailscale-completion.nix
   ];
