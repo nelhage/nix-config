@@ -9,7 +9,7 @@ This repository contains two components to improve the situation:
 - A Rust program, called `obsidian-scan`, which performs the same scanning operation in Rust, outputting key information as a single JSON object.
 - `obsidian-scan.el`, which patches `obsidian.el` (using elisp [advice][advice]) to use `obsidian-scan`, instead of the existing code.
 
-The end result is that `obsidian-update` takes around 125ms on my vault, with no caching required, making it viable to call unconditionally on most interactive commands that access the vault.
+The end result is that `obsidian-update` takes under 100ms on my vault, with no caching required, making it viable to call unconditionally on most interactive commands that access the vault.
 
 # Using this repository
 
