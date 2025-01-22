@@ -1,6 +1,7 @@
-personal_ws-1.1 en 95 
+personal_ws-1.1 en 107 
 APIs
 AWS
+Anthropic
 Bergson's
 CI
 ControlMaster
@@ -8,11 +9,16 @@ EBS
 EC
 EFS
 IDE
+IDEs
 IPC
 JSON
 Kate's
+LLM
+LLMs
 LSP
+MCP
 Naur
+OAuth
 Pepcid
 Quine
 SSL
@@ -30,6 +36,7 @@ auth
 autocomplete
 autoscaling
 being's
+bugfix
 codebase
 codebases
 deserializing
@@ -69,10 +76,12 @@ piggybacked
 plateaued
 pre
 prepending
+reimplement
 reprovisioning
 rsync
 runtimes
 satisficing
+se
 serde
 sorbet
 spitup
@@ -81,6 +90,7 @@ ssh
 stdin
 stdout
 structs
+testability
 throughs
 timeframe
 tmux
@@ -91,6 +101,8 @@ typechecker
 undogmatic
 unphased
 unusably
+velcroed
 vim
+wakeup
 watchman's
 workflowy
