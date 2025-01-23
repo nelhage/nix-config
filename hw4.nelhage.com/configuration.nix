@@ -41,5 +41,7 @@
       age.secrets."gcloud.json" = {
         file = ../secrets/hw4-gcloud.json.age;
       };
+      gcloud.enable = true;
+      gcloud.project = "livegrep";
     };
 }

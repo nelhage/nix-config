@@ -8,6 +8,7 @@
     ./hugo-servers.nix
     ./obsidian-scan.nix
     ./tailscale-completion.nix
+    ./gcloud.nix
   ];
 
   home = {
