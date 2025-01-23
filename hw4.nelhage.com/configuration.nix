@@ -37,5 +37,9 @@
     { ... }:
     {
       garmindb.enable = true;
+
+      age.secrets."gcloud.json" = {
+        file = ../secrets/hw4-gcloud.json.age;
+      };
     };
 }

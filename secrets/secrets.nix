@@ -12,6 +12,7 @@ let
   nelhage_com = [ keys.hw4 ];
 in
 {
+  "hw4-gcloud.json.age".publicKeys = nelhage_com ++ me;
   "nelhage-services.age".publicKeys = nelhage_com ++ me;
   "gcp-service.json.age".publicKeys = nelhage_com ++ me;
   "GarminConnectConfig.json.age".publicKeys = nelhage_com ++ me;
