@@ -113,7 +113,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -174,11 +174,11 @@ wheels = [
 
 [[package]]
 name = "fitfile"
-version = "1.1.8"
+version = "1.1.9"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c5/5c/32b4795fe503d337e0d41eb2b225136bef9682a2a302ef5f7cce19cce862/fitfile-1.1.8.tar.gz", hash = "sha256:4012b79ea94f2c624a089c783dcd1b19d158fd3597dbd7ab940a839afe9f1504", size = 54880 }
+sdist = { url = "https://files.pythonhosted.org/packages/6c/b3/fa97e45af2248bbae267a5e7c02287221f252397a787c4d597f821a6e98e/fitfile-1.1.9.tar.gz", hash = "sha256:cffab8a0a425e5a1733f001180f97c47f01708538183003ae32aebac914980d1", size = 55054 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d3/be/98d7072cc20084f29afba14979f1fb77119919c38f9a4bb9f7130872a5ae/fitfile-1.1.8-py3-none-any.whl", hash = "sha256:102267f4d9fc818c13bf175bf5d1822a8ed575c370384a5c6cfb9a70fb88c289", size = 65015 },
+    { url = "https://files.pythonhosted.org/packages/68/c2/67cd419c39d4639b8acf914cc3fda9e875d28f31b356a3783ec1740e00af/fitfile-1.1.9-py3-none-any.whl", hash = "sha256:5025396f723ee79f2a3573e0415585f5823b99662bb3f6e3e65600e8c1c3e3d5", size = 65105 },
 ]
 
 [[package]]
@@ -217,13 +217,13 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "datasette", specifier = ">=0.65.1" },
-    { name = "garmindb", specifier = ">=3.6.2" },
+    { name = "garmindb", url = "https://storage.googleapis.com/artifacts.nelhage.com/python/garmindb-3.6.3+nelhage1-py3-none-any.whl" },
 ]
 
 [[package]]
 name = "garmindb"
-version = "3.6.2"
-source = { registry = "https://pypi.org/simple" }
+version = "3.6.3+nelhage1"
+source = { url = "https://storage.googleapis.com/artifacts.nelhage.com/python/garmindb-3.6.3+nelhage1-py3-none-any.whl" }
 dependencies = [
     { name = "cached-property" },
     { name = "fitfile" },
@@ -235,23 +235,35 @@ dependencies = [
     { name = "tornado" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/14/4d/122a2c9c1816e8ca97a68ff31023de22219f697d067f13889e08f588ed52/garmindb-3.6.2.tar.gz", hash = "sha256:75a5c2c00c7468058ad5cf4daa977f58dc15ba9d59a7b967325fd642c133e77d", size = 78167 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/18/1cdf3f4cac037e816833d888bcf49c4aab04322414e7ce051ceb7c468e83/garmindb-3.6.2-py3-none-any.whl", hash = "sha256:ead04329e29192d8bc66f2f54f174715bd1cb3b3a5d34aecd1e05f6af3dd1478", size = 85156 },
+    { url = "https://storage.googleapis.com/artifacts.nelhage.com/python/garmindb-3.6.3+nelhage1-py3-none-any.whl", hash = "sha256:b2bdccb535f6d3d0704bf19de668bec4b4d977658e2f788da2486344ff481eef" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cached-property", specifier = "==1.5.2" },
+    { name = "fitfile", specifier = ">=1.1.9" },
+    { name = "garth", specifier = "==0.5.2" },
+    { name = "idbutils", specifier = ">=1.1.0" },
+    { name = "python-dateutil", specifier = "==2.9.0.post0" },
+    { name = "sqlalchemy", specifier = "==2.0.36" },
+    { name = "tcxfile", specifier = ">=1.0.4" },
+    { name = "tornado", specifier = ">=6.4.2" },
+    { name = "tqdm", specifier = "==4.66.5" },
 ]
 
 [[package]]
 name = "garth"
-version = "0.4.47"
+version = "0.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "requests" },
     { name = "requests-oauthlib" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d6/a7/c2f91ef6632e59e7aed4a55bc1aa44c11371732f69bb4dc4caa0978723e2/garth-0.4.47.tar.gz", hash = "sha256:d4386614e20df8aae921ec899ec6af7823891b6a3b71ba6d2a093a8c5176404a", size = 187502 }
+sdist = { url = "https://files.pythonhosted.org/packages/1f/a9/872cba34553b66afb86c2091718e05b4acd34cd4e09bea6c13af9b465e6f/garth-0.5.2.tar.gz", hash = "sha256:594acafe27989daa3ffbc8460caf063802359c6b1f40c98ffd3b21f69adc6e09", size = 1733749 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3e/73/1a4037d4737204765afc74c6491bfe2419b20c570a8e12f66b2e13c5c9df/garth-0.4.47-py3-none-any.whl", hash = "sha256:037c61e94134cdc653b1f1841766ed1a3e113689478c330185031adb7a8c45a5", size = 23892 },
+    { url = "https://files.pythonhosted.org/packages/9a/38/dbdecb82297cfbd38920d0e009eaf47cb30eade41b529fc3cd831a20ec5b/garth-0.5.2-py3-none-any.whl", hash = "sha256:bd0297ef82afdf06e10ed0c271c9270bbf6bec832d62d108a325a8ac4723d74a", size = 24492 },
 ]
 
 [[package]]
@@ -689,7 +701,7 @@ name = "tqdm"
 version = "4.66.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/58/83/6ba9844a41128c62e810fddddd72473201f3eacde02046066142a2d96cc5/tqdm-4.66.5.tar.gz", hash = "sha256:e1020aef2e5096702d8a025ac7d16b1577279c9d63f8375b63083e9a5f0fcbad", size = 169504 }
 wheels = [

@@ -5,8 +5,8 @@ callPackage ../../lib/build-uv-package.nix {
   src = ./.;
 
   packagesHash = {
-    x86_64-linux = "sha256-w1/4UmHic3sVlcX/WPwWcPVuP6b6cfDGXpBEd5okYTo=";
-    aarch64-darwin = "sha256-Lrz5/5ZAhUjsdXLSJBNz12MRUKIOt90EaPWuXNnHw5Y=";
+    x86_64-linux = "sha256-tLyTkb0jvi1GM+XWVDObid0r+eTOT3uDPHTbQtJhHlc=";
+    aarch64-darwin = "sha256-u8Xq0IR9O56rkJivtUK/GeAnyyMcPVPWnN0OOj64Cws=";
   };
 
   inherit python3;

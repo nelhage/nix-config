@@ -8,3 +8,6 @@ dependencies = [
     "datasette>=0.65.1",
     "garmindb>=3.6.2",
 ]
+
+[tool.uv.sources]
+garmindb = { url = "https://storage.googleapis.com/artifacts.nelhage.com/python/garmindb-3.6.3+nelhage1-py3-none-any.whl" }
