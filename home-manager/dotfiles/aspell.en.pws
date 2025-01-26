@@ -1,4 +1,4 @@
-personal_ws-1.1 en 107 
+personal_ws-1.1 en 108 
 APIs
 AWS
 Anthropic
@@ -101,6 +101,7 @@ typechecker
 undogmatic
 unphased
 unusably
+velcro
 velcroed
 vim
 wakeup
