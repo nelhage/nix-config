@@ -16,6 +16,7 @@
   # Pinning packages
   packagesHash ? { },
   packagesHashAlgo ? "sha256",
+  useUvPip ? false,
 }:
 let
   fs = lib.fileset;
@@ -73,30 +74,41 @@ let
     outputHashAlgo = packagesHashAlgo;
     outputHashMode = "recursive";
   };
-  venv = stdenv.mkDerivation {
-    pname = "${name}";
-    version = version;
-    src = src;
-    buildPhase = ''
-      uv venv --no-project $out
-      env UV_PYTHON=$out/bin/python3 VIRTUAL_ENV=$out \
-      uv --offline pip install \
-       --no-index \
-       --find-links ${pkgs}/ \
-       -r ${requirements}/requirements.txt
-    '';
+  venv =
+    let
+      venv = if useUvPip then "uv venv --no-project" else "python3 -m venv $out";
+      pipInstall =
+        if useUvPip then
+          "env UV_PYTHON=$out/bin/python3 uv --offline pip install"
+        else
+          "$out/bin/pip install";
+    in
+    stdenv.mkDerivation {
+      pname = "${name}";
+      version = version;
+      src = src;
+      buildPhase = ''
+        ${venv} $out
+        VIRTUAL_ENV=$out ${pipInstall} \
+         --no-index \
+         --find-links ${pkgs}/ \
+         -r ${requirements}/requirements.txt
+      '';
 
-    env = uvEnv;
-    dontStrip = true;
+      env = uvEnv;
+      dontStrip = true;
 
-    buildInputs = [
-      uv
-    ] ++ buildInputs;
-    inherit propagatedBuildInputs;
+      buildInputs =
+        [
+          python3
+        ]
+        ++ (if useUvPip then [ uv ] else [ ])
+        ++ buildInputs;
+      inherit propagatedBuildInputs;
 
-    passthru = {
-      inherit requirements pkgs;
+      passthru = {
+        inherit requirements pkgs;
+      };
     };
-  };
 in
 venv
