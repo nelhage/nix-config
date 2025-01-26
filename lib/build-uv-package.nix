@@ -16,11 +16,13 @@
   # Pinning packages
   packagesHash ? { },
   packagesHashAlgo ? "sha256",
+  findLinks ? [ ],
   useUvPip ? false,
 }:
 let
   fs = lib.fileset;
   path = lib.path;
+  strings = lib.strings;
   uvFiles = (
     fs.unions [
       (path.append src "./pyproject.toml")
@@ -59,13 +61,18 @@ let
       root = src;
       fileset = uvFiles;
     };
-    buildPhase = ''
-      mkdir -p $out
-      pip --no-cache-dir download \
-       --progress-bar off \
-       -d $out \
-       -r ${requirements}/requirements.txt
-    '';
+    buildPhase =
+      let
+        findLinksArgs = strings.concatMapStrings (x: "--find-links ${x} ") findLinks;
+      in
+      ''
+        mkdir -p $out
+        pip --no-cache-dir download \
+         --progress-bar off \
+         ${findLinksArgs} \
+         -d $out \
+         -r ${requirements}/requirements.txt
+      '';
 
     buildInputs = [ python3.pkgs.pip ];
     dontFixup = true;
