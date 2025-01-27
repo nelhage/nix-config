@@ -62,15 +62,58 @@ in
       };
     };
 
-    age.secrets."GarminConnectConfig.json" = {
-      file = ../secrets/GarminConnectConfig.json.age;
+    age.secrets."garmin.password" = {
+      file = ../secrets/garmin.password.age;
     };
 
-    home.file = {
-      "GarminConnectConfig.json" = {
-        target = ".GarminDb/GarminConnectConfig.json";
-        source = config.lib.file.mkOutOfStoreSymlink config.age.secrets."GarminConnectConfig.json".path;
+    home.file =
+      let
+        GarminConnectConfig = {
+          activities = {
+            display = [ ];
+          };
+          course_views = {
+            steps = [ ];
+          };
+          credentials = {
+            password = null;
+            secure_password = false;
+            user = "nelhage@nelhage.com";
+            password_file = "${config.age.secrets."garmin.password".path}";
+          };
+          data = {
+            download_all_activities = 1000;
+            download_latest_activities = 25;
+            monitoring_start_date = "01/20/2020";
+            rhr_start_date = "01/20/2020";
+            sleep_start_date = "01/20/2020";
+            weight_start_date = "11/14/2023";
+          };
+          directories = {
+            base_dir = "${opts.path}";
+            mount_dir = "/Volumes/GARMIN";
+            relative_to_home = false;
+          };
+          enabled_stats = {
+            activities = true;
+            itime = true;
+            monitoring = true;
+            rhr = true;
+            sleep = true;
+            steps = true;
+            weight = false;
+          };
+          garmin = {
+            domain = "garmin.com";
+          };
+          modes = { };
+        };
+      in
+      {
+        "GarminConnectConfig.json" = {
+          target = ".GarminDb/GarminConnectConfig.json";
+          text = builtins.toJSON GarminConnectConfig;
+        };
       };
-    };
   };
 }
