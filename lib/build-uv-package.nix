@@ -31,7 +31,7 @@ let
     UV_PYTHON = "${python3}/bin/python";
     UV_PYTHON_DOWNLOADS = "never";
     UV_NO_PROGRESS = "1";
-    UV_LOCKED = "1";
+    UV_FROZEN = "1";
     UV_NO_CACHE = "1";
     UV_OFFLINE = "1";
   };
@@ -89,10 +89,12 @@ let
       src = src;
       buildPhase = ''
         ${venv} $out
+        sed -re 's|( @ )(https?://.*/)([^/]+) |\1 file://${pkgs}/\3 |' \
+            ${requirements}/requirements.txt > /tmp/requirements.txt
         VIRTUAL_ENV=$out ${pipInstall} \
          --no-index \
          --find-links ${pkgs}/ \
-         -r ${requirements}/requirements.txt
+         -r /tmp/requirements.txt
       '';
 
       env = uvEnv;
