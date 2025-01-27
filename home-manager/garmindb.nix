@@ -36,8 +36,8 @@ in
 
     path = lib.mkOption {
       type = types.str;
-      default = "${config.home.homeDirectory}/garmin/";
-      defaultText = "~/garmin/";
+      default = "${config.home.homeDirectory}/garmin";
+      defaultText = "~/garmin";
       description = "Path to store imported Garmin data files.";
     };
   };
