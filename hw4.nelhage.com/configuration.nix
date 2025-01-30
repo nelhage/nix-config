@@ -34,9 +34,13 @@
   system.stateVersion = "23.11";
 
   home-manager.users.nelhage =
-    { ... }:
+    { config, ... }:
     {
+      imports = [../home-manager/litestream.nix];
+
       garmindb.enable = true;
+      garmindb.litestream.enable = true;
+      garmindb.litestream.replicaRoot = "gcs://nelhage-data/garmin";
 
       age.secrets."gcloud.json" = {
         file = ../secrets/hw4-gcloud.json.age;

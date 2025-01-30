@@ -1,5 +1,10 @@
 # This file was written by Claude, probably ask him for edits
-{config, lib, pkgs, ...}:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -10,7 +15,13 @@ let
   replicaOptions = types.submodule {
     options = {
       type = mkOption {
-        type = types.nullOr (types.enum [ "s3" "file" "abs" ]);
+        type = types.nullOr (
+          types.enum [
+            "s3"
+            "file"
+            "abs"
+          ]
+        );
         default = null;
         description = "Type of replica (s3, file, or Azure Blob Storage). Optional when URL is provided.";
       };
@@ -118,29 +129,38 @@ let
 
       replicas = mkOption {
         type = types.listOf replicaOptions;
-        default = [];
+        default = [ ];
         description = "List of replicas for this database";
       };
     };
   };
 
   # Helper functions to clean up empty values
-  removeEmpty = attrs: filterAttrs (n: v:
-    v != null && v != "" && v != [] && v != {}) attrs;
+  removeEmpty = attrs: filterAttrs (n: v: v != null && v != "" && v != [ ] && v != { }) attrs;
 
-  cleanUpReplica = replica: removeEmpty (replica // {
-    access-key-id = replica.accessKeyId;
-    secret-access-key = replica.secretAccessKey;
-    force-path-style = if replica.forcePathStyle then true else null;
-    skip-verify = if replica.skipVerify then true else null;
-    retention-check-interval = replica.retentionCheckInterval;
-    snapshot-interval = replica.snapshotInterval;
-    validation-interval = replica.validationInterval;
-    sync-interval = replica.syncInterval;
-  });
+  cleanUpReplica =
+    replica:
+    removeEmpty {
+      type = replica.type;
+      name = replica.name;
+      url = replica.url;
+      retention = replica.retention;
+      "retention-check-interval" = replica.retentionCheckInterval;
+      "snapshot-interval" = replica.snapshotInterval;
+      "validation-interval" = replica.validationInterval;
+      "sync-interval" = replica.syncInterval;
+      bucket = replica.bucket;
+      path = replica.path;
+      region = replica.region;
+      "access-key-id" = replica.accessKeyId;
+      "secret-access-key" = replica.secretAccessKey;
+      endpoint = replica.endpoint;
+      "force-path-style" = if replica.forcePathStyle then true else null;
+      "skip-verify" = if replica.skipVerify then true else null;
+    };
 
   # Convert the config to YAML format
-  yamlFormat = pkgs.formats.yaml {};
+  yamlFormat = pkgs.formats.yaml { };
 
   # Generate the Litestream config file
   configFile = yamlFormat.generate "litestream.yml" (removeEmpty {
@@ -155,13 +175,17 @@ let
     access-key-id = cfg.globalAccessKeyId;
     secret-access-key = cfg.globalSecretAccessKey;
 
-    dbs = map (name: removeEmpty {
-      path = cfg.databases.${name}.path;
-      replicas = map cleanUpReplica cfg.databases.${name}.replicas;
-    }) (attrNames cfg.databases);
+    dbs = map (
+      name:
+      removeEmpty {
+        path = cfg.databases.${name}.path;
+        replicas = map cleanUpReplica cfg.databases.${name}.replicas;
+      }
+    ) (attrNames cfg.databases);
   });
 
-in {
+in
+{
   options.programs.litestream = {
     enable = mkEnableOption "Litestream SQLite replication";
 
@@ -192,13 +216,21 @@ in {
 
     logging = {
       level = mkOption {
-        type = types.enum [ "debug" "info" "warn" "error" ];
+        type = types.enum [
+          "debug"
+          "info"
+          "warn"
+          "error"
+        ];
         default = "info";
         description = "Logging level";
       };
 
       type = mkOption {
-        type = types.enum [ "text" "json" ];
+        type = types.enum [
+          "text"
+          "json"
+        ];
         default = "text";
         description = "Logging output format";
       };
@@ -212,7 +244,7 @@ in {
 
     databases = mkOption {
       type = types.attrsOf databaseOptions;
-      default = {};
+      default = { };
       description = "Litestream database configurations";
     };
   };
@@ -225,6 +257,7 @@ in {
         Description = "Litestream SQLite replication service";
         After = [ "network-online.target" ];
         Wants = [ "network-online.target" ];
+        X-Restart-Triggers = [ configFile ];
       };
 
       Service = {

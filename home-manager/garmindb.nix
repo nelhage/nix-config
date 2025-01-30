@@ -29,6 +29,23 @@ in
       description = "garmindb package to use";
     };
 
+    litestream = lib.mkOption {
+      type = types.submodule {
+        options = {
+          enable = lib.mkOption {
+            type = types.bool;
+            default = false;
+            description = "Use litestream to replicate the DBs to cloud storage.";
+          };
+
+          replicaRoot = lib.mkOption {
+            type = types.str;
+            description = "Base path to replica DBs to";
+          };
+        };
+      };
+    };
+
     args = lib.mkOption {
       type = types.str;
       default = "--all --download --latest --import";
@@ -43,6 +60,21 @@ in
   };
 
   config = lib.mkIf opts.enable {
+    programs.litestream = lib.mkIf opts.litestream.enable {
+      enable = true;
+
+      databases =
+        lib.attrsets.genAttrs [ "garmin.db" "garmin_activities.db" "garmin_monitoring.db" ]
+          (db: {
+            path = "${opts.path}/DBs/${db}";
+            replicas = [
+              {
+                url = "${opts.litestream.replicaRoot}/${db}";
+              }
+            ];
+          });
+    };
+
     systemd.user.timers."${unit}" = {
       Timer = {
         OnCalendar = opts.schedule;
