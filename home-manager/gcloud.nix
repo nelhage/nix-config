@@ -8,6 +8,7 @@ let
   inherit (lib) types;
   opts = config.gcloud;
 
+  credential_file = config.age.secrets.${opts.secret}.path;
   loginScript =
     let
       setProject = if opts.project != null then "gcloud config set project ${opts.project}" else "";
@@ -19,7 +20,7 @@ let
         ];
         text = ''
           ${setProject}
-          gcloud auth login --cred-file=${config.age.secrets.${opts.secret}.path}
+          gcloud auth login --cred-file=${credential_file}
           exit 0
         '';
       };
@@ -50,6 +51,10 @@ in
   };
 
   config = lib.mkIf opts.enable {
+    xdg.configFile.gcloud-adc = {
+      target = "gcloud/application_default_credentials.json";
+      source = config.lib.file.mkOutOfStoreSymlink credential_file;
+    };
     systemd.user.services.gcloud-login = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit = {
         Description = "gcloud credential activation";
