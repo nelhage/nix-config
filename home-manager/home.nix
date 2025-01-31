@@ -35,6 +35,7 @@
       tmux
       tree
       jq
+      litestream
 
       # Other tooling
       hugo
