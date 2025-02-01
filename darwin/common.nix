@@ -37,9 +37,7 @@
     '';
   };
 
-  fonts.packages = [
-    pkgs.fira-code
-  ];
+  fonts.packages = [ pkgs.fira-code-nerdfont ];
 
   launchd.daemons.linux-builder = {
     serviceConfig = {
