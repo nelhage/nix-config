@@ -37,6 +37,10 @@
     '';
   };
 
+  fonts.packages = [
+    pkgs.fira-code
+  ];
+
   launchd.daemons.linux-builder = {
     serviceConfig = {
       RunAtLoad = lib.mkForce false;
