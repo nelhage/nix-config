@@ -121,6 +121,7 @@
           in
           {
             rules_boost = pkgs.callPackage ./shells/rules_boost.nix { };
+            rust = pkgs.callPackage ./shells/rust.nix { };
           }
         );
 

@@ -1,4 +1,4 @@
-{ nixpkgs, ... }:
+{ nixpkgs, self, ... }:
 let
   forAllSystems = nixpkgs.lib.genAttrs [
     "aarch64-linux"
@@ -6,31 +6,10 @@ let
     "aarch64-darwin"
   ];
 in
-rec {
-  devShells = forAllSystems (
-    system:
-    let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      obsidian-scan = pkgs.mkShell {
-        packages = [
-          pkgs.cargo
-          pkgs.rustc
-          pkgs.rust-analyzer
-          pkgs.rustfmt
-          pkgs.clippy
-        ];
-
-        RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-
-        shellHook = ''
-          # Git on macos misbehaves when this is set.
-          unset DEVELOPER_DIR
-        '';
-      };
-    }
-  );
+{
+  devShells = forAllSystems (system: {
+    obsidian-scan = self.devShells.${system}.rust;
+  });
 
   packages = forAllSystems (
     system:
@@ -73,7 +52,7 @@ rec {
 
   overlays = {
     obsidian-scan = final: prev: {
-      obsidian-scan = packages.${prev.system}.obsidian-scan;
+      obsidian-scan = self.packages.${prev.system}.obsidian-scan;
     };
   };
 }
