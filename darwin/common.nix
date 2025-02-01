@@ -31,6 +31,12 @@
     description = "Nelson Elhage";
   };
 
+  environment.etc."sudoers.d/01-nelhage" = {
+    text = ''
+      nelhage   ALL=(ALL:ALL) NOPASSWD: ALL
+    '';
+  };
+
   launchd.daemons.linux-builder = {
     serviceConfig = {
       RunAtLoad = lib.mkForce false;
