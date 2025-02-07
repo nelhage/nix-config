@@ -35,7 +35,6 @@
       tmux
       tree
       jq
-      litestream
 
       # Other tooling
       hugo
@@ -49,6 +48,9 @@
 
       # Development tools
       git
+      litestream
+      sqlite-interactive
+      duckdb
 
       # Nix stuff
       nix
