@@ -10,6 +10,8 @@ let
   unit = "garmindb-import";
 in
 {
+  imports = [ ./litestream.nix ];
+
   options.garmindb = {
     enable = lib.mkOption {
       type = types.bool;
