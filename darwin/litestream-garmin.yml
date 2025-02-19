@@ -1,0 +1,13 @@
+dbs:
+- path: /Users/nelhage/nelhage/data/garmin.db
+  replicas:
+  - url: gcs://nelhage-data/garmin/garmin.db
+- path: /Users/nelhage/nelhage/data/garmin_activities.db
+  replicas:
+  - url: gcs://nelhage-data/garmin/garmin_activities.db
+- path: /Users/nelhage/nelhage/data/garmin_monitoring.db
+  replicas:
+  - url: gcs://nelhage-data/garmin/garmin_monitoring.db
+logging:
+  level: info
+  type: text
