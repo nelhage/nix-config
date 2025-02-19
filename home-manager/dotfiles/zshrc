@@ -42,7 +42,9 @@ do_init_path() {
 
 do_init_path
 
-base16-isotope
+if [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ "$SHLVL" -eq 1 ]; then
+    base16-framer
+fi
 
 export CVS_RSH=ssh
 export EDITOR="$HOME/bin/edit"
