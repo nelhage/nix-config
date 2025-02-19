@@ -16,7 +16,7 @@ while :; do
             echo "Issuing initial cert for ${domain}..."
             run_lego --domains "$domain" run || err=1
         else
-            run_lego --domains "$domain" renew || :
+            run_lego --domains "$domain" renew --ari-enable || :
         fi
     done
 
