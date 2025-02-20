@@ -43,7 +43,7 @@ do_init_path() {
 do_init_path
 
 if [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ "$SHLVL" -eq 1 ]; then
-    base16-framer
+    base16-isotope
 fi
 
 export CVS_RSH=ssh
