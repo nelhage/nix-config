@@ -45,12 +45,14 @@
       pyenv
       go
       nodejs_20
+      cmake
 
       # Development tools
       git
       litestream
       sqlite-interactive
       duckdb
+      rsync
 
       # Nix stuff
       nix
