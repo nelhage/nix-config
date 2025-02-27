@@ -94,6 +94,7 @@
         base16-shell = self.packages.${prev.system}.base16-shell;
         obsidian-scan = self.packages.${prev.system}.obsidian-scan;
         hugo = self.packages.${prev.system}.hugo-pinned;
+        nelhage-scripts = self.packages.${prev.system}.nelhage-scripts;
       };
 
       packages = forAllSystems (
@@ -106,6 +107,7 @@
           garmindb = pkgs.callPackage ./pkgs/garmindb { python = pkgs.python312; };
           hugo-pinned = pkgs.callPackage ./pkgs/hugo-pinned.nix { };
           obsidian-scan = pkgs.callPackage ./pkgs/obsidian-scan { };
+          nelhage-scripts = pkgs.callPackage ./pkgs/nelhage-scripts { };
         }
       );
 

@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./bin.nix
     ./dotfiles.nix
     ./sync.nix
     ./hugo-servers.nix
@@ -35,6 +34,7 @@
       tmux
       tree
       jq
+      nelhage-scripts
 
       # Other tooling
       hugo
@@ -74,4 +74,11 @@
   programs.home-manager.enable = true;
 
   systemd.user.startServices = "sd-switch";
+
+  # I set EDITOR=$HOME/bin/edit instead of relying on $PATH. I forget
+  # why that is, but just keep that path working.
+  home.file.edit = {
+    target = "bin/edit";
+    source = "${pkgs.nelhage-scripts}/bin/edit";
+  };
 }
