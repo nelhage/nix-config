@@ -27,7 +27,7 @@ in
 
     pkg = lib.mkOption {
       type = types.package;
-      default = pkgs.callPackage ../pkgs/garmindb { };
+      default = pkgs.nelhage.garmindb;
       description = "garmindb package to use";
     };
 

@@ -17,7 +17,7 @@
     packages = with pkgs; [
       # Shell utilities and their ilk
       atuin
-      base16-shell
+      nelhage.base16-shell
       gh
       ispell
       (aspellWithDicts (
@@ -34,7 +34,7 @@
       tmux
       tree
       jq
-      nelhage-scripts
+      nelhage.scripts
 
       # Other tooling
       hugo
@@ -79,6 +79,6 @@
   # why that is, but just keep that path working.
   home.file.edit = {
     target = "bin/edit";
-    source = "${pkgs.nelhage-scripts}/bin/edit";
+    source = "${pkgs.nelhage.scripts}/bin/edit";
   };
 }
