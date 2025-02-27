@@ -34,8 +34,13 @@
 [color]
 	ui = auto
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 	defaultToUpstream = true
+[diff]
+        algorithm = histogram
+        colorMoved = true
+        mnemonicPrefix = true
+        renames = true
 [push]
 	default = current
 [pull]
@@ -49,12 +54,16 @@
 	branch = false
 [rebase]
 	autoSquash = true
+        autoStash = true
 	missingCommitsCheck = ignore
 	updateRefs = false
 [rerere]
 	enabled = true
 [branch]
 	autosetupmerge = false
+        sort = -committerdate
+[tag]
+        sort = version:refname
 [remote]
 	pushdefault = origin
 # [transfer]
@@ -80,6 +89,7 @@
 	showPatch = true
 [fetch]
 	prune = true
+        all = true
 
 [protocol]
 	version = 2
@@ -92,3 +102,5 @@
 	defaultBranch = main
 [advice]
 	addEmptyPathspec = false
+[column]
+        ui = auto
