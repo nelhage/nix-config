@@ -24,13 +24,13 @@
   config =
     let
       inherit (builtins) substring stringLength listToAttrs;
+      inherit (config.lib.file) mkOutOfStoreSymlink;
+
       fs = lib.filesystem;
       root = ./dotfiles;
       toRelative = path: substring (1 + stringLength (toString root)) (-1) (toString path);
       fileList = fs.listFilesRecursive root;
-    in
-    {
-      home.file = listToAttrs (
+      verbatimDotfiles = listToAttrs (
         map (
           path:
           let
@@ -41,7 +41,7 @@
             value = {
               source =
                 if config.dotfiles.symlink then
-                  config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.checkout_path}/home-manager/dotfiles/${rel}"
+                  mkOutOfStoreSymlink "${config.dotfiles.checkout_path}/home-manager/dotfiles/${rel}"
                 else
                   path;
               target = "." + rel;
@@ -49,5 +49,22 @@
           }
         ) fileList
       );
+      syncthingDotfiles = listToAttrs (
+        map
+          (name: {
+            name = name;
+            value = {
+              source = mkOutOfStoreSymlink "${config.home.homeDirectory}/Sync/config/${name}";
+              target = "." + name;
+            };
+          })
+          [
+            "aspell.en.prepl"
+            "aspell.en.pws"
+          ]
+      );
+    in
+    {
+      home.file = verbatimDotfiles // syncthingDotfiles;
     };
 }
