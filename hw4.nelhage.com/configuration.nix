@@ -33,10 +33,42 @@
 
   system.stateVersion = "23.11";
 
+  systemd.slices = lib.mkMerge [
+    (
+      let
+        inherit (builtins) listToAttrs;
+        defaultScopes = [
+          "init.scope"
+          "system"
+          "user"
+          "machine"
+        ];
+      in
+      listToAttrs (
+        map (scope: {
+          name = scope;
+          value = {
+            sliceConfig = {
+              AllowedCPUs = "0-9,12-19";
+            };
+          };
+        }) defaultScopes
+      )
+    )
+
+    {
+      "isolated" = {
+        sliceConfig = {
+          AllowedCPUs = "10-11";
+        };
+      };
+    }
+  ];
+
   home-manager.users.nelhage =
     { config, ... }:
     {
-      imports = [../home-manager/litestream.nix];
+      imports = [ ../home-manager/litestream.nix ];
 
       garmindb.enable = true;
       garmindb.litestream.enable = true;
