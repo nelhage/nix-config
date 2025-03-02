@@ -118,6 +118,7 @@
           rules_boost = pkgs.callPackage ./shells/rules_boost.nix { };
           rust = pkgs.callPackage ./shells/rust.nix { };
           cpython = pkgs.callPackage ./shells/cpython.nix { python3 = pkgs.python313; };
+          llvm = pkgs.callPackage ./shells/llvm.nix { };
         }
       );
 
