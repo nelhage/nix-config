@@ -34,6 +34,7 @@
       tmux
       tree
       jq
+      htop
       nelhage.scripts
 
       # Other tooling
