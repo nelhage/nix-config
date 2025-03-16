@@ -40,6 +40,12 @@ in
       default = 8002;
       description = "Port to listen on";
     };
+
+    extraConfig = lib.mkOption {
+      type = types.str;
+      default = "";
+      description = "Extra configuration in the jupyterlab config file.";
+    };
   };
 
   config = lib.mkIf opts.enable (
@@ -52,6 +58,7 @@ in
         c.ServerApp.root_dir = '${opts.root_dir}'
         c.ServerApp.ip = '${opts.bind}'
         c.ServerApp.port = ${toString opts.port}
+        ${opts.extraConfig}
       '';
     in
     {
