@@ -114,6 +114,7 @@
           obsidian-scan = pkgs.callPackage ./pkgs/obsidian-scan { };
           scripts = pkgs.callPackage ./pkgs/nelhage-scripts { };
           mkNixDocsetFeed = nix-dash-docsets.legacyPackages.${system}.mkNixDocsetFeed;
+          jupyterlab = pkgs.callPackage ./pkgs/jupyterlab { python3 = pkgs.python313; };
         }
       );
 

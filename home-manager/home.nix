@@ -47,6 +47,7 @@
 
       # Language stuff
       pyenv
+      uv
       go
       nodejs_20
       cmake
