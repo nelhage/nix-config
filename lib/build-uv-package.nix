@@ -4,6 +4,7 @@
   version,
   src,
   buildInputs ? [ ],
+  nativeBuildInputs ? [ ],
   propagatedBuildInputs ? [ ],
 
   # Dependencies
@@ -12,6 +13,7 @@
   lib,
   python3,
   stdenv,
+  autoPatchelfHook,
 
   # Pinning packages
   packagesHash ? { },
@@ -114,6 +116,10 @@ let
         ++ (if useUvPip then [ uv ] else [ ])
         ++ buildInputs;
       inherit propagatedBuildInputs;
+
+      nativeBuildInputs = nativeBuildInputs ++ [
+        autoPatchelfHook
+      ];
 
       passthru = {
         inherit requirements pkgs;
