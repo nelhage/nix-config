@@ -68,7 +68,12 @@
   home-manager.users.nelhage =
     { config, ... }:
     {
-      imports = [ ../home-manager/litestream.nix ];
+      imports = [
+        ../home-manager/litestream.nix
+        ../home-manager/jupyterlab.nix
+      ];
+
+      nelhage.jupyterlab.enable = true;
 
       garmindb.enable = true;
       garmindb.litestream.enable = true;
