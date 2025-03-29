@@ -1,8 +1,6 @@
-{ pkgs, lib, ... }:
+{ lib, ... }:
 {
-  imports = [
-    ./agenix.nix
-  ];
+  imports = [ ];
   nixpkgs.config.allowUnfreePredicate =
     pkg:
     builtins.elem (lib.getName pkg) [

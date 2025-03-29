@@ -2,6 +2,7 @@
 {
   imports = [
     ../modules/common.nix
+    ../modules/agenix.nix
   ];
 
   environment.systemPackages = [

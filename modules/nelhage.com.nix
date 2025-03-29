@@ -6,6 +6,7 @@
 }:
 {
   imports = [
+    ./agenix.nix
     ./nelhage-services
   ];
 
