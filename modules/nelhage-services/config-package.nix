@@ -31,7 +31,7 @@ let
   };
   bin = stdenv.mkDerivation {
     name = "nelhage.com-service-bin-0.1";
-    src = ./config;
+    src = binFile;
     buildInputs = [ ];
     buildPhase = ''
       mkdir -p bin/
