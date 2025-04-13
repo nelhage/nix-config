@@ -3,6 +3,6 @@
     "code_prettify/code_prettify": true
   },
   "code_prettify": {
-    "kernel_config_map_json": "{\n  \"python\": {\n    \"library\": \"import os, re\\n\\n\\ndef ruff_format(cell_text):\\n    cell_text = re.sub(\\\"^%\\\", \\\"#%#\\\", cell_text, flags=re.M)\\n\\n    proc = subprocess.run(\\n        [\\\"ruff\\\", \\\"format\\\", \\\"-\\\"],\\n        text=True,\\n        input=cell_text,\\n        stdout=subprocess.PIPE,\\n        stderr=subprocess.PIPE,\\n        env=os.environ | dict(NO_COLOR=\\\"1\\\"),\\n    )\\n    if proc.returncode != 0:\\n        raise ValueError(f\\\"Failed to format: {proc.stderr}\\\")\\n\\n    formatted = proc.stdout\\n\\n    return re.sub(\\\"^#%#\\\", \\\"%\\\", formatted, flags=re.M)\",\n    \"prefix\": \"print(json.dumps(ruff_format(u\",\n    \"postfix\": \")))\"\n  }\n}\n"
+    "kernel_config_map_json": "{\n  \"python\": {\n    \"library\": \"code = '''\\na = False\\nb = True\\n\\nstudents = [\\n    [b, b, a, b, a, b, b, a, b, b], # 7\\n    [b, a,\\n     a, a, b, a, b, a\\n     , a, a], # 5\\n    [b, a, a, a, b, b, b, a, b, a], # 3\\n    \\n    [b, b, a, a, a, b, b, a, a, a], # ???\\n]\\n'''\\nprint(code)\\nprint(\\\"-\\\" * 80)\\nprint(ruff_format(code))\",\n    \"prefix\": \"print(json.dumps(ruff_format(u\",\n    \"postfix\": \")))\"\n  }\n}"
   }
 }
