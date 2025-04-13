@@ -119,6 +119,8 @@
           rust = pkgs.callPackage ./shells/rust.nix { };
           cpython = pkgs.callPackage ./shells/cpython.nix { python3 = pkgs.python313; };
           llvm = pkgs.callPackage ./shells/llvm.nix { };
+          python313 = pkgs.callPackage ./shells/python313.nix { };
+          pandas = pkgs.callPackage ./shells/pandas.nix { };
         }
       );
 
