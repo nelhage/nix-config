@@ -1,0 +1,8 @@
+{
+  "load_extensions": {
+    "code_prettify/code_prettify": true
+  },
+  "code_prettify": {
+    "kernel_config_map_json": "{\n  \"python\": {\n    \"library\": \"import os, re\\n\\n\\ndef ruff_format(cell_text):\\n    cell_text = re.sub(\\\"^%\\\", \\\"#%#\\\", cell_text, flags=re.M)\\n\\n    proc = subprocess.run(\\n        [\\\"ruff\\\", \\\"format\\\", \\\"-\\\"],\\n        text=True,\\n        input=cell_text,\\n        stdout=subprocess.PIPE,\\n        stderr=subprocess.PIPE,\\n        env=os.environ | dict(NO_COLOR=\\\"1\\\"),\\n    )\\n    if proc.returncode != 0:\\n        raise ValueError(f\\\"Failed to format: {proc.stderr}\\\")\\n\\n    formatted = proc.stdout\\n\\n    return re.sub(\\\"^#%#\\\", \\\"%\\\", formatted, flags=re.M)\",\n    \"prefix\": \"print(json.dumps(ruff_format(u\",\n    \"postfix\": \")))\"\n  }\n}\n"
+  }
+}
