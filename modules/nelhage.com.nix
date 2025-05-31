@@ -18,6 +18,8 @@
     pkgs.curl
     pkgs.gitMinimal
     pkgs.vim
+    pkgs.man-pages
+    pkgs.man-pages-posix
   ];
 
   environment.defaultPackages = [
