@@ -13,6 +13,7 @@ let
 in
 {
   "hw4-gcloud.json.age".publicKeys = nelhage_com ++ me;
+  "hw4-aws-credentials.age".publicKeys = nelhage_com ++ me;
   "nelhage-services.age".publicKeys = nelhage_com ++ me;
   "gcp-service.json.age".publicKeys = nelhage_com ++ me;
   "garmin.password.age".publicKeys = nelhage_com ++ me;

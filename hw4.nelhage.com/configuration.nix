@@ -79,5 +79,10 @@
       };
       gcloud.enable = true;
       gcloud.project = "livegrep";
+
+      age.secrets."aws-credentials" = {
+        file = ../secrets/hw4-aws-credentials.age;
+      };
+      nelhage.aws.enable = true;
     };
 }

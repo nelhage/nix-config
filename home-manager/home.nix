@@ -8,6 +8,7 @@
     ./obsidian-scan.nix
     ./tailscale-completion.nix
     ./gcloud.nix
+    ./aws.nix
   ];
 
   home = {
@@ -41,6 +42,8 @@
       hugo
       ## N.B. see https://nixos.wiki/wiki/Google_Cloud_SDK
       google-cloud-sdk
+      awscli
+      s5cmd
 
       # Language stuff
       pyenv

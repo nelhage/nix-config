@@ -26,6 +26,10 @@ let
       };
     in
     lib.getExe app;
+  gs5cmd = pkgs.writeScriptBin "gs5cmd" ''
+    #!/bin/sh
+    exec ${pkgs.s5cmd}/bin/s5cmd --endpoint-url https://storage.googleapis.com --profile gcs "$@"
+  '';
 in
 {
   options = {
@@ -72,5 +76,6 @@ in
         WantedBy = [ "default.target" ];
       };
     };
+    home.packages = [ gs5cmd ];
   };
 }
