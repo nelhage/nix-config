@@ -21,7 +21,7 @@ rustPlatform.buildRustPackage {
     );
   };
 
-  cargoHash = "sha256-MaUsOKp+xpYMA3nLsLpN7LyLX5+qrF+PQ8DlnN6Zrvo=";
+  cargoHash = "sha256-zd7uJvMQCrAv+g6euPhDQ2PD/nG5VnemOYETcGFnpU8=";
 
   passthru = {
     elisp = stdenv.mkDerivation {
