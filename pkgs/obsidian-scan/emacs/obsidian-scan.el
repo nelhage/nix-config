@@ -130,12 +130,9 @@
 ORIG-FUN is the original function, ARGS are its arguments."
   (if (obsidian-scan--available-p)
       (progn
-        (when obsidian-scan--debug
-          (message "Using Rust scanner for vault: %s" obsidian-directory))
         ;; Ensure directory is properly initialized
         (customize-set-variable 'obsidian-directory obsidian-directory)
 
-        (message "Scanning Obsidian vault with Rust scanner...")
         (let* ((start-time (current-time))
                (json-data (obsidian-scan--run))
                (file-count (obsidian-scan--populate-cache json-data))
