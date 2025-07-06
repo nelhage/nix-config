@@ -137,10 +137,6 @@ ORIG-FUN is the original function, ARGS are its arguments."
                (json-data (obsidian-scan--run))
                (file-count (obsidian-scan--populate-cache json-data))
                (elapsed (float-time (time-subtract (current-time) start-time))))
-          (message "Obsidian cache populated at %s with %d files (%.2f seconds)"
-                   (format-time-string "%H:%M:%S")
-                   file-count
-                   elapsed)
           file-count))
     ;; Fall back to original implementation
     (apply orig-fun args)))
