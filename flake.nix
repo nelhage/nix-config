@@ -102,7 +102,7 @@
         in
         {
           base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix { };
-          garmindb = pkgs.callPackage ./pkgs/garmindb { python = pkgs.python312; };
+          garmindb = pkgs.callPackage ./pkgs/garmindb { python3 = pkgs.python312; };
           hugo-pinned = pkgs.callPackage ./pkgs/hugo-pinned.nix { };
           obsidian-scan = pkgs.callPackage ./pkgs/obsidian-scan { };
           scripts = pkgs.callPackage ./pkgs/nelhage-scripts { };
