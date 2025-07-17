@@ -93,6 +93,15 @@
     adminPubkey = builtins.elemAt config.users.users.nelhage.openssh.authorizedKeys.keys 0;
   };
 
+  programs.git = {
+    enable = true;
+    config = {
+      init = {
+        defaultBranch = "main";
+      };
+    };
+  };
+
   services.syncthing = {
     enable = true;
     user = "nelhage";
