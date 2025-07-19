@@ -29,7 +29,8 @@
       ...
     }@inputs:
     let
-      forAllSystems = nixpkgs.lib.genAttrs [
+      inherit (nixpkgs) lib;
+      forAllSystems = lib.genAttrs [
         "aarch64-linux"
         "x86_64-linux"
         "aarch64-darwin"
@@ -58,7 +59,7 @@
         ];
       };
 
-      nixosConfigurations.hw4 = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.hw4 = lib.nixosSystem {
         system = "x86_64-linux";
         inherit specialArgs;
         modules = [
@@ -73,7 +74,7 @@
         ];
       };
 
-      nixosConfigurations.avdVM = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.avdVM = lib.nixosSystem {
         system = "aarch64-linux";
         inherit specialArgs;
         modules = [
@@ -113,15 +114,26 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          inherit (lib.attrsets) concatMapAttrs;
+          inherit (lib.strings) hasSuffix removeSuffix;
+          overrides = {
+            cpython = {
+              python3 = pkgs.python313;
+            };
+          };
         in
-        {
-          rules_boost = pkgs.callPackage ./shells/rules_boost.nix { };
-          rust = pkgs.callPackage ./shells/rust.nix { };
-          cpython = pkgs.callPackage ./shells/cpython.nix { python3 = pkgs.python313; };
-          llvm = pkgs.callPackage ./shells/llvm.nix { };
-          python313 = pkgs.callPackage ./shells/python313.nix { };
-          pandas = pkgs.callPackage ./shells/pandas.nix { };
-        }
+        concatMapAttrs (
+          k: v:
+          if hasSuffix ".nix" k && v == "regular" then
+            let
+              name = removeSuffix ".nix" k;
+            in
+            {
+              ${name} = pkgs.callPackage ./shells/${k} (overrides.${name} or { });
+            }
+          else
+            { }
+        ) (builtins.readDir ./shells)
       );
 
       templates.default = {
