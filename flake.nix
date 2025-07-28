@@ -16,6 +16,11 @@
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.home-manager.follows = "home-manager";
+
+    nix-dash-docsets.url = "github:boinkor-net/nix-dash-docsets";
+    nix-dash-docsets.inputs.nixpkgs.follows = "nixpkgs";
+    nix-dash-docsets.inputs.home-manager.follows = "home-manager";
+    nix-dash-docsets.inputs.nix-darwin.follows = "nix-darwin";
   };
 
   outputs =
@@ -24,6 +29,7 @@
       nixpkgs,
       home-manager,
       nix-darwin,
+      nix-dash-docsets,
       disko,
       agenix,
       ...
@@ -107,6 +113,7 @@
           hugo-pinned = pkgs.callPackage ./pkgs/hugo-pinned.nix { };
           obsidian-scan = pkgs.callPackage ./pkgs/obsidian-scan { };
           scripts = pkgs.callPackage ./pkgs/nelhage-scripts { };
+          mkNixDocsetFeed = nix-dash-docsets.legacyPackages.${system}.mkNixDocsetFeed;
         }
       );
 

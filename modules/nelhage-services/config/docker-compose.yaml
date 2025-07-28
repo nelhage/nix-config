@@ -154,6 +154,10 @@ services:
         source: /data/www/nelhage.com
         target: /data/www/nelhage.com
         read_only: true
+      - type: bind
+        source: /nix/
+        target: /nix/
+        read_only: true
     restart: unless-stopped
 
 volumes:

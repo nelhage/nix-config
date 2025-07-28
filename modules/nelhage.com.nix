@@ -8,6 +8,7 @@
   imports = [
     ./agenix.nix
     ./nelhage-services
+    ./nix-docsets.nix
   ];
 
   services.openssh.enable = true;
