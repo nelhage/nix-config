@@ -89,7 +89,6 @@
 	showPatch = true
 [fetch]
 	prune = true
-        all = true
 
 [protocol]
 	version = 2
