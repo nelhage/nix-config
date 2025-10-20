@@ -1,0 +1,20 @@
+{
+    "shortcuts": [
+        {
+            "args": {},
+            "command": "jupyterlab_code_formatter:format",
+            "keys": [
+                "Ctrl L",
+            ],
+            "selector": ".jp-Notebook"
+        },
+        {
+            "args": {},
+            "command": "docmanager:save",
+            "keys": [
+                "Ctrl X Ctrl S",
+            ],
+            "selector": ".jp-Notebook"
+        }
+    ]
+}
