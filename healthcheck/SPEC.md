@@ -32,7 +32,6 @@
   - Should redirect to the apex, using TLS
 
 - `https://livegrep.com`
-  - Should return an HTTP 200
   - Should redirect to `/search`
 
 - `https://livegrep.com/search/linux`
