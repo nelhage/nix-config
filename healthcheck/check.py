@@ -51,14 +51,16 @@ def substitute_port(url: str, http_port: int, tls_port: int) -> str:
     else:
         netloc = parsed.hostname or ""
 
-    return urlunparse((
-        parsed.scheme,
-        netloc,
-        parsed.path,
-        parsed.params,
-        parsed.query,
-        parsed.fragment
-    ))
+    return urlunparse(
+        (
+            parsed.scheme,
+            netloc,
+            parsed.path,
+            parsed.params,
+            parsed.query,
+            parsed.fragment,
+        )
+    )
 
 
 def check_hsts(response: requests.Response, results: TestResults, url: str):
@@ -78,7 +80,9 @@ def check_cert_valid(url: str, results: TestResults):
         results.record_fail(f"{url} has invalid certificate", str(e))
 
 
-def check_redirect(url: str, expected_target: str, results: TestResults, http_port: int, tls_port: int):
+def check_redirect(
+    url: str, expected_target: str, results: TestResults, http_port: int, tls_port: int
+):
     """Check if URL redirects to expected target."""
     try:
         response = requests.get(url, allow_redirects=False, timeout=10)
@@ -86,7 +90,7 @@ def check_redirect(url: str, expected_target: str, results: TestResults, http_po
         if response.status_code not in (301, 302, 303, 307, 308):
             results.record_fail(
                 f"{url} should redirect to {expected_target}",
-                f"Got status {response.status_code} instead of 30x"
+                f"Got status {response.status_code} instead of 30x",
             )
             return
 
@@ -121,7 +125,7 @@ def check_status(url: str, expected_status: int, results: TestResults):
         else:
             results.record_fail(
                 f"{url} should return {expected_status}",
-                f"Got status {response.status_code}"
+                f"Got status {response.status_code}",
             )
         return response
     except Exception as e:
@@ -129,7 +133,9 @@ def check_status(url: str, expected_status: int, results: TestResults):
         return None
 
 
-def check_content_type(response: requests.Response, expected_type: str, results: TestResults, url: str):
+def check_content_type(
+    response: requests.Response, expected_type: str, results: TestResults, url: str
+):
     """Check if response has expected content type."""
     content_type = response.headers.get("content-type", "")
     if expected_type.lower() in content_type.lower():
@@ -137,11 +143,13 @@ def check_content_type(response: requests.Response, expected_type: str, results:
     else:
         results.record_fail(
             f"{url} should have {expected_type} content type",
-            f"Got content-type: {content_type}"
+            f"Got content-type: {content_type}",
         )
 
 
-def check_body_contains(response: requests.Response, strings: list[str], results: TestResults, url: str):
+def check_body_contains(
+    response: requests.Response, strings: list[str], results: TestResults, url: str
+):
     """Check if response body contains expected strings."""
     body = response.text
     for string in strings:
@@ -186,7 +194,7 @@ def main(
             response,
             ["Nelson Elhage", "nelhage@nelhage.com", "https://blog.nelhage.com"],
             results,
-            url
+            url,
         )
 
     # livegrep.com checks
