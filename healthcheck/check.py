@@ -105,8 +105,8 @@ def check_redirect(url: str, expected_target: str, results: TestResults, http_po
             results.record_pass(f"{url} redirects to {expected_target}")
         else:
             results.record_fail(
-                f"{url} should redirect to {expected_target}",
-                f"Got redirect to {location}"
+                f"{url} should redirect to {expected_with_ports}",
+                f"Got redirect to {location}",
             )
     except Exception as e:
         results.record_fail(f"{url} redirect check failed", str(e))
