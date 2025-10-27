@@ -66,6 +66,8 @@ services:
         read_only: true
     expose:
       - 80
+    ports:
+     - "127.0.0.1:9002:80"
     restart: unless-stopped
 
   livegrep-indexer-linux:
@@ -86,29 +88,6 @@ services:
     volumes:
      - livegrep-data:/data
     restart: "no"
-
-  lego-certs:
-    build:
-      context: ./images/lego-certs
-    volumes:
-      - "lego-certs:/opt/lego"
-    command:
-      - nelhage.com
-      - www.nelhage.com
-      - livegrep.com
-      - www.livegrep.com
-      - beta.livegrep.com
-    restart: unless-stopped
-
-  nginx:
-    build:
-      context: ./images/nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "lego-certs:/lego"
-    restart: unless-stopped
 
   friendlybot:
     build:
@@ -149,6 +128,8 @@ services:
       context: ./images/nelhage.com
     expose:
      - "80"
+    ports:
+     - "127.0.0.1:9001:80"
     volumes:
       - type: bind
         source: /data/www/nelhage.com
