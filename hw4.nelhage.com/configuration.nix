@@ -29,7 +29,7 @@
     MAILFROM hw4.nelhage.com
   '';
 
-  services.syncthing.guiAddress = "100.78.93.125:8384";
+  nelhage.tailscaleAddress = "100.78.93.125";
 
   system.stateVersion = "23.11";
 
