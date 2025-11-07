@@ -69,6 +69,7 @@
   services.nginx.virtualHosts."lab.nelhage.com" = {
     useACMEHost = "lab.nelhage.com";
     forceSSL = true;
+    listenAddresses = [ config.nelhage.tailscaleAddress ];
 
     locations."/" = {
       proxyPass = "http://localhost:8002";
@@ -92,6 +93,8 @@
       nelhage.jupyterlab.enable = true;
       nelhage.jupyterlab.extraConfig = ''
         c.ServerApp.allow_remote_access = True
+        c.ServerApp.token = ""
+        c.ServerApp.password = ""
       '';
 
       garmindb.enable = true;
