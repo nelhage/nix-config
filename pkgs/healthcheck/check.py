@@ -197,6 +197,14 @@ def main(
             url,
         )
 
+    # https://nelhage.com/files should redirect to https://nelhage.com/files/
+    url = substitute_port("https://nelhage.com/files", http_port, tls_port)
+    check_redirect(url, "https://nelhage.com/files/", results, http_port, tls_port)
+
+    # https://nelhage.com/files/ should 403
+    url = substitute_port("https://nelhage.com/files/", http_port, tls_port)
+    response = check_status(url, 403, results)
+
     # livegrep.com checks
     # http://livegrep.com should redirect to https
     url = substitute_port("http://livegrep.com", http_port, tls_port)
