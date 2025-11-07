@@ -101,6 +101,11 @@ in
     in
     {
       enable = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
+      recommendedGzipSettings = true;
+      recommendedZstdSettings = true;
+      recommendedOptimisation = true;
       /*
         defaultHTTPListenPort = 8080;
         defaultSSLListenPort = 4443;
