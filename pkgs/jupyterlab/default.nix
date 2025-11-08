@@ -5,8 +5,8 @@ callPackage ../../lib/build-uv-package.nix {
   src = ./.;
 
   packagesHash = {
-    x86_64-linux = "sha256-C9Uy7AofwO2QYOKRXLMl2fDeIKOD4gKUps1EVCSk0Ts=";
-    aarch64-darwin = "sha256-oaz4yhJJJLDwMwTVr8PX7gIw/Pl2Aq6lr8il3gKZOVY=";
+    x86_64-linux = "sha256-I83+jLvyZbjBW3hTuhAHry+k4j+4UFVEpiIyZ0USQDM=";
+    aarch64-darwin = "sha256-NQmo/BDlF2ODf6cBq8DiH/c+pwn2kAMOQ4/eoqYTv2M=";
   };
   useUvPip = true;
 

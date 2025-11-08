@@ -5,4 +5,8 @@ description = "uv project for running jupyterlab on nelhage.com"
 requires-python = ">=3.13"
 dependencies = [
     "jupyterlab>=4.3.6",
+    "jupyterlab-code-formatter",
 ]
+
+[tool.uv.sources]
+jupyterlab-code-formatter = { url = "https://storage.googleapis.com/nelhage-wheels/jupyterlab_code_formatter-3.0.2-py3-none-any.whl" }
