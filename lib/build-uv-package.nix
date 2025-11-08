@@ -117,9 +117,16 @@ let
         ++ buildInputs;
       inherit propagatedBuildInputs;
 
-      nativeBuildInputs = nativeBuildInputs ++ [
-        autoPatchelfHook
-      ];
+      nativeBuildInputs =
+        nativeBuildInputs
+        ++ (
+          if stdenv.isDarwin then
+            [ ]
+          else
+            [
+              autoPatchelfHook
+            ]
+        );
 
       passthru = {
         inherit requirements pkgs;
