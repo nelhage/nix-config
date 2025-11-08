@@ -11,5 +11,5 @@ rsync --delete \
       --exclude=result \
       --exclude=.direnv \
       --exclude=.venv/ \
-      --exclude='src/*/target' \
+      --exclude='pkgs/*/target' \
       -Pax . "${remote}:/etc/nixos/"
