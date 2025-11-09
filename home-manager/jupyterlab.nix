@@ -46,6 +46,11 @@ in
       default = "";
       description = "Extra configuration in the jupyterlab config file.";
     };
+    path = lib.mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Directories to add to the server's $PATH";
+    };
   };
 
   config = lib.mkIf opts.enable (
@@ -62,12 +67,17 @@ in
       '';
     in
     {
+      nelhage.jupyterlab.path = [
+        "${config.home.profileDirectory}/bin"
+        "${opts.pkg}/bin"
+      ];
+
       systemd.user.services."${unit}" = {
         Unit = {
           Description = "Run a jupyterlab server";
         };
         Service = {
-          Environment = "PATH=${config.home.profileDirectory}/bin";
+          Environment = "PATH=${lib.strings.concatStringsSep ":" opts.path}";
           ExecStart = escapeShellArgs [
             "${opts.pkg}/bin/jupyter"
             "lab"

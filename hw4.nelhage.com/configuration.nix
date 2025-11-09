@@ -84,7 +84,7 @@
   };
 
   home-manager.users.nelhage =
-    { config, ... }:
+    { config, pkgs, ... }:
     {
       imports = [
         ../home-manager/litestream.nix
@@ -92,6 +92,7 @@
       ];
 
       nelhage.jupyterlab.enable = true;
+      nelhage.jupyterlab.path = [ "${pkgs.ruff}/bin" ];
       nelhage.jupyterlab.extraConfig = ''
         c.ServerApp.allow_remote_access = True
         c.ServerApp.token = ""
