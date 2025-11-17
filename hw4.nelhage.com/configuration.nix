@@ -113,5 +113,8 @@
         file = ../secrets/hw4-aws-credentials.age;
       };
       nelhage.aws.enable = true;
+
+      dotfiles.symlink = true;
+      dotfiles.checkout_path = "/etc/nixos";
     };
 }
