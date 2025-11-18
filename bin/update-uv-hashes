@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -eu
+root=$(cd "$(dirname "$0")/.."; pwd)
+package="$1"
+
+pkgdir="$root/pkgs/$package"
+
+get_hash() {
+    local output=$1
+    local hash
+    hash=$(echo "$output" | sed -rn '/^[[:space:]]*got:/ {
+s/got://
+s/[[:space:]]//g
+p
+}'
+        )
+    if [ ! "$hash" ]; then
+        echo "Build failed:" >&2
+        echo "$output" >&2
+        exit 1
+    fi
+    echo "$hash"
+}
+
+delete_hash() {
+    local system="$1"
+    new_hashes="$(jq 'del(."'"$system"'")' "$pkgdir/hashes.json")"
+    echo "$new_hashes" > "$pkgdir/hashes.json"
+}
+
+set_hash() {
+    local system="$1"
+    local hash="$2"
+    new_hashes="$(jq '."'"$system"'" = "'"$hash"'"' "$pkgdir/hashes.json")"
+    echo "$new_hashes" > "$pkgdir/hashes.json"
+
+    echo "Updated hash for $system..."
+}
+
+fixup_one() {
+    local system="$1"; shift
+    local nixargs=$("$@")
+
+    delete_hash "$system"
+    output=$(
+        nix build "${nixargs[@]}" \
+        "$root#packages.$system.$package.pkgs" \
+        2>&1 || :
+      )
+    newhash=$(get_hash "$output")
+    set_hash "$system" "$newhash"
+}
+
+fixup_one "aarch64-darwin"
+fixup_one "x86_64-linux" --eval-store auto --store ssh-ng://nelhage.com
