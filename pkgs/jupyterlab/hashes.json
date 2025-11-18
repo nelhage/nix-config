@@ -1,4 +1,4 @@
 {
-    "x86_64-linux": "sha256-I83+jLvyZbjBW3hTuhAHry+k4j+4UFVEpiIyZ0USQDM=",
-    "aarch64-darwin": "sha256-NQmo/BDlF2ODf6cBq8DiH/c+pwn2kAMOQ4/eoqYTv2M="
+  "aarch64-darwin": "sha256-CCsmo7xzxEhW0vKA5vdOBRR5dKHDNgEK/PG6NOQMndE=",
+  "x86_64-linux": "sha256-zeLDstR8HgmKscM3RLHJ6t0w48VN9tkoxQWUN2i9t3M="
 }
