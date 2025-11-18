@@ -104,6 +104,10 @@ in
               "--config=${configFile}"
             ];
 
+            EnvironmentVariables = {
+              PATH = lib.strings.concatStringsSep ":" opts.path;
+            };
+
             WorkingDirectory = "${opts.root_dir}";
             KeepAlive = true;
             RunAtLoad = true;
