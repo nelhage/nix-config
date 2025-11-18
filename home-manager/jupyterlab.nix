@@ -88,6 +88,29 @@ in
           WantedBy = [ "default.target" ];
         };
       };
+
+      launchd.agents."${unit}" =
+        let
+          logdir = "${config.home.homeDirectory}/Library/Logs";
+        in
+        {
+          enable = true;
+          config = {
+            Label = "com.nelhage.${unit}";
+            ProgramArguments = [
+              "${opts.pkg}/bin/jupyter"
+              "lab"
+              "--config=${configFile}"
+            ];
+
+            WorkingDirectory = "${opts.root_dir}";
+            KeepAlive = true;
+            RunAtLoad = true;
+
+            StandardErrorPath = "${logdir}/${unit}-stdout.log";
+            StandardOutPath = "${logdir}/${unit}-stderr.log";
+          };
+        };
     }
   );
 }
