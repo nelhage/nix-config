@@ -35,6 +35,7 @@
   };
 
   fonts.packages = [ pkgs.nerd-fonts.fira-code ];
+  nix.optimise.automatic = true;
 
   launchd.daemons.linux-builder = {
     serviceConfig = {
