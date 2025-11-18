@@ -92,7 +92,6 @@
       ];
 
       nelhage.jupyterlab.enable = true;
-      nelhage.jupyterlab.path = [ "${pkgs.ruff}/bin" ];
       nelhage.jupyterlab.extraConfig = ''
         c.ServerApp.allow_remote_access = True
         c.ServerApp.token = ""

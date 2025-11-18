@@ -69,6 +69,7 @@ in
     {
       nelhage.jupyterlab.path = [
         "${config.home.profileDirectory}/bin"
+        "${pkgs.ruff}/bin"
         "${opts.pkg}/bin"
       ];
 
