@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+root=$(cd "$(dirname "$0")/.."; pwd)
+scripts="$root/pkgs/nelhage-scripts"
+mkdir -p "$HOME/bin"
+
+ln -nsf "$scripts/bin"/* "$HOME/bin"

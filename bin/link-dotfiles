@@ -33,7 +33,7 @@ do_dir() {
                 ${dry} mv "$HOME/.$i" "${root}/replaced/$i"
             fi
             echo "SYMLINK $i"
-            ${dry} ln -s "$dest" "$HOME/.$i"
+            ${dry} ln -nsf "$dest" "$HOME/.$i"
         fi
     done
 }
