@@ -9,6 +9,9 @@ done
 if test -f ~/code/anthropic/config/local/zsh/zshrc; then
     source ~/code/anthropic/config/local/zsh/zshrc </dev/null
 fi
+if test -f ~/code/config/remote/zshrc; then
+    source ~/code/config/remote/zshrc </dev/null
+fi
 
 # autoload bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
