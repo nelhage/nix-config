@@ -15,6 +15,12 @@
                 "Ctrl X Ctrl S",
             ],
             "selector": ".jp-Notebook"
+        },
+        {
+            "args": {},
+            "command": "notebook:clear-cell-output",
+            "keys": ["Ctrl O"],
+            "selector": ".jp-Notebook",
         }
     ]
 }
