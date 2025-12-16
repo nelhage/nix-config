@@ -161,3 +161,7 @@ for importer, name, ispkg in pkgutil.walk_packages(): print(name)'
 
   _wanted modules expl module compadd "$@" -a -- $array_name
 }
+
+if test -f "$HOME/.zshrc.local"; then
+    source "$HOME/.zshrc.local"
+fi
