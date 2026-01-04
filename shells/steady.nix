@@ -5,11 +5,7 @@
 mkShell {
   packages =
     [
-      pkgs.cargo
-      pkgs.rustc
-      pkgs.rust-analyzer
-      pkgs.rustfmt
-      pkgs.clippy
+      pkgs.rustup
       pkgs.socat
     ]
     ++ (
