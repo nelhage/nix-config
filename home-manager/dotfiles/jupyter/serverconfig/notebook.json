@@ -9,5 +9,12 @@
     "cm_config": {
       "lineNumbers": false
     }
+  },
+  "keys": {
+    "command": {
+      "bind": {
+        "ctrl-o": "jupyter-notebook:clear-cell-output"
+      }
+    }
   }
 }
