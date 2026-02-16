@@ -104,7 +104,6 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       recommendedGzipSettings = true;
-      recommendedZstdSettings = true;
       recommendedOptimisation = true;
       /*
         defaultHTTPListenPort = 8080;
