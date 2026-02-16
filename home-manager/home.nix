@@ -21,13 +21,17 @@
       nelhage.base16-shell
       gh
       ispell
-      (aspellWithDicts (
-        dicts: with dicts; [
-          en
-          en-computers
-          en-science
-        ]
-      ))
+      (let
+        aspellDicts = pkgs.symlinkJoin {
+          name = "aspell-dicts";
+          paths = [ pkgs.aspell ] ++ (with pkgs.aspellDicts; [ en en-computers en-science ]);
+        };
+      in
+        pkgs.writeShellScriptBin "aspell" ''
+          export ASPELL_CONF="data-dir ${aspellDicts}/lib/aspell;"
+          exec ${pkgs.aspell}/bin/aspell "$@"
+        '')
+
       mosh
       pv
       ripgrep
