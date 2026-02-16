@@ -8,7 +8,6 @@
   propagatedBuildInputs ? [ ],
 
   # Dependencies
-  system,
   uv,
   lib,
   python3,
@@ -25,6 +24,7 @@ let
   fs = lib.fileset;
   path = lib.path;
   strings = lib.strings;
+  system = stdenv.hostPlatform.system;
   uvFiles = (
     fs.unions [
       (path.append src "./pyproject.toml")

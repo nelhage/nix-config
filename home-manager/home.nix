@@ -62,7 +62,7 @@
       # Nix stuff
       nix
       nix-zsh-completions
-      nixfmt-rfc-style
+      nixfmt
       nixos-rebuild
       nil
       agenix
