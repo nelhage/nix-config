@@ -47,7 +47,7 @@ in
       pkgs.zip
       pkgs.unzip
       pkgs.ncdu
-      pkgs.linuxPackages_latest.perf
+      pkgs.perf
     ];
 
     users.users =
