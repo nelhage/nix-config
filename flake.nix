@@ -98,8 +98,13 @@
       };
 
       overlays.default = final: prev: {
-        hugo = self.packages.${prev.system}.hugo-pinned;
-        nelhage = self.packages.${prev.system};
+        hugo = self.packages.${prev.stdenv.hostPlatform.system}.hugo-pinned;
+        nelhage = self.packages.${prev.stdenv.hostPlatform.system};
+        nix-zsh-completions = prev.nix-zsh-completions.overrideAttrs (old: {
+          postFixup = (old.postFixup or "") + ''
+            rm -f $out/share/zsh/site-functions/_nixos-rebuild
+          '';
+        });
       };
 
       packages = forAllSystems (
