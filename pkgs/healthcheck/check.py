@@ -235,6 +235,33 @@ def main(
         check_hsts(response, results, url)
         check_body_contains(response, ["torvalds/linux"], results, url)
 
+    # https://livegrep.com/debug should return 404
+    url = substitute_port("https://livegrep.com/debug", http_port, tls_port)
+    check_status(url, 404, results)
+
+    # https://livegrep.com/debug/pprof/ should also return 404
+    url = substitute_port("https://livegrep.com/debug/pprof/", http_port, tls_port)
+    check_status(url, 404, results)
+
+    # Unknown hostnames should return 404 (catch-all vhost)
+    url = substitute_port("http://nelhage.com/", http_port, tls_port)
+    try:
+        response = requests.get(
+            url,
+            headers={"Host": "unknown.example.com"},
+            timeout=10,
+            allow_redirects=False,
+        )
+        if response.status_code == 404:
+            results.record_pass("Unknown hostname returns 404")
+        else:
+            results.record_fail(
+                "Unknown hostname should return 404",
+                f"Got status {response.status_code}",
+            )
+    except Exception as e:
+        results.record_fail("Unknown hostname check failed", str(e))
+
     exit(results.summary())
 
 

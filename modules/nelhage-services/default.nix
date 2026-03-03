@@ -111,10 +111,15 @@ in
       */
 
       virtualHosts = {
+        "_" = {
+          default = true;
+          rejectSSL = true;
+          locations."/".return = "404";
+        };
+
         "nelhage.com" = {
           useACMEHost = "nelhage.com";
           forceSSL = true;
-          default = true;
 
           extraConfig = hstsConfig;
 

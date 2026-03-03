@@ -37,3 +37,10 @@
 - `https://livegrep.com/search/linux`
   - Should return a 200 status
   - Should contain the string "torvalds/Linux"
+
+- `https://livegrep.com/debug` and `https://livegrep.com/debug/pprof/`
+  - Should return 404
+
+## Catch-all
+
+- HTTP requests with an unknown hostname should return 404
