@@ -62,7 +62,7 @@
       pyenv
       uv
       go
-      nodejs_20
+      nodejs_24
       cmake
 
       # Development tools
