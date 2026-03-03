@@ -25,6 +25,10 @@ in
 
   config = {
     services.openssh.enable = true;
+    services.openssh.settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+    };
     programs.mosh.enable = true;
     programs.zsh.enable = true;
 
