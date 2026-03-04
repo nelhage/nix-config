@@ -162,6 +162,28 @@ for importer, name, ispkg in pkgutil.walk_packages(): print(name)'
   _wanted modules expl module compadd "$@" -a -- $array_name
 }
 
+vterm_printf() {
+    if [ -n "$TMUX" ] \
+           && { [ "${TERM%%-*}" = "tmux" ] \
+                    || [ "${TERM%%-*}" = "screen" ]; }; then
+        # Tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
+
+if [ "${INSIDE_EMACS:-}" = "vterm" ]; then
+    vterm_prompt_end() {
+        vterm_printf "51;A$(whoami)@$(hostname):$(pwd)"
+    }
+    setopt PROMPT_SUBST
+    PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
+fi
+
 if test -f "$HOME/.zshrc.local"; then
     source "$HOME/.zshrc.local"
 fi
