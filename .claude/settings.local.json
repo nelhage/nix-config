@@ -3,7 +3,11 @@
     "allow": [
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebSearch",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(git:*)",
+      "Bash(nix flake:*)",
+      "Bash(curl:*)",
+      "Bash(nixos-rebuild build:*)"
     ],
     "defaultMode": "acceptEdits"
   }
