@@ -52,6 +52,7 @@ in
       pkgs.unzip
       pkgs.ncdu
       pkgs.perf
+      pkgs.nelhage.claude-code-wrapper
     ];
 
     users.users =

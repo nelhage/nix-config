@@ -120,6 +120,7 @@
           scripts = pkgs.callPackage ./pkgs/nelhage-scripts { };
           mkNixDocsetFeed = nix-dash-docsets.legacyPackages.${system}.mkNixDocsetFeed;
           jupyterlab = pkgs.callPackage ./pkgs/jupyterlab { python3 = pkgs.python313; };
+          claude-code-wrapper = pkgs.callPackage ./pkgs/claude-code-wrapper { };
         }
       );
 
