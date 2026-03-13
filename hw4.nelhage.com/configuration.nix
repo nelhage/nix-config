@@ -89,6 +89,7 @@
       imports = [
         ../home-manager/litestream.nix
         ../home-manager/jupyterlab.nix
+        ../home-manager/obsidian-sync.nix
       ];
 
       nelhage.jupyterlab.enable = true;
@@ -112,6 +113,8 @@
         file = ../secrets/hw4-aws-credentials.age;
       };
       nelhage.aws.enable = true;
+
+      nelhage.obsidian-sync.enable = true;
 
       dotfiles.symlink = true;
       dotfiles.checkout_path = "/etc/nixos";
