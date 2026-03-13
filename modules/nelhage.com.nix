@@ -38,6 +38,7 @@ in
       pkgs.vim
       pkgs.man-pages
       pkgs.man-pages-posix
+      pkgs.ghostty.terminfo
     ];
 
     environment.defaultPackages = [
