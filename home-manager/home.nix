@@ -79,6 +79,7 @@
       nixos-rebuild
       nil
       agenix
+      age
     ];
   };
 

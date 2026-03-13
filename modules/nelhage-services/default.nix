@@ -26,8 +26,9 @@ in
   };
   age.secrets."gcp-service.json" = {
     file = ../../secrets/gcp-service.json.age;
-    owner = "nelhage";
-    mode = "0444";
+    owner = "acme";
+    group = "nginx";
+    mode = "0440";
   };
 
   systemd.services = builtins.listToAttrs (
