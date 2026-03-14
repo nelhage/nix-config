@@ -95,8 +95,8 @@
       nelhage.jupyterlab.enable = true;
       nelhage.jupyterlab.extraConfig = ''
         c.ServerApp.allow_remote_access = True
-        c.ServerApp.token = ""
-        c.ServerApp.password = "argon2:$argon2id$v=19$m=10240,t=10,p=8$eNajFMlEExHSIaZtYZ1D/Q$lvqGPBMEGKINfuMrXQdewcc19Aq9e+OLCIVTPpO+Z24"
+        c.PasswordIdentityProvider.token = ""
+        c.PasswordIdentityProvider.hashed_password = "argon2:$argon2id$v=19$m=10240,t=10,p=8$eNajFMlEExHSIaZtYZ1D/Q$lvqGPBMEGKINfuMrXQdewcc19Aq9e+OLCIVTPpO+Z24"
       '';
 
       garmindb.enable = true;
