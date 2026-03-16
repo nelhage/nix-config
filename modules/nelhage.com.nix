@@ -62,6 +62,7 @@ in
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOj/9YTjI5Pr3TrzFMr9ADLTw7yeJZ6jCejXRL9N0rku nelhage@mythique"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILAc21zLDUk1y2VP2AIUtKhGT5SUrmPN0xI4nFn7bqmU nelhage@pixel-ten"
           "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFzLlWzdMDU5vbNJNEneUfSoOtMz7xEzfVnfFTvLl/atHO8qKBn97IwmOZwnnxYhEOfnbHk0JB/mA083yQQ2w+M= nelhage@anthropic-laptop"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPykNiHYxVQ2nfR/erLMW+5bYvPCqzjG3KzoeDvWA/8E nelhage@nomadique"
         ];
       in
       {
