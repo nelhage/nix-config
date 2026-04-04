@@ -48,6 +48,36 @@ in
       };
     };
 
+    parquet = lib.mkOption {
+      type = types.submodule {
+        options = {
+          enable = lib.mkOption {
+            type = types.bool;
+            default = false;
+            description = "Export DBs to Parquet files (one per table).";
+          };
+
+          path = lib.mkOption {
+            type = types.str;
+            default = "${config.home.homeDirectory}/garmin/parquet";
+            defaultText = "~/garmin/parquet";
+            description = "Local directory to write Parquet files into.";
+          };
+
+          gcsDestination = lib.mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            example = "gs://my-bucket/garmin/parquet";
+            description = ''
+              If set, rsync the exported Parquet files to this GCS URL
+              after export using `gcloud storage rsync`.
+            '';
+          };
+        };
+      };
+      default = { };
+    };
+
     args = lib.mkOption {
       type = types.str;
       default = "--all --download --latest --import";
@@ -85,16 +115,29 @@ in
         WantedBy = [ "timers.target" ];
       };
     };
-    systemd.user.services."${unit}" = {
-      Unit = {
-        Description = "Import Garmin Connect data";
-        After = [ "agenix.service" ];
+    systemd.user.services."${unit}" =
+      let
+        exportScript = ../pkgs/garmindb/export_parquet.py;
+        exportCmd = "${opts.pkg}/bin/python ${exportScript} --db-dir ${opts.path}/DBs --out-dir ${opts.parquet.path}";
+        # Only sync .parquet files so the same directory can hold the raw
+        # SQLite DBs without uploading them. --exclude applies to both source
+        # and destination, so non-parquet objects in GCS are left untouched.
+        uploadCmd = ''${pkgs.google-cloud-sdk}/bin/gcloud storage rsync --recursive --delete-unmatched-destination-objects --exclude='.*(?<!\.parquet)$' ${opts.parquet.path} ${toString opts.parquet.gcsDestination}'';
+      in
+      {
+        Unit = {
+          Description = "Import Garmin Connect data";
+          After = [ "agenix.service" ];
+        };
+        Service = {
+          WorkingDirectory = opts.path;
+          Environment = [ "PATH=${lib.makeBinPath [ pkgs.coreutils ]}" ];
+          ExecStart = "${opts.pkg}/bin/garmindb_cli.py ${opts.args}";
+          ExecStartPost =
+            lib.optional opts.parquet.enable exportCmd
+            ++ lib.optional (opts.parquet.enable && opts.parquet.gcsDestination != null) uploadCmd;
+        };
       };
-      Service = {
-        WorkingDirectory = opts.path;
-        ExecStart = "${opts.pkg}/bin/garmindb_cli.py ${opts.args}";
-      };
-    };
 
     age.secrets."garmin.password" = {
       file = ../secrets/garmin.password.age;

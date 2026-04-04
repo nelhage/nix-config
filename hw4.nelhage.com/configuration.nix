@@ -101,8 +101,12 @@
       '';
 
       garmindb.enable = true;
-      garmindb.litestream.enable = true;
+      garmindb.litestream.enable = false;
       garmindb.litestream.replicaRoot = "gcs://nelhage-data/garmin";
+      garmindb.parquet = {
+        enable = true;
+        gcsDestination = "gs://nelhage-data/garmin";
+      };
 
       age.secrets."gcloud.json" = {
         file = ../secrets/hw4-gcloud.json.age;
