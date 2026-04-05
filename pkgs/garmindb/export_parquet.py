@@ -21,15 +21,46 @@ def list_tables(conn: sqlite3.Connection) -> list[str]:
     return [row[0] for row in cur.fetchall()]
 
 
+def column_types(conn: sqlite3.Connection, table: str) -> dict[str, str]:
+    """Return {column_name: declared_type_upper} for the given table."""
+    return {
+        row[1]: (row[2] or "").upper()
+        for row in conn.execute(f'PRAGMA table_info("{table}")')
+    }
+
+
+def convert_types(df: pd.DataFrame, types: dict[str, str]) -> pd.DataFrame:
+    """Convert stringified SQLite temporal columns to real dtypes.
+
+    In this schema DATETIME/DATE store ISO-formatted timestamps/dates and
+    TIME columns store durations (e.g. elapsed_time, total_sleep) formatted
+    as HH:MM:SS.ffffff.
+    """
+    for col, typ in types.items():
+        if col not in df.columns:
+            continue
+        if typ == "DATETIME":
+            df[col] = pd.to_datetime(df[col], errors="coerce")
+        elif typ == "DATE":
+            # object-dtype column of python date objects → parquet date32
+            ts = pd.to_datetime(df[col], errors="coerce")
+            df[col] = ts.dt.date.where(ts.notna(), None)
+        elif typ == "TIME":
+            df[col] = pd.to_timedelta(df[col], errors="coerce")
+    return df
+
+
 def export_table(
     conn: sqlite3.Connection, table: str, out_path: Path, chunksize: int
 ) -> int:
+    types = column_types(conn, table)
     writer: pq.ParquetWriter | None = None
     rows = 0
     try:
         for chunk in pd.read_sql_query(
             f'SELECT * FROM "{table}"', conn, chunksize=chunksize
         ):
+            chunk = convert_types(chunk, types)
             table_arrow = pa.Table.from_pandas(chunk, preserve_index=False)
             if writer is None:
                 writer = pq.ParquetWriter(
@@ -44,6 +75,7 @@ def export_table(
         if writer is None:
             # Empty table: write a zero-row parquet with inferred schema.
             df = pd.read_sql_query(f'SELECT * FROM "{table}" LIMIT 0', conn)
+            df = convert_types(df, types)
             table_arrow = pa.Table.from_pandas(df, preserve_index=False)
             pq.write_table(table_arrow, out_path, compression="zstd")
     finally:
