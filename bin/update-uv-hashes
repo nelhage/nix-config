@@ -39,7 +39,7 @@ set_hash() {
 
 fixup_one() {
     local system="$1"; shift
-    local nixargs=$("$@")
+    local nixargs=("$@")
 
     delete_hash "$system"
     output=$(
