@@ -26,6 +26,7 @@
     {
       imports = [
         ../home-manager/litestream.nix
+        ../home-manager/mythique.nix
       ];
 
       xdg.configFile."litestream-garmin.yml".source = ./litestream-garmin.yml;
