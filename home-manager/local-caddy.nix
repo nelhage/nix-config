@@ -20,7 +20,9 @@ let
         domain: port:
         ''
           ${domain} {
-            reverse_proxy localhost:${toString port}
+            reverse_proxy localhost:${toString port} {
+              flush_interval -1
+            }
             tls {
               dns googleclouddns {
                 gcp_project ${opts.gcpProject}
