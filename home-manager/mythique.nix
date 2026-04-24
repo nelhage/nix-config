@@ -4,6 +4,8 @@
     ./local-caddy.nix
   ];
 
+  sync.autocommit.enable = true;
+
   nelhage.local-caddy = {
     enable = true;
     gcpProject = "livegrep";
