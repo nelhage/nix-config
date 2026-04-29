@@ -12,6 +12,7 @@ fi
 if test -f ~/code/config/remote/zshrc; then
     source ~/code/config/remote/zshrc </dev/null
 fi
+unsetopt extendedglob
 
 # autoload bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
