@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-set -e
+set -eu
+
+bin_dir="${1-$HOME/bin}"
 
 root=$(cd "$(dirname "$0")/.."; pwd)
 scripts="$root/pkgs/nelhage-scripts"
-mkdir -p "$HOME/bin"
+mkdir -p "$bin_dir"
 
-ln -nsf "$scripts/bin"/* "$HOME/bin/"
+ln -nsf "${scripts}/bin"/* "${bin_dir}/"
