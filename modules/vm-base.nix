@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 {
   imports = [
-    ../modules/common.nix
+    ../modules/nixos.nix
   ];
 
   system.stateVersion = "22.05";

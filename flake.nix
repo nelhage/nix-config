@@ -74,7 +74,7 @@
           home-manager.nixosModules.default
 
           ./modules/nelhage.com.nix
-          ./modules/common.nix
+          ./modules/nixos.nix
           ./hw4.nelhage.com/configuration.nix
           ./hw4.nelhage.com/hardware-configuration.nix
         ];

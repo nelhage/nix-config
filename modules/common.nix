@@ -1,3 +1,6 @@
+# Shared configuration imported by NixOS hosts, nix-darwin systems, and
+# standalone home-manager configurations. Keep options here restricted to
+# those accepted by all three module systems.
 { lib, ... }:
 {
   imports = [ ];
@@ -19,5 +22,4 @@
   nix.settings.trusted-users = [
     "nelhage"
   ];
-  boot.blacklistedKernelModules = [ "algif_aead" ];
 }
