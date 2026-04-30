@@ -107,7 +107,9 @@
 
       overlays.default = final: prev: {
         hugo = self.packages.${prev.stdenv.hostPlatform.system}.hugo-pinned;
-        nelhage = self.packages.${prev.stdenv.hostPlatform.system};
+        nelhage = self.packages.${prev.stdenv.hostPlatform.system} // {
+          inherit (nix-dash-docsets.legacyPackages.${prev.stdenv.hostPlatform.system}) mkNixDocsetFeed;
+        };
         nix-zsh-completions = prev.nix-zsh-completions.overrideAttrs (old: {
           postFixup = (old.postFixup or "") + ''
             rm -f $out/share/zsh/site-functions/_nixos-rebuild
@@ -126,7 +128,6 @@
           hugo-pinned = pkgs.callPackage ./pkgs/hugo-pinned.nix { };
           obsidian-scan = pkgs.callPackage ./pkgs/obsidian-scan { };
           scripts = pkgs.callPackage ./pkgs/nelhage-scripts { };
-          mkNixDocsetFeed = nix-dash-docsets.legacyPackages.${system}.mkNixDocsetFeed;
           jupyterlab = pkgs.callPackage ./pkgs/jupyterlab { python3 = pkgs.python313; };
           claude-code-wrapper = pkgs.callPackage ./pkgs/claude-code-wrapper { };
         }
