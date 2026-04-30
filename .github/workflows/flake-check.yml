@@ -1,0 +1,28 @@
+name: flake-check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: nix flake check
+        run: nix flake check --all-systems --no-build
+
+      - name: Evaluate darwin configurations
+        run: |
+          nix eval --raw '.#darwinConfigurations.mythique.config.system.build.toplevel.drvPath'
+
+      - name: Evaluate home-manager configurations
+        run: |
+          nix eval --raw '.#homeConfigurations."nelhage@nomadique".activationPackage.drvPath'
