@@ -19,4 +19,5 @@
   nix.settings.trusted-users = [
     "nelhage"
   ];
+  boot.blacklistedKernelModules = [ "algif_aead" ];
 }
