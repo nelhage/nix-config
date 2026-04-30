@@ -31,6 +31,6 @@
 
       xdg.configFile."litestream-garmin.yml".source = ./litestream-garmin.yml;
 
-      sync.autocommit.enable = true;
+      nelhage.sync.autocommit.enable = true;
     };
 }

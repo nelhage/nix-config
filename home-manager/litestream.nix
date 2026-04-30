@@ -9,7 +9,7 @@
 with lib;
 
 let
-  cfg = config.programs.litestream;
+  cfg = config.nelhage.litestream;
 
   # Types for replica configuration
   replicaOptions = types.submodule {
@@ -186,7 +186,7 @@ let
 
 in
 {
-  options.programs.litestream = {
+  options.nelhage.litestream = {
     enable = mkEnableOption "Litestream SQLite replication";
 
     package = mkOption {

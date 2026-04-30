@@ -5,7 +5,7 @@
       inherit (lib) types;
     in
     {
-      dotfiles = {
+      nelhage.dotfiles = {
         symlink = lib.mkOption {
           type = types.bool;
           default = false;
@@ -16,7 +16,7 @@
           type = types.str;
           default = "${config.home.homeDirectory}/code/nix-config";
           defaultText = "~/code/nix-config/";
-          description = "Path to the nix-config checkout if dotfiles.symlink=true";
+          description = "Path to the nix-config checkout if nelhage.dotfiles.symlink=true";
         };
       };
     };
@@ -40,8 +40,8 @@
             name = rel;
             value = {
               source =
-                if config.dotfiles.symlink then
-                  mkOutOfStoreSymlink "${config.dotfiles.checkout_path}/home-manager/dotfiles/${rel}"
+                if config.nelhage.dotfiles.symlink then
+                  mkOutOfStoreSymlink "${config.nelhage.dotfiles.checkout_path}/home-manager/dotfiles/${rel}"
                 else
                   path;
               target = "." + rel;

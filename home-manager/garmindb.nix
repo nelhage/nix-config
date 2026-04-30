@@ -6,13 +6,13 @@
 }:
 let
   inherit (lib) types;
-  opts = config.garmindb;
+  opts = config.nelhage.garmindb;
   unit = "garmindb-import";
 in
 {
   imports = [ ./litestream.nix ];
 
-  options.garmindb = {
+  options.nelhage.garmindb = {
     enable = lib.mkOption {
       type = types.bool;
       default = false;
@@ -92,7 +92,7 @@ in
   };
 
   config = lib.mkIf opts.enable {
-    programs.litestream = lib.mkIf opts.litestream.enable {
+    nelhage.litestream = lib.mkIf opts.litestream.enable {
       enable = true;
 
       databases =

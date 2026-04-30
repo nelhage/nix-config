@@ -6,12 +6,12 @@
 }:
 let
   inherit (lib) types;
-  opts = config.sync;
+  opts = config.nelhage.sync;
   unit = "autocommit-sync";
 in
 {
   options = {
-    sync.autocommit = {
+    nelhage.sync.autocommit = {
       enable = lib.mkOption {
         type = types.bool;
         default = false;

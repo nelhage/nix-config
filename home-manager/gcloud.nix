@@ -6,7 +6,7 @@
 }:
 let
   inherit (lib) types;
-  opts = config.gcloud;
+  opts = config.nelhage.gcloud;
 
   credential_file = config.age.secrets.${opts.secret}.path;
   loginScript =
@@ -33,7 +33,7 @@ let
 in
 {
   options = {
-    gcloud = {
+    nelhage.gcloud = {
       enable = lib.mkOption {
         type = types.bool;
         default = false;
