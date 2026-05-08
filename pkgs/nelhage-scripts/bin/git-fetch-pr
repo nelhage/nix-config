@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    echo "Usage: git fetch-pr REMOTE PR-NUMBER" >&2
+    exit 2
+}
+
+if [ $# -ne 2 ]; then
+    usage
+fi
+
+remote=$1
+pr=$2
+
+if ! [[ "$pr" =~ ^[0-9]+$ ]]; then
+    echo "git-fetch-pr: PR-NUMBER must be a positive integer (got: $pr)" >&2
+    exit 2
+fi
+
+exec git fetch "$remote" "+refs/pull/$pr/head:refs/pull/$remote/$pr"
