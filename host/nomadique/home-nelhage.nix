@@ -1,9 +1,9 @@
 { pkgs, ... }:
 {
   imports = [
-    ../modules/common.nix
-    ./home.nix
-    ./laptop.nix
+    ../../modules/common.nix
+    ../../home-manager/home.nix
+    ../../home-manager/laptop.nix
   ];
 
   home.homeDirectory = "/home/nelhage/";

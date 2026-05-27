@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  imports = [
+    ../../modules/vm-base.nix
+  ];
+
   virtualisation.vmVariant.virtualisation = {
     sharedDirectories = {
       nix-config = {

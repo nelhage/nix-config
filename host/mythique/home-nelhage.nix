@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ ... }:
 {
   imports = [
-    ./local-caddy.nix
+    ../../home-manager/local-caddy.nix
   ];
 
   nelhage.sync.autocommit.enable = true;
