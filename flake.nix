@@ -90,7 +90,8 @@
         inherit specialArgs;
         modules = [
           darwinVMHost
-          ./host/avdVM/nixos.nix
+          ./modules/vm-base.nix
+          ./modules/avd-vm.nix
         ];
       };
 
