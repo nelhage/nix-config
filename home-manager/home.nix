@@ -57,6 +57,7 @@
       google-cloud-sdk
       awscli
       s5cmd
+      gdu
 
       # Language stuff
       pyenv
