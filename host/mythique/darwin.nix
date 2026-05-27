@@ -1,11 +1,8 @@
-{
-  pkgs,
-  ...
-}:
+{ ... }:
 {
   imports = [
-    ./common.nix
-    ./home-manager.nix
+    ../../darwin/common.nix
+    ../../darwin/home-manager.nix
   ];
 
   services.openssh = {
@@ -21,11 +18,5 @@
     "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFzLlWzdMDU5vbNJNEneUfSoOtMz7xEzfVnfFTvLl/atHO8qKBn97IwmOZwnnxYhEOfnbHk0JB/mA083yQQ2w+M= nelhage@anthropic-laptop"
   ];
 
-  home-manager.users.nelhage =
-    { ... }:
-    {
-      imports = [
-        ../home-manager/mythique.nix
-      ];
-    };
+  home-manager.users.nelhage = import ./home-nelhage.nix;
 }

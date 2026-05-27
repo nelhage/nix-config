@@ -61,7 +61,7 @@
           self.nixosModules.overlays
           home-manager.darwinModules.default
           darwinRevisionConfig
-          ./darwin/mythique.nix
+          ./host/mythique/darwin.nix
         ];
       };
 
@@ -73,10 +73,7 @@
           disko.nixosModules.disko
           home-manager.nixosModules.default
 
-          ./modules/nelhage.com.nix
-          ./modules/nixos.nix
-          ./hw4.nelhage.com/configuration.nix
-          ./hw4.nelhage.com/hardware-configuration.nix
+          ./host/hw4/nixos.nix
         ];
       };
 
@@ -84,7 +81,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [
           self.nixosModules.overlays
-          ./home-manager/nomadique.nix
+          ./host/nomadique/home-nelhage.nix
         ];
       };
 
