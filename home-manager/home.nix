@@ -15,74 +15,79 @@
     username = "nelhage";
 
     stateVersion = "23.11";
-    packages = with pkgs; [
-      # Shell utilities and their ilk
-      atuin
-      nelhage.base16-shell
-      gh
-      ispell
-      (
-        let
-          aspellDicts = pkgs.symlinkJoin {
-            name = "aspell-dicts";
-            paths = [
-              pkgs.aspell
-            ]
-            ++ (with pkgs.aspellDicts; [
-              en
-              en-computers
-              en-science
-            ]);
-          };
-        in
-        pkgs.writeShellScriptBin "aspell" ''
-          export ASPELL_CONF="data-dir ${aspellDicts}/lib/aspell;"
-          exec ${pkgs.aspell}/bin/aspell "$@"
-        ''
-      )
+    packages =
+      with pkgs;
+      let
+        ghostty-pkg = if stdenv.hostPlatform.system == "aarch64-darwin" then ghostty-bin else ghostty;
+      in
+      [
+        # Shell utilities and their ilk
+        atuin
+        nelhage.base16-shell
+        gh
+        ispell
+        (
+          let
+            aspellDicts = pkgs.symlinkJoin {
+              name = "aspell-dicts";
+              paths = [
+                pkgs.aspell
+              ]
+              ++ (with pkgs.aspellDicts; [
+                en
+                en-computers
+                en-science
+              ]);
+            };
+          in
+          pkgs.writeShellScriptBin "aspell" ''
+            export ASPELL_CONF="data-dir ${aspellDicts}/lib/aspell;"
+            exec ${pkgs.aspell}/bin/aspell "$@"
+          ''
+        )
 
-      mosh
-      pv
-      ripgrep
-      starship
-      tmux
-      ghostty-bin.terminfo
-      tree
-      jq
-      htop
-      nelhage.scripts
+        mosh
+        pv
+        ripgrep
+        starship
+        tmux
+        ghostty-pkg.terminfo
+        tree
+        jq
+        htop
+        nelhage.scripts
 
-      # Other tooling
-      hugo
-      ## N.B. see https://nixos.wiki/wiki/Google_Cloud_SDK
-      google-cloud-sdk
-      awscli
-      s5cmd
-      gdu
+        # Other tooling
+        hugo
+        ## N.B. see https://nixos.wiki/wiki/Google_Cloud_SDK
+        google-cloud-sdk
+        awscli
+        s5cmd
+        gdu
 
-      # Language stuff
-      pyenv
-      uv
-      go
-      nodejs_24
-      cmake
+        # Language stuff
+        pyenv
+        uv
+        go
+        nodejs_24
+        cmake
 
-      # Development tools
-      git
-      litestream
-      sqlite-interactive
-      duckdb
-      rsync
+        # Development tools
+        git
+        litestream
+        sqlite-interactive
+        duckdb
+        rsync
 
-      # Nix stuff
-      nix
-      nix-zsh-completions
-      nixfmt
-      nixos-rebuild
-      nil
-      agenix
-      age
-    ];
+        # Nix stuff
+        nix
+        nix-zsh-completions
+        nixfmt
+        nixos-rebuild
+        nil
+        agenix
+        age
+      ];
   };
 
   programs = {
