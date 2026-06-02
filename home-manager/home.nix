@@ -46,6 +46,7 @@
       ripgrep
       starship
       tmux
+      ghostty-bin.terminfo
       tree
       jq
       htop
