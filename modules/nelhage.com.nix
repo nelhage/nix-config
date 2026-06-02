@@ -113,6 +113,10 @@ in
       group = "git";
       dataDir = "/data/git";
       adminPubkey = builtins.elemAt config.users.users.nelhage.openssh.authorizedKeys.keys 0;
+      extraGitoliteRc = ''
+        $RC{GIT_CONFIG_KEYS} = '.*';
+        $RC{EXPAND_GROUPS_IN_CONFIG} = 1;
+      '';
     };
 
     programs.git = {
