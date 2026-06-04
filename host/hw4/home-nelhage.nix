@@ -7,11 +7,20 @@
   ];
 
   nelhage.jupyterlab.enable = true;
+  # Authentication is handled upstream: lab.nelhage.com is gated by oauth2-proxy
+  # (Google login), and nginx injects an `Authorization: token ...` header on
+  # that path from the `jupyter-auth` secret (see host/hw4/nixos.nix). We read
+  # the token out of that same secret here so Jupyter requires it; direct
+  # requests to 127.0.0.1:8002 without the header are rejected. The secret
+  # holds an nginx directive line, so we pull the token out with a regex.
   nelhage.jupyterlab.extraConfig = ''
+    import pathlib, re
+
     c.ServerApp.allow_remote_access = True
-    c.IdentityProvider.token = ""
-    c.PasswordIdentityProvider.password_required = True
-    c.PasswordIdentityProvider.hashed_password = 'argon2:$argon2id$v=19$m=10240,t=10,p=8$XwRENUHQXYJIGROZME3LMA$PCdjNQRKMSWv7ESG86tpAKn1xNsjRMDd5gkWk9to5dk'
+    c.IdentityProvider.token = re.search(
+        r'token ([^"]+)"',
+        pathlib.Path("/run/agenix/jupyter-auth").read_text(),
+    ).group(1)
   '';
 
   nelhage.garmindb.enable = true;
