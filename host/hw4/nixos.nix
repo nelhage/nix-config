@@ -69,10 +69,16 @@
   ];
 
   security.acme.certs."lab.nelhage.com" = { };
+
+  # Expose lab.nelhage.com publicly, gated by Google login. The oauth2-proxy
+  # engine lives in modules/oauth2-proxy.nix.
+  services.oauth2-proxy.nginx.virtualHosts."lab.nelhage.com" = {
+    allowed_emails = [ "nelhage@nelhage.com" ];
+  };
+
   services.nginx.virtualHosts."lab.nelhage.com" = {
     useACMEHost = "lab.nelhage.com";
     forceSSL = true;
-    listenAddresses = [ config.nelhage.tailscaleAddress ];
 
     locations."/" = {
       proxyPass = "http://localhost:8002";

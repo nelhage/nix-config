@@ -21,4 +21,5 @@ in
   "nelhage-services.age".publicKeys = nelhage_com ++ me;
   "gcp-service.json.age".publicKeys = nelhage_com ++ me;
   "garmin.password.age".publicKeys = nelhage_com ++ me;
+  "oauth2-proxy.env.age".publicKeys = nelhage_com ++ me;
 }
