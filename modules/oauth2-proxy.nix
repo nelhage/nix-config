@@ -36,6 +36,12 @@
     setXauthrequest = true;
     reverseProxy = true;
 
+    # oauth2-proxy only ever receives requests from the local nginx (the
+    # auth_request machinery proxies to it over loopback). Trust only those
+    # addresses to set X-Forwarded-* headers; otherwise oauth2-proxy trusts
+    # every source IP and a direct client could spoof the forwarded headers.
+    trustedProxyIP = [ "127.0.0.1" "::1" ];
+
     redirectURL = "https://auth.nelhage.com/oauth2/callback";
 
     # Login happens on auth.nelhage.com but redirects back to the originating
