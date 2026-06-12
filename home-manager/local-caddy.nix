@@ -11,7 +11,7 @@ let
 
   caddyWithDns = pkgs.caddy.withPlugins {
     plugins = [ "github.com/caddy-dns/googleclouddns@v1.1.0" ];
-    hash = "sha256-JqkqNEJlcy69lzhI0kU+Rsr2a1vWVlsM7IzdUpw9LA0=";
+    hash = "sha256-oj4m3W5yiXNRZSI4Bnbpy2irIsF7A+cnWMR3ep9RvAw=";
   };
 
   caddyfile = pkgs.writeText "Caddyfile" (
