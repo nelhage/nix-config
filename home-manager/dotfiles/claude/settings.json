@@ -2,6 +2,7 @@
   "permissions": {
     "defaultMode": "acceptEdits"
   },
+  "model": "opus[1m]",
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
@@ -10,5 +11,6 @@
     "commit-commands@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true
   },
+  "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true
 }
