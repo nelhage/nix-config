@@ -68,6 +68,8 @@ in
     launchd.agents."${unit}" = {
       enable = true;
       config = {
+        Label = "com.nelhage.${unit}";
+
         ProgramArguments = [ "${opts.autocommit.path}/scripts/git-commit.sh" ];
         EnvironmentVariables = {
           PATH = "${config.home.profileDirectory}/bin";
