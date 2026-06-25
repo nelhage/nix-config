@@ -122,9 +122,33 @@ in
           useACMEHost = "nelhage.com";
           forceSSL = true;
 
-          extraConfig = hstsConfig;
+          root = "/data/www/nelhage.com";
 
-          locations."/".proxyPass = "http://localhost:9001";
+          extraConfig = hstsConfig + ''
+            charset utf-8;
+            absolute_redirect off;
+            server_tokens off;
+          '';
+
+          locations."/blog".extraConfig = ''
+            rewrite ^/blog(/.*)? https://blog.nelhage.com$1;
+          '';
+
+          locations."~ \"^/(git|bughunting|files/(stars|Troy)|poc\\|\\|gtfo)\"".extraConfig = ''
+            autoindex on;
+          '';
+
+          locations."~ \"^/f/.+/\"".extraConfig = ''
+            autoindex on;
+          '';
+
+          locations."/paste/".extraConfig = ''
+            default_type text/plain;
+          '';
+
+          locations."/.git".extraConfig = ''
+            return 404;
+          '';
         };
         "www.nelhage.com" = {
           useACMEHost = "nelhage.com";

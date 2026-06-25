@@ -123,24 +123,6 @@ services:
       - taktician:/taktician
     restart: unless-stopped
 
-  nelhage.com:
-    build:
-      context: ./images/nelhage.com
-    expose:
-     - "80"
-    ports:
-     - "127.0.0.1:9001:80"
-    volumes:
-      - type: bind
-        source: /data/www/nelhage.com
-        target: /data/www/nelhage.com
-        read_only: true
-      - type: bind
-        source: /nix/
-        target: /nix/
-        read_only: true
-    restart: unless-stopped
-
 volumes:
   livegrep-data:
   taktician:
