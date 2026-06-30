@@ -12,5 +12,6 @@
     "pyright-lsp@claude-plugins-official": true
   },
   "skipWorkflowUsageWarning": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "tui": "fullscreen"
 }
