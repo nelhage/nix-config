@@ -46,6 +46,27 @@
     };
   };
 
+  system = {
+    primaryUser = "nelhage";
+
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToControl = true;
+    };
+
+    defaults = {
+      dock = {
+        autohide = true;
+        orientation = "right";
+      };
+
+      NSGlobalDomain = {
+        KeyRepeat = 2;
+        InitialKeyRepeat = 15;
+      };
+    };
+  };
+
   nix.linux-builder = {
     enable = false;
     ephemeral = true;
