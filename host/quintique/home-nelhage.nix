@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 {
   imports = [
     ../../home-manager/local-caddy.nix
@@ -7,7 +7,7 @@
   nelhage.sync.autocommit.enable = false;
 
   nelhage.local-caddy = {
-    enable = false;
+    enable = true;
     gcpProject = "livegrep";
     sites = {
       "lab.nelhage.me" = 8002;
