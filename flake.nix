@@ -65,6 +65,16 @@
         ];
       };
 
+      darwinConfigurations."quintique" = nix-darwin.lib.darwinSystem {
+        inherit specialArgs;
+        modules = [
+          self.nixosModules.overlays
+          home-manager.darwinModules.default
+          darwinRevisionConfig
+          ./host/quintique/darwin.nix
+        ];
+      };
+
       nixosConfigurations.hw4 = lib.nixosSystem {
         system = "x86_64-linux";
         inherit specialArgs;
