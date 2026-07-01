@@ -18,6 +18,20 @@
           defaultText = "~/code/nix-config/";
           description = "Path to the nix-config checkout if nelhage.dotfiles.symlink=true";
         };
+
+        syncthingDotfiles = lib.mkOption {
+          type = types.listOf types.str;
+          default = [
+            "aspell.en.prepl"
+            "aspell.en.pws"
+            "claude/settings.json"
+          ];
+          description = ''
+            List of dotfiles to symlink into ~/Sync/config.
+
+            Entries should be relative paths relative to ~/, with no leading `.`.
+          '';
+        };
       };
     };
 
@@ -25,6 +39,8 @@
     let
       inherit (builtins) substring stringLength listToAttrs;
       inherit (config.lib.file) mkOutOfStoreSymlink;
+
+      cfg = config.nelhage.dotfiles;
 
       fs = lib.filesystem;
       root = ./dotfiles;
@@ -40,8 +56,8 @@
             name = rel;
             value = {
               source =
-                if config.nelhage.dotfiles.symlink then
-                  mkOutOfStoreSymlink "${config.nelhage.dotfiles.checkout_path}/home-manager/dotfiles/${rel}"
+                if cfg.symlink then
+                  mkOutOfStoreSymlink "${cfg.checkout_path}/home-manager/dotfiles/${rel}"
                 else
                   path;
               target = "." + rel;
@@ -50,18 +66,13 @@
         ) fileList
       );
       syncthingDotfiles = listToAttrs (
-        map
-          (name: {
-            name = name;
-            value = {
-              source = mkOutOfStoreSymlink "${config.home.homeDirectory}/Sync/config/${name}";
-              target = "." + name;
-            };
-          })
-          [
-            "aspell.en.prepl"
-            "aspell.en.pws"
-          ]
+        map (name: {
+          name = name;
+          value = {
+            source = mkOutOfStoreSymlink "${config.home.homeDirectory}/Sync/config/${name}";
+            target = "." + name;
+          };
+        }) cfg.syncthingDotfiles
       );
     in
     {
