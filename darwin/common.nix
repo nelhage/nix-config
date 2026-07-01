@@ -67,6 +67,13 @@
     };
   };
 
+  homebrew = {
+    enable = true;
+    casks = [
+      "monitorcontrol"
+    ];
+  };
+
   nix.linux-builder = {
     enable = false;
     ephemeral = true;
