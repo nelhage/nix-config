@@ -82,7 +82,6 @@
         watchman
 
         # Nix stuff
-        nix
         nix-zsh-completions
         nixfmt
         nixos-rebuild
