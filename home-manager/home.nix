@@ -78,6 +78,7 @@
         sqlite-interactive
         duckdb
         rsync
+        ninja
         watchman
 
         # Nix stuff
