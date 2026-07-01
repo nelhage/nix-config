@@ -34,6 +34,10 @@
     '';
   };
 
+  system.activationScripts.postActivation.text = ''
+    ln -nsf /Users/nelhage/code/nix-config/ /etc/nix-darwin
+  '';
+
   fonts.packages = [ pkgs.nerd-fonts.fira-code ];
   nix.optimise.automatic = true;
 
