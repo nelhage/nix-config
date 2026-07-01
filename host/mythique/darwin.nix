@@ -15,7 +15,6 @@
 
   users.users.nelhage.openssh.authorizedKeys.keys = [
     constants.sshKeys."nelhage@pixel-ten"
-    constants.sshKeys."nelhage@anthropic-laptop"
     constants.sshKeys."nelhage@quintique"
   ];
 

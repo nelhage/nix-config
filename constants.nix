@@ -15,8 +15,6 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICWq0k8tVchAd1CvETrnD0JjUBRDivwhfdxJTwn4BYQh nelhage@hw4";
     "nelhage@pixel-ten" =
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILAc21zLDUk1y2VP2AIUtKhGT5SUrmPN0xI4nFn7bqmU nelhage@pixel-ten";
-    "nelhage@anthropic-laptop" =
-      "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFzLlWzdMDU5vbNJNEneUfSoOtMz7xEzfVnfFTvLl/atHO8qKBn97IwmOZwnnxYhEOfnbHk0JB/mA083yQQ2w+M= nelhage@anthropic-laptop";
 
     # Host key for hw4 (nelhage.com).
     hw4 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC2I7i0sAOdoECTR4rpyOP9VsVBSx3giBIVoQUlYg4UF hw4";
