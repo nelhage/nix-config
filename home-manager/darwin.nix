@@ -1,7 +1,11 @@
 {
   pkgs,
+  config,
   ...
 }:
+let
+  inherit (config.lib.file) mkOutOfStoreSymlink;
+in
 {
   home.packages = [ pkgs.reattach-to-user-namespace ];
 
@@ -13,6 +17,11 @@
         exec /Applications/Tailscale.app/Contents/MacOS/Tailscale "$@"
       '';
       executable = true;
+    };
+
+    nix-darwin = {
+      target = ".config/nix-darwin";
+      source = mkOutOfStoreSymlink "${config.home.homeDirectory}/code/nix-config";
     };
   };
 }
