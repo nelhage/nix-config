@@ -56,6 +56,7 @@
         jq
         htop
         nelhage.scripts
+        _1password-cli
 
         # Other tooling
         hugo

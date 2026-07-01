@@ -9,6 +9,7 @@
     builtins.elem (lib.getName pkg) [
       "aspell-dict-en-science"
       "aspell-dict-en-computer"
+      "1password-cli"
     ];
   nixpkgs.config.permittedInsecurePackages = [
     # https://github.com/benbjohnson/litestream/pull/609
