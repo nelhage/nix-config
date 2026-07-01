@@ -77,6 +77,7 @@
       "monitorcontrol"
       "dash"
       "logi-options+"
+      "flux-app"
     ];
   };
 
