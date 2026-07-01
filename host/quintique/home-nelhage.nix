@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, constants, ... }:
 {
   imports = [
     ../../home-manager/local-caddy.nix
@@ -32,7 +32,7 @@
     settings.devices = {
       hw4 = {
         addresses = [
-          "tcp://100.78.93.125:22000/"
+          "tcp://${constants.ipAddresses.hw4Tailscale}:22000/"
         ];
         id = "UFKNXH2-ACWP52M-U5CVTSM-2OVDJOP-6YRP75Z-SD35MLQ-ULYFZDZ-Q5MUAQC";
         autoAcceptFolders = true;

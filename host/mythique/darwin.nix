@@ -1,4 +1,4 @@
-{ ... }:
+{ constants, ... }:
 {
   imports = [
     ../../darwin/common.nix
@@ -14,9 +14,9 @@
   };
 
   users.users.nelhage.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILAc21zLDUk1y2VP2AIUtKhGT5SUrmPN0xI4nFn7bqmU nelhage@pixel-ten"
-    "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFzLlWzdMDU5vbNJNEneUfSoOtMz7xEzfVnfFTvLl/atHO8qKBn97IwmOZwnnxYhEOfnbHk0JB/mA083yQQ2w+M= nelhage@anthropic-laptop"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFmPipxHnb2OmJVcROfX6HGkAwLD9SJqO5aJ5seRZtRT nelhage@quintique"
+    constants.sshKeys."nelhage@pixel-ten"
+    constants.sshKeys."nelhage@anthropic-laptop"
+    constants.sshKeys."nelhage@quintique"
   ];
 
   home-manager.users.nelhage = import ./home-nelhage.nix;

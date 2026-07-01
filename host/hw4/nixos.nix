@@ -3,6 +3,7 @@
   config,
   lib,
   pkgs,
+  constants,
   ...
 }:
 {
@@ -32,7 +33,7 @@
     MAILFROM hw4.nelhage.com
   '';
 
-  nelhage.tailscaleAddress = "100.78.93.125";
+  nelhage.tailscaleAddress = constants.ipAddresses.hw4Tailscale;
 
   system.stateVersion = "23.11";
 

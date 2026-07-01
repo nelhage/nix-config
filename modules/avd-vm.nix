@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, constants, ... }:
 {
   virtualisation.vmVariant.virtualisation = {
     sharedDirectories = {
@@ -26,7 +26,7 @@
   users.users.nelhage = {
     isNormalUser = true;
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOj/9YTjI5Pr3TrzFMr9ADLTw7yeJZ6jCejXRL9N0rku nelhage@mythique"
+      constants.sshKeys."nelhage@mythique"
     ];
   };
 

@@ -1,6 +1,7 @@
-{ ... }:
+{ constants, ... }:
 {
   home-manager = {
+    extraSpecialArgs = { inherit constants; };
     users.nelhage =
       { ... }:
       {

@@ -50,8 +50,9 @@
           host.pkgs = nixpkgs.legacyPackages.aarch64-darwin;
         };
       };
+      constants = import ./constants.nix;
       specialArgs = {
-        inherit inputs;
+        inherit inputs constants;
       };
     in
     {
@@ -89,6 +90,7 @@
 
       homeConfigurations."nelhage@nomadique" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = specialArgs;
         modules = [
           self.nixosModules.overlays
           ./host/nomadique/home-nelhage.nix

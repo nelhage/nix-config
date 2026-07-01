@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  constants,
   ...
 
 }:
@@ -60,10 +61,10 @@ in
     users.users =
       let
         pubkeys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOj/9YTjI5Pr3TrzFMr9ADLTw7yeJZ6jCejXRL9N0rku nelhage@mythique"
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILAc21zLDUk1y2VP2AIUtKhGT5SUrmPN0xI4nFn7bqmU nelhage@pixel-ten"
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFmPipxHnb2OmJVcROfX6HGkAwLD9SJqO5aJ5seRZtRT nelhage@quintique"
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPykNiHYxVQ2nfR/erLMW+5bYvPCqzjG3KzoeDvWA/8E nelhage@nomadique"
+          constants.sshKeys."nelhage@mythique"
+          constants.sshKeys."nelhage@pixel-ten"
+          constants.sshKeys."nelhage@quintique"
+          constants.sshKeys."nelhage@nomadique"
         ];
       in
       {
@@ -90,6 +91,7 @@ in
 
     home-manager = {
       useGlobalPkgs = true;
+      extraSpecialArgs = { inherit constants; };
       users.nelhage =
         { ... }:
         {
