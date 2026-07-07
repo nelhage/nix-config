@@ -4,7 +4,7 @@
     ../../home-manager/local-caddy.nix
   ];
 
-  nelhage.sync.autocommit.enable = true;
+  nelhage.sync.autocommit.enable = false;
 
   nelhage.local-caddy = {
     enable = true;
