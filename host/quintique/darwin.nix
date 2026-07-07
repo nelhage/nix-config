@@ -8,6 +8,7 @@
   home-manager.users.nelhage = import ./home-nelhage.nix;
 
   networking.hostName = "quintique";
+  networking.computerName = "quintique";
   nix.enable = false;
   nix.optimise.automatic = lib.mkForce false;
 }
