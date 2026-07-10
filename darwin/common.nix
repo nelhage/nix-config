@@ -60,6 +60,8 @@
         KeyRepeat = 2;
         InitialKeyRepeat = 15;
       };
+
+      menuExtraClock.Show24Hour = true;
     };
   };
 }
