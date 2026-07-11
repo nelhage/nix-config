@@ -65,6 +65,7 @@
         awscli
         s5cmd
         gdu
+        zstd
 
         # Language stuff
         pyenv
