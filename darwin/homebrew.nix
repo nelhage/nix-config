@@ -11,6 +11,7 @@
       "steam"
       "emacs-app"
       "rectangle"
+      "elgato-control-center"
     ];
     onActivation.autoUpdate = true;
   };
