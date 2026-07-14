@@ -54,6 +54,11 @@
       dock = {
         autohide = true;
         orientation = "right";
+        appswitcher-all-displays = true;
+      };
+      finder = {
+        ShowPathbar = true;
+        FXPreferredViewStyle = "clmv";
       };
 
       NSGlobalDomain = {
