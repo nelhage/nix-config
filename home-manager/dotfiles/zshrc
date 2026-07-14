@@ -38,9 +38,13 @@ do_init_path() {
         test -d ~/.rbenv && eval "$(rbenv init -)"
     fi
 
-    if [ -d "/Applications/" ]; then
+    if [ -d "/Applications" ]; then
         PATH=/Applications/Emacs.app/Contents/MacOS/bin:$PATH
         PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    fi
+
+    if [ -d "$HOME/Library/Android/sdk/platform-tools" ]; then
+        PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
     fi
 }
 
