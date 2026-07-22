@@ -41,6 +41,7 @@ do_init_path() {
     if [ -d "/Applications" ]; then
         PATH=/Applications/Emacs.app/Contents/MacOS/bin:$PATH
         PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+        PATH="$PATH:/Applications/calibre.app/Contents/MacOS/"
     fi
 
     if [ -d "$HOME/Library/Android/sdk/platform-tools" ]; then
