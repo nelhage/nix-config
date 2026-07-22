@@ -11,6 +11,15 @@
     settings.folders = {
       "${config.home.homeDirectory}/Sync" = {
         id = "default";
+        devices = [
+          "hw4"
+          "mythique"
+        ];
+      };
+
+      "${config.home.homeDirectory}/Calibre Library" = {
+        id = "calibre";
+        devices = [ "hw4" ];
       };
     };
 
@@ -19,8 +28,12 @@
         addresses = [
           "tcp://${constants.ipAddresses.hw4Tailscale}:22000/"
         ];
-        id = "UFKNXH2-ACWP52M-U5CVTSM-2OVDJOP-6YRP75Z-SD35MLQ-ULYFZDZ-Q5MUAQC";
+        id = constants.syncthingDevices.hw4;
         autoAcceptFolders = true;
+      };
+
+      mythique = {
+        id = constants.syncthingDevices.mythique;
       };
     };
   };

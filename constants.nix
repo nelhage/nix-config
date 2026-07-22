@@ -24,4 +24,10 @@
     # Tailscale address of hw4 (nelhage.com).
     hw4Tailscale = "100.78.93.125";
   };
+
+  syncthingDevices = {
+    hw4 = "UFKNXH2-ACWP52M-U5CVTSM-2OVDJOP-6YRP75Z-SD35MLQ-ULYFZDZ-Q5MUAQC";
+    quintique = "QJO7DS6-BRDCFSU-TST5D7U-TXRDDUG-6GTQITB-Q7AB3SI-OSCKH5Z-4TEBYAW";
+    mythique = "RJEWOHK-34ZNKWJ-O2QWRZU-UIYUFQY-O5WJ4FJ-JFBM7GW-KDNXSVP-74B4YQO";
+  };
 }
