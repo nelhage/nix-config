@@ -136,6 +136,7 @@ in
           EnvironmentVariables = {
             XDG_DATA_HOME = opts.dataDir;
             HOME = config.home.homeDirectory;
+            GOOGLE_APPLICATION_CREDENTIALS = config.age.secrets."gcp-service.json".path;
           };
 
           KeepAlive = true;
