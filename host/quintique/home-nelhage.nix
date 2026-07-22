@@ -6,11 +6,6 @@
 
   nelhage.sync.autocommit.enable = true;
 
-  nelhage.jupyterlab.extraConfig = ''
-    c.ServerApp.allow_remote_access = True
-    c.ServerApp.trust_xheaders = True
-  '';
-
   services.syncthing = {
     enable = true;
     settings.folders = {

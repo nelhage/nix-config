@@ -31,4 +31,9 @@
       };
     };
   };
+
+  nelhage.jupyterlab.extraConfig = ''
+    c.ServerApp.allow_remote_access = True
+    c.ServerApp.trust_xheaders = True
+  '';
 }
