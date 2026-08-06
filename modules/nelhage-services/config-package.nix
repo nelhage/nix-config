@@ -2,14 +2,19 @@
   stdenv,
   writeTextFile,
   bash,
-  docker-compose,
+  docker,
   credentials ? "$HOME/nelhage.com/secrets/docker-compose.credentials.yaml",
   ...
 }:
 let
   binScript = ''
     #!${bash}/bin/bash
-    exec ${docker-compose}/bin/docker-compose \
+    # Go through the wrapped `docker` CLI (rather than the standalone
+    # docker-compose binary) so that the buildx + compose plugins are
+    # discoverable. nixpkgs only advertises those plugins via DOCKER_CLI_PLUGIN_DIRS
+    # for pkgs.docker; the bare docker-compose binary can't find buildx and
+    # `build` silently falls back to the legacy builder (breaking --mount, etc.).
+    exec ${docker}/bin/docker compose \
       -f ${config.outPath}/docker-compose.yaml \
       -f ${credentials} \
       "$@"
