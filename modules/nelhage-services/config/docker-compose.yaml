@@ -123,6 +123,26 @@ services:
       - taktician:/taktician
     restart: unless-stopped
 
+  crossme-statics:
+    build:
+      context: "https://github.com/nelhage/crossme.git#${CROSSME_V2_REVISION-main}:client"
+    expose:
+      - 8080
+    ports:
+     - "127.0.0.1:9003:8080"
+
+  crossme-api:
+    build:
+      context: "https://github.com/nelhage/crossme.git#${CROSSME_V2_REVISION-main}"
+    expose:
+      - 4000
+    volumes:
+      - type: bind
+        source: /data/crossme/
+        target: /data
+        read_only: false
+    restart: unless-stopped
+
 volumes:
   livegrep-data:
   taktician:

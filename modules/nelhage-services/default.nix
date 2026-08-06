@@ -86,6 +86,8 @@ in
         "livegrep.com" = {
           extraDomainNames = [ "www.livegrep.com" ];
         };
+        "beta.crossme.app" = { };
+        "crossme.nelhage.com" = { };
       };
     };
   networking.firewall.allowedTCPPorts = [
@@ -174,6 +176,24 @@ in
           extraConfig = hstsConfig;
 
           locations."/".return = ''301 "https://livegrep.com$request_uri"'';
+        };
+
+        "beta.crossme.app" = {
+          useACMEHost = "beta.crossme.app";
+          forceSSL = true;
+
+          extraConfig = hstsConfig;
+
+          locations."/".proxyPass = "http://localhost:9003";
+        };
+
+        "crossme.nelhage.com" = {
+          useACMEHost = "crossme.nelhage.com";
+          forceSSL = true;
+
+          extraConfig = hstsConfig;
+
+          locations."/".proxyPass = "http://localhost:9003";
         };
       };
     };
