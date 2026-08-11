@@ -64,9 +64,8 @@
       NSGlobalDomain = {
         KeyRepeat = 2;
         InitialKeyRepeat = 15;
+        AppleICUForce24HourTime = true;
       };
-
-      menuExtraClock.Show24Hour = true;
     };
   };
 }
