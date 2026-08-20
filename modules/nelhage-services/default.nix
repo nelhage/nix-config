@@ -87,7 +87,6 @@ in
           extraDomainNames = [ "www.livegrep.com" ];
         };
         "beta.crossme.app" = { };
-        "crossme.nelhage.com" = { };
       };
     };
   networking.firewall.allowedTCPPorts = [
@@ -180,15 +179,6 @@ in
 
         "beta.crossme.app" = {
           useACMEHost = "beta.crossme.app";
-          forceSSL = true;
-
-          extraConfig = hstsConfig;
-
-          locations."/".proxyPass = "http://localhost:9003";
-        };
-
-        "crossme.nelhage.com" = {
-          useACMEHost = "crossme.nelhage.com";
           forceSSL = true;
 
           extraConfig = hstsConfig;
