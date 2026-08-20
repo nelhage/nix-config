@@ -1,6 +1,6 @@
 ---
 name: bump-crossme
-description: Update the pinned CrossMe revision in this nix config, and/or deploy CrossMe to nelhage.com. Use when asked to bump, update, or deploy crossme (crossme.nelhage.com / beta.crossme.app), or to test a specific crossme commit on the server.
+description: Update the pinned CrossMe revision in this nix config, and/or deploy CrossMe to nelhage.com. Use when asked to bump, update, or deploy crossme (beta.crossme.app), or to test a specific crossme commit on the server.
 ---
 
 CrossMe is deployed on `hw4` (= nelhage.com) as two docker-compose services,
