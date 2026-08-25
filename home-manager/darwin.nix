@@ -3,6 +3,10 @@
   ...
 }:
 {
+  imports = [
+    ./iterm2.nix
+  ];
+
   home.packages = [ pkgs.reattach-to-user-namespace ];
 
   home.file = {
@@ -15,6 +19,8 @@
       executable = true;
     };
   };
+
+  nelhage.iterm2.enable = true;
 
   nelhage.local-caddy = {
     enable = true;
