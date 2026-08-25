@@ -53,6 +53,7 @@
         tmux
         ghostty-pkg.terminfo
         tree
+        pstree
         jq
         htop
         nelhage.scripts
