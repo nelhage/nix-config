@@ -109,18 +109,17 @@ let
       env = uvEnv;
       dontStrip = true;
 
-      buildInputs =
-        [
-          python3
-        ]
-        ++ (if useUvPip then [ uv ] else [ ])
-        ++ buildInputs;
+      buildInputs = [
+        python3
+      ]
+      ++ (if useUvPip then [ uv ] else [ ])
+      ++ buildInputs;
       inherit propagatedBuildInputs;
 
       nativeBuildInputs =
         nativeBuildInputs
         ++ (
-          if stdenv.isDarwin then
+          if stdenv.hostPlatform.isDarwin then
             [ ]
           else
             [
