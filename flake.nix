@@ -119,6 +119,20 @@
         nelhage = self.packages.${prev.stdenv.hostPlatform.system} // {
           inherit (nix-dash-docsets.legacyPackages.${prev.stdenv.hostPlatform.system}) mkNixDocsetFeed;
         };
+        # nixpkgs already packages emacs 31 as `emacs31`, but still points the
+        # unversioned `emacs` at the 30.x series. Pull the alias forward until it
+        # catches up; the `throw` fires once it does, so this can't silently
+        # outlive its usefulness.
+        emacs =
+          if prev.lib.versionAtLeast prev.emacs.version "31" then
+            throw ''
+              nixpkgs' `emacs` is now version ${prev.emacs.version}, so the emacs31
+              alias in this flake is obsolete: remove the `emacs` attribute from
+              `overlays.default` in flake.nix.
+            ''
+          else
+            final.emacs31;
+
         nix-zsh-completions = prev.nix-zsh-completions.overrideAttrs (old: {
           postFixup = (old.postFixup or "") + ''
             rm -f $out/share/zsh/site-functions/_nixos-rebuild
