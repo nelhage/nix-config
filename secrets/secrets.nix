@@ -2,9 +2,8 @@ let
   constants = import ../constants.nix;
   keys = constants.sshKeys;
   me = [
-    keys."nelhage@mythique"
-    keys."nelhage@nomadique"
     keys."nelhage@quintique"
+    keys."nelhage@hw4"
   ];
   nelhage_com = [ keys.hw4 ];
 in
