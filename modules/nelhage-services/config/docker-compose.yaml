@@ -141,6 +141,8 @@ services:
         source: /data/crossme/
         target: /data
         read_only: false
+    environment:
+      - CROSSME_BASE_URL=https://crossme.app/
     restart: unless-stopped
 
 volumes:

@@ -86,7 +86,9 @@ in
         "livegrep.com" = {
           extraDomainNames = [ "www.livegrep.com" ];
         };
-        "beta.crossme.app" = { };
+        "crossme.app" = {
+          extraDomainNames = [ "beta.crossme.app" ];
+        };
       };
     };
   networking.firewall.allowedTCPPorts = [
@@ -177,13 +179,22 @@ in
           locations."/".return = ''301 "https://livegrep.com$request_uri"'';
         };
 
-        "beta.crossme.app" = {
-          useACMEHost = "beta.crossme.app";
+        "crossme.app" = {
+          useACMEHost = "crossme.app";
           forceSSL = true;
 
           extraConfig = hstsConfig;
 
           locations."/".proxyPass = "http://localhost:9003";
+        };
+
+        "beta.crossme.app" = {
+          useACMEHost = "crossme.app";
+          forceSSL = true;
+
+          extraConfig = hstsConfig;
+
+          locations."/".return = ''301 "https://crossme.app$request_uri"'';
         };
       };
     };
