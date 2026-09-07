@@ -14,6 +14,48 @@ let
     "ml"
     "linux"
   ];
+
+  crossme-backup =
+    let
+      database = "/data/crossme/crossme.db";
+      # A single fixed object, overwritten in place each run; we want the
+      # latest snapshot, not a history. Replacing a GCS object is atomic, so a
+      # concurrent reader sees either the old or the new copy, never a partial.
+      destination = "gs://nelhage-data/crossme/crossme.db.zst";
+      # Tables holding only transient state; their contents are dropped from
+      # the snapshot. `sessions` is live login tokens, which are useless in a
+      # backup and are a credential we'd rather not copy off the box.
+      transient = [ "sessions" ];
+      strip = lib.concatMapStrings (table: "DELETE FROM ${table};\n") transient + "VACUUM;";
+    in
+    pkgs.writeShellApplication {
+      name = "crossme-backup";
+      runtimeInputs = with pkgs; [
+        google-cloud-sdk
+        sqlite
+        zstd
+      ];
+      text = ''
+        # systemd gives us a fresh RuntimeDirectory per start, so VACUUM INTO
+        # (which refuses to overwrite) always sees a clean target.
+        snapshot="$RUNTIME_DIRECTORY/crossme.db"
+
+        # VACUUM INTO runs in a single read transaction, so this is a
+        # consistent snapshot (WAL included) that doesn't block the server.
+        # -init /dev/null: ignore any ~/.sqliterc, which could otherwise change
+        # the output format out from under the integrity check below.
+        sqlite3 -init /dev/null ${database} "VACUUM INTO '$snapshot'"
+        sqlite3 -init /dev/null "$snapshot" ${lib.escapeShellArg strip}
+        test "$(sqlite3 -init /dev/null "$snapshot" 'PRAGMA integrity_check')" = ok
+
+        zstd -19 --rm -q "$snapshot"
+
+        export CLOUDSDK_CONFIG="$RUNTIME_DIRECTORY/gcloud"
+        export CLOUDSDK_CORE_PROJECT=livegrep
+        gcloud auth login --quiet --cred-file=${config.age.secrets."crossme-backup-gcloud.json".path}
+        gcloud storage cp "$snapshot.zst" "${destination}"
+      '';
+    };
 in
 {
   environment.systemPackages = [
@@ -24,6 +66,11 @@ in
     file = ../../secrets/nelhage-services.age;
     owner = "nelhage";
   };
+  # The same credentials home-manager gives nelhage's gcloud, but owned by root
+  # so the backup timer can use them outside of a user session.
+  age.secrets."crossme-backup-gcloud.json" = {
+    file = ../../secrets/hw4-gcloud.json.age;
+  };
   age.secrets."gcp-service.json" = {
     file = ../../secrets/gcp-service.json.age;
     owner = "acme";
@@ -31,35 +78,65 @@ in
     mode = "0440";
   };
 
-  systemd.services = builtins.listToAttrs (
-    builtins.map (
-      name:
-      lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
-        description = "Regenerate the livegrep ${name} index.";
-        script = "${config-package.binary} up -d livegrep-indexer-${name}";
+  systemd.services =
+    builtins.listToAttrs (
+      builtins.map (
+        name:
+        lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+          description = "Regenerate the livegrep ${name} index.";
+          script = "${config-package.binary} up -d livegrep-indexer-${name}";
+          serviceConfig = {
+            User = "nelhage";
+          };
+        }
+      ) indexes
+    )
+    // {
+      crossme-backup = {
+        description = "Snapshot the CrossMe database to Google Cloud Storage.";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
         serviceConfig = {
-          User = "nelhage";
+          Type = "oneshot";
+          ExecStart = lib.getExe crossme-backup;
+          RuntimeDirectory = "crossme-backup";
+          RuntimeDirectoryMode = "0700";
         };
-      }
-    ) indexes
-  );
+      };
+    };
 
-  systemd.timers = builtins.listToAttrs (
-    builtins.map (
-      name:
-      lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+  systemd.timers =
+    builtins.listToAttrs (
+      builtins.map (
+        name:
+        lib.attrsets.nameValuePair "livegrep-reindex-${name}" {
+          wantedBy = [ "timers.target" ];
+          after = [
+            "time-set.target"
+            "time-sync.target"
+          ];
+          timerConfig = {
+            OnCalendar = "*-*-03 12:00:00";
+            Service = "livegrep-reindex-${name}";
+          };
+        }
+      ) indexes
+    )
+    // {
+      crossme-backup = {
         wantedBy = [ "timers.target" ];
         after = [
           "time-set.target"
           "time-sync.target"
         ];
         timerConfig = {
-          OnCalendar = "*-*-03 12:00:00";
-          Service = "livegrep-reindex-${name}";
+          OnCalendar = "*-*-* 05,17:00:00";
+          RandomizedDelaySec = "15m";
+          Persistent = true;
+          Service = "crossme-backup.service";
         };
-      }
-    ) indexes
-  );
+      };
+    };
 
   security.acme =
     let
