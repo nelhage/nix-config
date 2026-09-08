@@ -13,6 +13,7 @@
       "emacs-app"
       "rectangle"
       "elgato-control-center"
+      "macwhisper"
     ];
     onActivation.autoUpdate = true;
   };
