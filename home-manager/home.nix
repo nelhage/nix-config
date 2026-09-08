@@ -83,6 +83,7 @@
         rsync
         ninja
         watchman
+        flyctl
 
         # Nix stuff
         nix-zsh-completions
