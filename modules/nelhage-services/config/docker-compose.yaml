@@ -142,7 +142,7 @@ services:
         target: /data
         read_only: false
     environment:
-      - CROSSME_BASE_URL=https://crossme.app/
+      - CROSSME_BASE_URL=https://crossme.app
       # Production brokers login for the per-PR preview apps; this is the Fly
       # org's OIDC issuer, whose tokens prove which preview is redeeming a code.
       - CROSSME_PREVIEW_LOGIN_ISSUER=https://oidc.fly.io/nelson-elhage
