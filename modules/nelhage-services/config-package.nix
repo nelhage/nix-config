@@ -14,9 +14,17 @@ let
     # discoverable. nixpkgs only advertises those plugins via DOCKER_CLI_PLUGIN_DIRS
     # for pkgs.docker; the bare docker-compose binary can't find buildx and
     # `build` silently falls back to the legacy builder (breaking --mount, etc.).
+    set -eu
+    extra_args=()
+    override_env="$HOME/Sync/config/nelhage-services.env"
+    if [ -f "$override_env" ]; then
+       extra_args+=(--env-file "$override_env")
+    fi
     exec ${docker}/bin/docker compose \
       -f ${config.outPath}/docker-compose.yaml \
       -f ${credentials} \
+      --env-file ${config.outPath}/.env \
+      "''${extra_args[@]}" \
       "$@"
   '';
   binFile = writeTextFile {
