@@ -7,62 +7,55 @@ CrossMe is deployed on `hw4` (= nelhage.com) as two docker-compose services,
 `crossme-statics` and `crossme-api`, both built directly from a GitHub URL
 context pinned to a sha1.
 
-The pin lives in `modules/nelhage-services/config/.env`:
+The pin lives in git in `modules/nelhage-services/config/.env`:
 
 ```
 CROSSME_V2_REVISION=<sha1>
 ```
 
+The pin can also be overriden without touching git using `~/Sync/config/nelhage-services.env`.
+
 `modules/nelhage-services/config/docker-compose.yaml` interpolates it into the
 build contexts (`https://github.com/nelhage/crossme.git#${CROSSME_V2_REVISION-main}`,
 and `...:client` for the statics image).
 
-## Bumping the pin
+## Updating and deploying
 
-1. Resolve the target revision. For "current main":
+### To resolve a target revision
 
-   ```
-   git ls-remote https://github.com/nelhage/crossme.git main
-   ```
+`crossme` is located at https://github.com/nelhage/crossme.git ; use `git ls-remote`. e.g. if asked to deploy "current main":
 
-   Always pin a full sha1, never a branch name.
+```
+git ls-remote https://github.com/nelhage/crossme.git main
+```
 
-2. Edit `CROSSME_V2_REVISION` in `modules/nelhage-services/config/.env`.
+Always pin a full sha1, never a branch name.
 
-3. Commit the change.
+### Updating the configured revision
 
-## Deploying
+- If asked to deploy a revision without further specification, use the temporary overrride file (~/Sync/config/nelhage-services.env).
+- If asked to update the committed config, or to update git, first **remove** any `CROSSME_V2_REVISION=` override from the path in ~/Sync, and instead edit `modules/nelhage-services/config/.env`
 
-These are three *separate* steps. Do not assume one implies another.
+Set `CROSSME_V2_REVISION=<sha1>` in the appropriate file. Use a full sha1, never a branch name.
 
-**`nixos-rebuild switch` does not deploy the site.** The compose wrapper
-(`nelhage.com-docker-compose`) points at a `docker-compose.yaml` and `.env`
-baked into the nix store, so a switch only updates which revision the wrapper
-*would* build. The running containers are untouched until they are rebuilt.
+Commit the change if asked to do so.
 
-To actually deploy the pinned revision (run on `hw4`, after switching):
+### Deploying
+
+Do not assume that a request to update the state in `git` corresponds to a request to do a deploy; only do a deploy if explicitly asked.
+
+If you are using the untracked ~/Sync path, you do not need to interact with nixos.
+
+If you are being asked to deploy a state from the in-git nixos configuration, or are explicitly asked to do a `nixos-switch`, first run `sudo nixos-rebuild switch` at the root of the `nix-config` repository. There is no need to pass `--flake`; the machine is configured such that it will discover the correct configuration.
+
+Then, to actually deploy the service, run:
 
 ```
 nelhage.com-docker-compose up -d --build crossme-statics crossme-api
 ```
 
-To deploy an arbitrary revision **without** touching or switching the nix
-config — useful for testing a commit before pinning it — override the variable
-in the environment; a shell env var takes precedence over the store `.env`:
-
-```
-CROSSME_V2_REVISION=<sha1> nelhage.com-docker-compose up -d --build crossme-statics crossme-api
-```
-
-Note that such a deploy is temporary in the sense that it is not recorded
-anywhere: the next unqualified `up --build` will rebuild from whatever the
-activated nix config pins.
-
 ## Rules
 
-Never run any of these steps unless the user asked for them. In particular do
-not run `nixos-rebuild switch` or any `nelhage.com-docker-compose` command on
-your own initiative — editing and committing the pin is the default scope. The
-user may request any subset (bump only, bump + switch, bump + switch + deploy,
-or an ad-hoc revision deploy with no config change); do exactly what was asked
-and say plainly which steps you did and did not run.
+Never run any of these steps unless the user asked for them.
+
+The default scope for a request like "deploy crossme to current main" is to update the override in ~/Sync and run `nelhage.com-docker-compose`. Only touch the state in the repository or `nixos-rebuild` if requested. In any case, state clearly which steps you did run and which files you edited.
