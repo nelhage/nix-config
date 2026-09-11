@@ -55,6 +55,7 @@ in
       pkgs.unzip
       pkgs.ncdu
       pkgs.perf
+      pkgs.clang
       pkgs.nelhage.claude-code-wrapper
     ];
 
