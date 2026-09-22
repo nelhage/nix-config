@@ -18,6 +18,15 @@
       '';
       executable = true;
     };
+
+    mw = {
+      target = "bin/mw";
+      text = ''
+        #!/usr/bin/env bash
+        exec /Applications/MacWhisper.app/Contents/MacOS/mw "$@"
+      '';
+      executable = true;
+    };
   };
 
   nelhage.iterm2.enable = true;
