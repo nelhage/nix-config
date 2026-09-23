@@ -38,6 +38,7 @@
   config =
     let
       inherit (builtins) substring stringLength listToAttrs;
+      inherit (lib.attrsets) mergeAttrsList;
       inherit (config.lib.file) mkOutOfStoreSymlink;
 
       cfg = config.nelhage.dotfiles;
@@ -76,6 +77,15 @@
       );
     in
     {
-      home.file = verbatimDotfiles // syncthingDotfiles;
+      home.file = mergeAttrsList [
+        verbatimDotfiles
+        syncthingDotfiles
+        {
+          ".emacs" = {
+            target = ".emacs";
+            source = mkOutOfStoreSymlink "${config.home.homeDirectory}/.elisp/dot-emacs";
+          };
+        }
+      ];
     };
 }
