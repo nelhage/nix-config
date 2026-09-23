@@ -708,15 +708,6 @@
                 :source "MELPA" :id ivy :type git :protocol https
                 :inherit t :depth treeless :ref
                 "7b267e29cd47b2036eafbc212683a721bd2b7dd0"))
- (javaimp :source "elpaca-menu-lock-file" :recipe
-          (:package "javaimp" :repo
-                    ("https://github.com/emacsmirror/gnu_elpa"
-                     . "javaimp")
-                    :tar "0.9.2" :host gnu :branch "externals/javaimp"
-                    :files ("*" (:exclude ".git")) :source "GNU ELPA"
-                    :id javaimp :type git :protocol https :inherit t
-                    :depth treeless :ref
-                    "b24e7d43f668cf731f57c3e52373180febabec45"))
  (jinja2-mode :source "elpaca-menu-lock-file" :recipe
               (:package "jinja2-mode" :fetcher github :repo
                         "paradoxxxzero/jinja2-mode" :files
@@ -1091,8 +1082,8 @@
                      https :inherit t :depth treeless :ref
                      "2c77e7e0b7540efbb20ccaee3557ef90a5dc77f0"))
  (obsidian :source "elpaca-menu-lock-file" :recipe
-           (:package "obsidian" :repo "licht1stein/obsidian.el"
-                     :fetcher github :files
+           (:package "obsidian" :repo "nelhage/obsidian.el" :fetcher
+                     github :files
                      ("*.el" "*.el.in" "dir" "*.info" "*.texi"
                       "*.texinfo" "doc/dir" "doc/*.info" "doc/*.texi"
                       "doc/*.texinfo" "lisp/*.el" "docs/dir"
@@ -1100,10 +1091,9 @@
                       (:exclude ".dir-locals.el" "test.el" "tests.el"
                                 "*-test.el" "*-tests.el" "LICENSE"
                                 "README*" "*-pkg.el"))
-                     :source "MELPA" :id obsidian :type file :main
-                     "/Users/nelhage/.emacs.d/home-manager/obsidian.el"
-                     :protocol https :inherit t :depth treeless :ref
-                     nil))
+                     :source "MELPA" :id obsidian :type git :host
+                     github :protocol https :inherit t :depth treeless
+                     :ref "0b31775d5da1dfd3d1ffcf9fa05908a3ba26ed15"))
  (pcache :source "elpaca-menu-lock-file" :recipe
          (:package "pcache" :repo "sigma/pcache" :fetcher github
                    :files

@@ -142,8 +142,9 @@
 
 (elpaca
     `(obsidian
-      :type file
-      :main ,(expand-file-name "~/.emacs.d/home-manager/obsidian.el"))
+      :type git
+      :host github
+      :repo "nelhage/obsidian.el")
   (require 'obsidian))
 
 (elpaca popwin
