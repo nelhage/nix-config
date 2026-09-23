@@ -140,11 +140,10 @@
 (elpaca nix-mode)
 (elpaca polymode)
 
-(elpaca
-    `(obsidian
-      :type git
-      :host github
-      :repo "nelhage/obsidian.el")
+(elpaca (obsidian
+         :type git
+         :host github
+         :repo "nelhage/obsidian.el")
   (require 'obsidian))
 
 (elpaca popwin
