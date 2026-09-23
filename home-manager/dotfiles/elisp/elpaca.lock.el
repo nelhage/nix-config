@@ -1081,7 +1081,7 @@
                                 "README*" "*-pkg.el"))
                      :source "MELPA" :id obsidian :type git :host
                      github :protocol https :inherit t :depth treeless
-                     :ref "0af6d212f5da6828f0ce92643d081700c3279285"))
+                     :ref "b082d45e46033a767e3e70dec87e4a3774fd280e"))
  (pcache :source "elpaca-menu-lock-file" :recipe
          (:package "pcache" :repo "sigma/pcache" :fetcher github
                    :files
