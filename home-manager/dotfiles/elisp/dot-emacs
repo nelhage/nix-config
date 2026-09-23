@@ -1228,14 +1228,17 @@ Prefix matches to NAME are put ahead of the list."
 (add-hook 'find-file-hook 'sm-try-smerge t)
 (add-hook 'after-revert-hook 'sm-try-smerge)
 
+(defvar-local my-zap-dos-file-endings t
+  "If set, buffers with DOS newlines will be silently convered to UNIX.")
+(put 'my-zap-dos-file-endings 'safe-local-variable 'booleanp)
+
 (defun dos-file-endings-p ()
   (string-match "dos" (symbol-name buffer-file-coding-system)))
 
 (defun find-file-check-line-endings ()
-  (when (dos-file-endings-p)
+  (when (and (dos-file-endings-p) my-zap-dos-file-endings)
     (set-buffer-file-coding-system 'undecided-unix)
-    (set-buffer-modified-p nil)
-    ))
+    (set-buffer-modified-p nil)))
 
 ;;nxml-mode
 ; (load "~/.elisp/nxml/rng-auto.el")
