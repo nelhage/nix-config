@@ -1,0 +1,1809 @@
+;; -*- mode: emacs-lisp; indent-tabs-mode: nil; lexical-binding: t -*-
+;;.emacs file for Nelson Elhage (nelhage@nelhage.com)
+
+(add-to-list 'load-path "~/.elisp")
+(add-to-list 'load-path "~/.emacs.d/home-manager/")
+
+;; (let ((default-directory (expand-file-name "~")))
+;;   (when (and (file-exists-p ".emacs.d/elpa")
+;;              (not (file-symlink-p ".emacs.d/elpa")))
+;;     (rename-file ".emacs.d/elpa" ".emacs.d/elpa.bak"))
+;;   (unless (file-exists-p ".emacs.d/elpa")
+;;     (make-symbolic-link (expand-file-name "~/.elisp/elpa") ".emacs.d/elpa")))
+;;
+;; (require 'package)
+;; (add-to-list 'package-archives
+;;      '("marmalade" .
+;;       "http://marmalade-repo.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (package-initialize)
+
+(when (and (gnutls-available-p)
+           (string-equal system-type "darwin"))
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
+
+(load (expand-file-name "~/.elisp/bootstrap-elpaca.el"))
+(load (expand-file-name "~/.elisp/packages.el"))
+
+(add-hook 'elpaca-after-init-hook 'exec-path-from-shell-initialize)
+
+;; (direnv-mode t)
+(add-hook 'elpaca-after-init-hook 'envrc-global-mode)
+
+(require 'uniquify)
+(require 'utils)
+(require 'structured)
+
+;;Global key bindings
+(global-set-key (kbd "<deletechar>") 'backward-delete-char)
+(global-set-key (kbd "ESC <deletechar>") 'backward-kill-word)
+(global-set-key (kbd "C-z") nil)
+(global-set-key (kbd "M-g") 'goto-line)
+(global-set-key (kbd "M-k") 'kill-word)
+(global-set-key (kbd "C-x c") 'compile)
+(global-set-key (kbd "C-x M-x") #'execute-extended-command)
+(global-set-key (kbd "C-x M-:") #'eval-expression)
+(global-set-key (kbd "C-a") 'beginning-of-line-dwim)
+; (global-set-key "\C-co" 'other-window)
+(global-set-key (kbd "C-x .") 'browse-url-at-point)
+(global-set-key (kbd "C-x ?") 'dash-at-point)
+(global-set-key [f5] 'call-last-kbd-macro)
+(global-set-key (kbd "TAB") 'company-indent-or-complete-common)
+(global-set-key (kbd "M-r") 're-search-backward)
+(global-set-key (kbd "M-s") 're-search-forward)
+(global-set-key (kbd "C-M-y") 'yank-from-kill-ring)
+; (global-set-key [up] 'increment-number-at-point)
+; (global-set-key [down] 'decrement-number-at-point)
+(global-set-key (kbd "M-`") 'other-frame)
+
+(with-eval-after-load 'help-mode
+  (define-key help-mode-map (kbd "B") 'help-go-back)
+  (define-key help-mode-map (kbd "F") 'help-go-forward))
+
+;; When inside tmux, write OSC 52 to the frame's own tty (the tmux pane).
+;; tmux's `set-clipboard on' will forward it to the client. This avoids
+;; clipetty falling back to a stale $SSH_TTY from when the daemon started.
+(with-eval-after-load 'clipetty
+  (defun clipetty--tty-use-pane (orig ssh-tty tmux)
+    (if tmux (terminal-name) (funcall orig ssh-tty tmux)))
+  (advice-add 'clipetty--tty :around #'clipetty--tty-use-pane))
+
+(setq display-time-24hr-format t)
+
+; (global-set-key (kbd "C-x 4 C-f") 'window-number-find-file)
+; (global-set-key (kbd "C-x 4 f") 'window-number-find-file)
+
+(setq lpr-switches '("-h")
+      ps-left-header '(ps-get-buffer-name user-full-name)
+      woman-use-own-frame nil
+      split-height-threshold nil)
+
+(fset 'rm 'delete-file)
+(fset 'mv 'rename-file)
+(fset 'cp 'copy-file)
+(fset 'mkdir 'make-directory)
+(fset 'rmdir 'delete-directory)
+
+(condition-case nil
+    (progn
+      ;; Apparently I'm not supposed to set this globally, but if you're not
+      ;; going to tell me why, too bad.
+      (setq epa-armor t)
+      (require 'epa-file)
+      (epa-file-enable))
+  ('file-error . nil))
+
+(defun yank-as-rectangle ()
+  (interactive)
+  (insert-rectangle (s-split "\n" (current-kill 0))))
+
+;; DocView / Image Viewer
+(with-eval-after-load 'doc-view
+  (define-key doc-view-mode-map (kbd "C-v") 'doc-view-scroll-up-or-next-page)
+  (define-key doc-view-mode-map (kbd "M-v") 'doc-view-scroll-down-or-previous-page)
+  (define-key doc-view-mode-map (kbd "C-e") 'image-eol)
+  (define-key doc-view-mode-map (kbd "C-a") 'image-bol)
+  (define-key doc-view-mode-map (kbd "C-c t") 'doc-view-open-text))
+
+(with-eval-after-load 'compile
+  (let ((ent (assq 'gcc-include compilation-error-regexp-alist-alist)))
+    (when ent
+      (setcar (cdr ent) "^\\(?:In file included\\|                \\) from \\(.+?\\):\\([0-9]+\\)\\(:[0-9]+\\)?\\(?:\\(:\\)\\|\\(,\\)\\)?")
+      (setcdr (cdr ent) (list 1 2 nil '(4 . 5))))))
+
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  "Apply ANSI coloring to the compilation buffer."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(defun ansi-colorize-buffer ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
+(add-hook 'elpaca-after-init-hook #'global-flycheck-mode)
+(setq-default flycheck-disabled-checkers
+              '(ruby-rubylint
+                ruby
+                ruby-jruby
+                python-flake8
+                python-pylint
+                python-ruff
+                puppet-lint
+                emacs-lisp-checkdoc
+                rst))
+(setq-default flycheck-rubocoprc ".rubocop.yml")
+(setq-default flycheck-rubocop-lint-only nil)
+(setq flycheck-python-pycompile-executable "python3")
+
+;; Work around upstream flycheck bug: the org-lint checker passes the
+;; line number from `org-lint' (a propertized string) directly to
+;; `flycheck-error-new-at', which expects an integer.
+(with-eval-after-load 'flycheck
+  (flycheck-define-generic-checker 'org-lint
+    "An Org mode syntax checker using `org-lint'."
+    :start (lambda (checker callback)
+             (condition-case err
+                 (let ((errors
+                        (delq nil
+                              (mapcar
+                               (lambda (e)
+                                 (pcase e
+                                   (`(,_n [,line ,_trust ,desc ,_checker])
+                                    (flycheck-error-new-at
+                                     (if (stringp line)
+                                         (string-to-number line)
+                                       line)
+                                     nil 'info desc :checker checker))
+                                   (_
+                                    (flycheck-error-new-at
+                                     1 nil 'warning
+                                     (format "Unexpected org-lint format: %S" e)
+                                     :checker checker))))
+                               (org-lint)))))
+                   (funcall callback 'finished errors))
+               (error (funcall callback 'errored
+                               (error-message-string err)))))
+    :modes '(org-mode)
+    :enabled #'flycheck-org-lint-available-p
+    :verify (lambda (_)
+              (let ((org-version (when (require 'org nil 'no-error)
+                                   (org-version))))
+                (list (flycheck-verification-result-new
+                       :label "Org-lint available"
+                       :message (if (fboundp 'org-lint)
+                                    (format "yes (Org %s)" org-version)
+                                  "no")
+                       :face (if (fboundp 'org-lint) 'success 'warning)))))))
+
+(defvar delete-trailing-whitespace-p t
+  "Whether or not to delete traiing whitespace on save.")
+(make-variable-buffer-local 'delete-trailing-whitespace-p)
+
+(defun maybe-delete-trailing-whitespace ()
+  "Delete trailing whitespace if `delete-trailing-whitespace-p` is set."
+  (if delete-trailing-whitespace-p
+      (delete-trailing-whitespace)))
+(put 'delete-trailing-whitespace-p 'safe-local-variable 'booleanp)
+
+(add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
+
+(defun dont-delete-trailing-whitespace ()
+  (setq delete-trailing-whitespace-p nil))
+(add-hook 'diff-mode 'dont-delete-trailing-whitespace)
+
+(defun strip-lf ()
+  (interactive)
+  (save-excursion
+    (replace-string "" "" nil (point-min) (point-max))))
+
+(defun indent-and-complete-symbol-generic ()
+  "Indent the current line and perform symbol completion using
+  `complete-symbol' First indent the line, and if
+  indenting doesn't move point, complete the symbol at point."
+  (interactive)
+  (let ((pt (point)))
+    (funcall indent-line-function)
+    (when (and (= pt (point))
+               (save-excursion (re-search-backward "[^() \n\t\r]+\\=" nil t))
+               (or (looking-at "\\Sw")
+                   (= (point) (point-max))))
+      (complete-symbol nil))))
+
+;;Set up fonts and colors
+
+(defun my-setup-global-fonts ()
+  (when (fboundp 'global-font-lock-mode)
+    (setq base16-theme-256-color-source 'colors)
+    (load-theme 'base16-isotope t)
+    (require 'font-lock)
+    (require 'whitespace)
+    (require 'jit-lock)
+    (when (facep 'whitespace-tab)
+      (set-face-background 'whitespace-tab "#111133"))
+    (setq whitespace-style '(face trailing tabs))
+    (global-whitespace-mode 1)
+    (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+    (set-face-attribute 'mode-line nil :background "#0066ff" :foreground "#ffffff")
+    (set-face-attribute 'header-line nil :inherit nil :background "#404040" :foreground "#d0d0d0")
+    (setq font-lock-maximum-decoration t
+          font-lock-global-modes '(not magit-mode w3m-mode term-mode)
+          font-lock-support-mode 'jit-lock-mode)
+    (global-font-lock-mode 1)))
+(add-to-list 'elpaca-after-init-hook 'my-setup-global-fonts)
+
+(defun safe-set-face-attribute (face frame &rest args)
+  (when (facep face)
+    (apply 'set-face-attribute face frame args)))
+
+(with-eval-after-load 'diff-mode
+  (safe-set-face-attribute 'diff-refine-change nil :background "gray20")
+  (safe-set-face-attribute 'diff-file-header   nil :background "gray40")
+  (safe-set-face-attribute 'diff-removed-face  nil :foreground "red")
+  (safe-set-face-attribute 'diff-added-face    nil :foreground "green"))
+(add-hook 'diff-mode-hook 'my-diff-mode-hook)
+
+(defun my-diff-mode-hook ()
+  (remove-hook (make-local-variable 'before-save-hook) 'delete-trailing-whitespace))
+
+(defvar try-fonts
+  (list
+   "Source Code Pro-11"
+   "FiraCode Nerd Font-10"
+   "Monaco 11"
+   "Mono-11"
+   "-adobe-courier-medium-r-*-*-12-*-*-*-*-70-iso8859-1"))
+(defvar default-font nil
+  "The default font")
+
+(defun my-make-frame-hook (frame)
+  (when (display-graphic-p frame)
+    (let ((try try-fonts))
+      (while (and try (not (font-info (car try) frame)))
+        (setq try (cdr try)))
+      (setq default-font (car try)))
+    (setq default-frame-alist
+          `((menu-bar-lines . 0)
+            (font . ,default-font)
+            (vertical-scroll-bars . nil)
+            (tool-bar-lines . 0)))))
+(add-hook 'after-make-frame-functions 'my-make-frame-hook)
+(my-make-frame-hook nil)
+
+(defun safe-funcall (func &rest args)
+  "Call FUNC on ARGS if and only if FUNC is defined as a function."
+  (when (fboundp func) (apply func args)))
+
+(setq inhibit-startup-message t)
+
+(setopt menu-bar-mode (if (eq system-type 'darwin) t nil)
+        tool-bar-mode nil
+        auto-compression-mode t
+        column-number-mode t
+        fringe-mode (cons 0 nil)
+        scroll-bar-mode nil
+        global-display-line-numbers-mode t)
+
+; (safe-funcall 'display-time-mode)
+; (safe-funcall 'display-battery-mode)
+
+(transient-mark-mode 0)
+
+(set-display-table-slot standard-display-table 'vertical-border ?│)
+
+(setq c-basic-offset 4
+      mouse-wheel-follow-mouse nil
+      mouse-wheel-progressive-speed nil
+      ;; confirm-kill-emacs 'yes-or-no-p
+      confirm-kill-processes nil
+      select-enable-clipboard t
+      uniquify-buffer-name-style 'post-forward-angle-brackets
+      outline-regexp "\\s *\\*+"
+      comint-prompt-read-only t
+      diff-switches "-u"
+      compile-command "find-makefile"
+      pop-up-windows nil
+      save-interprogram-paste-before-kill t
+      Man-width 80
+      tags-case-fold-search nil
+      line-move-visual nil
+      create-lockfiles nil
+      frame-inhibit-implied-resize t
+      pixel-scroll-precision-mode t
+      mode-line-compact t
+
+      gc-cons-threshold (max gc-cons-threshold 30000000)
+      read-process-output-max (* 1024 1024))
+
+(with-eval-after-load 'grep
+  (grep-apply-setting 'grep-use-null-device nil)
+  (grep-apply-setting 'grep-command
+                      (if (executable-find "rg") "rg --no-heading -nH -e " "gr -nH -Ee "))
+
+  (defun grep-default-command ()
+    grep-command))
+
+(defvar my-persistent-man-cache nil
+  "A persistent cache for Man-completion-table")
+
+(defadvice Man-completion-table (around man-completion-persist-cache)
+  (let ((Man-completion-cache my-persistent-man-cache))
+    ad-do-it
+    (setq my-persistent-man-cache Man-completion-cache)))
+(ad-activate 'Man-completion-table)
+
+(when (and (eq system-type 'darwin)
+           (executable-find "gsed"))
+  (setopt Man-sed-command "gsed"))
+
+(defun chomp (str)
+  "Chomp leading and tailing whitespace from STR."
+  (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
+                       str)
+    (setq str (replace-match "" t t str)))
+  str)
+
+(with-eval-after-load 'calc
+  (defadvice calc (around calc-pop-up-windows)
+    (let ((pop-up-windows t))
+      ad-do-it))
+  (ad-activate 'calc)
+  (define-key calc-mode-map (kbd "C-/") 'calc-undo))
+
+(setq-default tab-width 8
+              truncate-lines t
+              truncate-partial-width-windows nil
+              indent-tabs-mode nil)
+
+(setq tramp-default-method "ssh")
+
+(when (fboundp 'show-paren-mode)
+  (setq show-paren-delay 0)
+  (show-paren-mode 1))
+
+(setq flycheck-shellcheck-follow-sources nil)
+
+(require 'shell)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'shell-mode-hook 'my-shell-mode-hook)
+
+(defun inferior-process-cwd (buffer)
+  (let ((proc (get-buffer-process buffer)))
+    (if proc
+        (let ((pid (process-id proc)))
+          (file-symlink-p (concat "/proc/" (int-to-string pid) "/cwd"))))))
+
+(defun shell-mode-chdir (line)
+  (let ((wd (inferior-process-cwd (current-buffer))))
+    (when wd (cd wd)))
+  line)
+
+(defun my-shell-mode-hook ()
+  (shell-dirtrack-mode 0)
+  (add-hook 'comint-preoutput-filter-functions 'shell-mode-chdir))
+
+(defun named-shell (name directory)
+  (interactive "MShell name: \nDIn directory: ")
+  (switch-to-buffer (concat "*" name "*"))
+  (cd directory)
+  (shell (current-buffer)))
+
+(defun filter-trailing-whitespace (string)
+  (replace-regexp-in-string "\[ \t\]+$" "" string))
+(add-hook 'term-mode-hook 'my-term-mode-hook)
+(defun my-term-mode-hook ()
+  (add-hook 'buffer-substring-filters 'filter-trailing-whitespace))
+
+(defun maybe-browse-url-at-point ()
+  (interactive)
+  (let ((url (thing-at-point 'url)))
+    (if (and url
+             (string-match "^https?://.*\\..*" url))
+        (browse-url-at-point))))
+
+(defun term-send-c-space ()
+  (interactive)
+  (term-send-raw-string "\0"))
+
+(with-eval-after-load 'term
+  (setq term-default-bg-color 'unspecified)
+  (setq term-default-fg-color 'unspecified)
+
+  ;;(define-key term-raw-map (kbd "C-x M-x") 'execute-extended-command)
+  (define-key term-raw-map (kbd "<mouse-4>") 'term-send-up)
+  (define-key term-raw-map (kbd "<mouse-5>") 'term-send-down)
+  (define-key term-raw-map (kbd "C-SPC") 'term-send-c-space)
+  ;; (define-key term-raw-map (kbd "ESC") 'term-send-raw-meta)
+  (define-key term-raw-map (kbd "C-/") 'term-send-undo)
+  (define-key term-raw-map (kbd "<mouse-1>") 'maybe-browse-url-at-point)
+
+  (defun term-send-raw-meta ()
+    (interactive)
+    (let ((char last-input-event))
+      (when (symbolp last-input-event)
+        ;; Convert `return' to C-m, etc.
+        (let ((tmp (get char 'event-symbol-elements)))
+          (when tmp
+            (setq char (car tmp)))
+          (when (symbolp char)
+            (setq tmp (get char 'ascii-character))
+            (when tmp
+              (setq char tmp)))))
+      (setq char (logand char (lognot ?\M-\^@)))
+      (term-send-raw-string (if (and (numberp char)
+                                     (> char 127)
+                                     (< char 256))
+                                (make-string 1 char)
+                              (format "\e%c" char))))))
+
+(defun term-send-undo ()
+  (interactive)
+  (term-send-raw-string (kbd "^_")))
+
+(defun named-term (name directory)
+  (interactive "MTerminal name: \nDIn directory: ")
+  (require 'vterm)
+  (let ((default-directory directory)
+        (vterm-buffer-name (concat "*vterm: " name "*")))
+    (vterm)))
+
+(defun claude-code (directory &optional args)
+  (interactive
+   (list (read-directory-name "Directory: ")
+         (when current-prefix-arg
+           (read-string "Claude arguments: "))))
+  (require 'vterm)
+  (let* ((default-directory directory)
+         (dir-name (file-name-nondirectory (directory-file-name directory)))
+         (vterm-buffer-name (concat "*claude-code: " dir-name "*"))
+         (cmd (if (and args (not (string-empty-p args)))
+                  (concat "claude " args)
+                "claude")))
+    (when (get-buffer vterm-buffer-name)
+      (user-error "Buffer %s already exists" vterm-buffer-name))
+    (vterm)
+    (with-current-buffer vterm-buffer-name
+      (vterm-insert (concat cmd "\n")))))
+
+(defun my-vterm-exit-copy-mode ()
+  (interactive)
+  (vterm-copy-mode -1))
+
+(defun my-vterm-copy-kill-and-exit ()
+  (interactive)
+  (copy-region-as-kill nil nil t)
+  (vterm-copy-mode -1))
+
+(defun my-vterm-mode-hook ()
+  (display-line-numbers-mode -1))
+
+(with-eval-after-load 'vterm
+  (define-key vterm-copy-mode-map (kbd "RET") #'my-vterm-exit-copy-mode)
+  (define-key vterm-copy-mode-map [return] #'my-vterm-exit-copy-mode)
+  (define-key vterm-copy-mode-map (kbd "C-g") #'my-vterm-exit-copy-mode)
+  (define-key vterm-copy-mode-map (kbd "ESC <escape>") #'my-vterm-exit-copy-mode)
+  ; (define-key vterm-copy-mode-map (kbd "ESC") nil)
+  (define-key vterm-copy-mode-map (kbd "ESC ESC ESC") #'my-vterm-exit-copy-mode)
+  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'my-vterm-exit-copy-mode)
+  (define-key vterm-copy-mode-map (kbd "M-w") #'my-vterm-copy-kill-and-exit)
+
+  (define-key vterm-mode-map (kbd "C-c [") #'vterm-copy-mode)
+  (define-key vterm-mode-map (kbd "C-g") #'vterm--self-insert)
+  (define-key vterm-mode-map (kbd "C-c M-x") #'execute-extended-command)
+
+  (add-to-list 'vterm-environment "EMACS=1" nil #'string=)
+
+  (add-hook 'vterm-mode-hook #'my-vterm-mode-hook))
+
+(add-to-list 'auto-mode-alist (cons "/bash-fc" 'sh-mode))
+
+(defun dedicate-window (&optional window)
+  (interactive)
+  (if (null window)
+      (setq window (get-buffer-window (current-buffer))))
+  (set-window-dedicated-p window t))
+
+(defun undedicate-window (&optional window)
+  (interactive)
+  (if (null window)
+      (setq window (get-buffer-window (current-buffer))))
+  (set-window-dedicated-p window nil))
+
+(with-eval-after-load 'dired
+  (require 'dired-x)
+
+  (add-hook 'dired-mode-hook 'my-dired-mode-hook)
+  (defun my-dired-mode-hook ()
+    (dired-omit-mode 1))
+  (setq dired-listing-switches "-al")
+  (setq dired-omit-files
+        (rx (or (seq bol (? ".") "#")       ;; emacs autosave files
+                (seq bol ".")               ;; dot-files
+                (seq "~" eol))))            ;; backup files
+  (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode))
+
+(when (and (eq system-type 'darwin)
+           (executable-find "gls"))
+  (setq insert-directory-program "gls"))
+
+(global-set-key "\C-x\C-b" 'ibuffer-list-buffers)
+
+; (require 'helm-config)
+;; (helm-mode 1)
+
+(defun my-yank-pop (&optional arg)
+  (interactive "p")
+  (if (or (eq last-command 'yank)
+          (eq last-command 'yank-pop))
+      (yank-pop arg)
+    (counsel-yank-pop)))
+
+(setq auto-mode-alist
+      (cl-delete-if #'(lambda (p) (eq (cdr p) 'helm-ls-git-rebase-todo-mode)) auto-mode-alist))
+
+(with-eval-after-load 'counsel
+  (defun my--ivy-prefix-sort (name candidates)
+    "Re-sort candidates by NAME.
+All CANDIDATES are assumed to match NAME.
+Prefix matches to NAME are put ahead of the list."
+    (if (or (string= name "")
+            (= (aref name 0) ?^))
+        candidates
+      (let ((re-prefix (concat "\\`" name))
+            res-prefix
+            res-noprefix)
+        (dolist (s candidates)
+          (push s (if (string-match-p re-prefix s)
+                      res-prefix
+                    res-noprefix)))
+        (nconc
+         (nreverse res-prefix)
+         (nreverse res-noprefix)))))
+
+  (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
+        (alt  (where-is-internal #'ivy-alt-done ivy-minibuffer-map t)))
+    (define-key counsel-find-file-map done #'ivy-alt-done)
+    (define-key counsel-find-file-map alt  #'ivy-done))
+  (setq ivy-sort-max-size 1000)
+  (add-to-list 'ivy-sort-matches-functions-alist
+               (cons 'counsel-describe-function 'ivy--shorter-matches-first))
+  (add-to-list 'ivy-sort-matches-functions-alist
+               (cons 'counsel-M-x 'ivy--shorter-matches-first))
+  (add-to-list 'ivy-sort-matches-functions-alist
+               (cons 'help--symbol-completion-table 'ivy--shorter-matches-first))
+  (add-to-list 'ivy-sort-matches-functions-alist
+               (cons 'read-file-name-internal 'my--ivy-prefix-sort)))
+
+(defun my-find-file (arg)
+  (interactive "P")
+  (call-interactively (if arg 'counsel-git 'counsel-find-file)))
+
+;; used for quickly opening github links to line or region
+;; configured to open in a browser right away
+(setq git-link-open-in-browser t
+      git-link-use-commit t)
+
+(autoload 'magit-toplevel "magit")
+(defun my-git-wc-root ()
+  (magit-toplevel))
+
+(defun git-grep ()
+  (interactive)
+  (let ((default-directory (magit-toplevel)))
+    (call-interactively 'grep)))
+
+(with-eval-after-load 'magit
+  (transient-append-suffix 'magit-file-dispatch "d" '("g" "Go to github" git-link)))
+
+(defun my-git-relative-path ()
+  (concat (file-name-as-directory (magit-rev-parse "--show-prefix"))
+          (file-name-nondirectory (buffer-file-name (current-buffer)))))
+
+(defun copy-git-path ()
+  (interactive)
+  (kill-new (my-git-relative-path)))
+
+(require 'windmove)
+(windmove-default-keybindings)
+
+(defun define-bracket-keys ()
+  (interactive)
+  (electric-pair-local-mode))
+
+;; lsp configuration
+(let ((want-prefix "C-c l"))
+  (if (and
+       (boundp 'lsp-keymap-prefix)
+       (not (equal lsp-keymap-prefix want-prefix)))
+      (error "LSP has already been loaded, cannot customize the prefix."))
+  (defvar lsp-keymap-prefix)
+  (setq lsp-keymap-prefix "C-c l"))
+
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-disabled-clients 'mspyls)
+  (add-to-list 'lsp-disabled-clients 'ruff))
+
+(defun my-lsp-mode-hook ()
+  )
+(setq lsp-ui-sideline-enable nil
+      lsp-ui-flycheck-list-position 'right
+      lsp-ui-flycheck-enable t
+      lsp-ui-flycheck-live-reporting nil
+      lsp-ui-doc-position 'at-point
+      lsp-auto-execute-action nil
+      lsp-signature-auto-activate nil)
+(add-hook 'lsp-mode-hook 'my-lsp-mode-hook)
+
+(load "lsp-filters")
+
+(defun my-stop-all-spinners ()
+  (interactive)
+  (dolist (buf (buffer-list))
+    (when-let ((spinner (buffer-local-value 'spinner-current buf)))
+      (spinner-stop spinner))))
+
+;;Version control
+(defmacro advise-to-save-windows (func)
+  `(progn
+     (defadvice ,func (around ,(intern (concat (symbol-name func) "-save-windows")))
+       (save-window-excursion ad-do-it))
+     (ad-activate ',func)))
+
+(advise-to-save-windows vc-revert-buffer)
+(setq vc-delete-logbuf-window nil)
+
+(defun safe-require (feature)
+  "Require FEATURE, failing silently if it does not exist"
+  (condition-case nil
+      (require feature)
+    ('file-error . nil)))
+
+; (require 'magit)
+(global-set-key (kbd "C-c g") 'magit-status)
+(global-set-key (kbd "C-x v") 'magit-file-dispatch)
+(setq vc-handled-backends
+      (delq 'git (delq 'Git vc-handled-backends)))
+
+(setq magit-completing-read 'magit-ido-completing-read
+      magit-push-always-verify nil
+      magit-branch-arguments '()
+      magit-diff-refine-hunk t)
+
+(with-eval-after-load 'magit
+  (magit-auto-revert-mode 1))
+
+(condition-case nil
+    (progn
+      (require 'vc-hg)
+      (add-to-list 'vc-handled-backends 'hg))
+  ('file-error . nil))
+
+;; enable tree-sitter
+(setopt treesit-enabled-modes t
+        treesit-auto-install-grammar 'ask)
+
+;;Perl configuration
+(defalias 'perl-mode 'cperl-mode)
+(add-hook 'cperl-mode-hook 'my-perl-mode-hook)
+(setq cperl-invalid-face nil
+      cperl-font-lock t
+      cperl-indent-parens-as-block t
+      cperl-indent-level 4
+      cperl-continued-statement-offset 0
+      cperl-brace-offset -2
+      cperl-indent-region-fix-constructs nil)
+
+(put 'cperl-indent-level 'safe-local-variable 'integerp)
+
+(autoload 'perldoc "perl-utils" "Look up documentation on a perl module" t)
+(autoload 'run-perl "inf-perl" "Run perl interactively" t)
+(setq inf-perl-shell-program "/usr/bin/re.pl")
+
+(defun my-perl-mode-hook ()
+  ;; (require 'perl-utils)
+  (local-set-key "\C-cp" 'perl-check-pod)
+  ;; (local-set-key "{" 'perl-insert-brackets)
+  (local-set-key "}" 'insert-close)
+  (local-set-key "\C-c\C-d" (make-sparse-keymap))
+  (local-set-key "\C-c\C-dh" 'cperl-perldoc)
+  ;; (local-set-key "\C-ct" 'perl-add-test)
+  (local-set-key (kbd "C-M-\\") 'indent-region)
+  (local-set-key "\C-c\C-v" 'cperl-build-manpage)
+  (local-set-key "\C-c\C-c" 'cperl-build-manpage)
+  (setq indent-tabs-mode nil))
+
+(add-to-list 'auto-mode-alist (cons "\\.t$" 'perl-mode))
+(add-to-list 'auto-mode-alist (cons "\\.xs$" 'c-mode))
+
+;;Python mode
+
+(add-to-list 'interpreter-mode-alist (cons "python2.4" 'python-mode))
+(add-to-list 'interpreter-mode-alist (cons "python2.5" 'python-mode))
+(add-to-list 'auto-mode-alist (cons "SConscript$" 'python-mode))
+(add-to-list 'auto-mode-alist (cons "SConstruct$" 'python-mode))
+(add-to-list 'auto-mode-alist (cons "\\.ipy$" 'python-mode))
+
+(defun my-python-mode-hook ()
+  (setq lsp-diagnostic-filter my-lsp-filter-hints)
+  (apheleia-mode-maybe))
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+
+(with-eval-after-load 'python
+  (define-key python-mode-map (kbd "M-TAB") 'dabbrev-expand))
+
+(setq python-indent-offset 4)
+
+(with-eval-after-load 'apheleia
+  (setf (alist-get 'python-mode apheleia-mode-alist)
+        '(ruff-isort ruff)))
+
+;; bazel
+
+(define-derived-mode bazel-mode
+  python-mode "Bazel"
+  "Major mode for Bazel BUILD files."
+  (setq python-indent-offset 4)
+  (add-hook 'before-save-hook 'buildifier-format-file nil t))
+
+(defun buildifier-format-file ()
+  (interactive)
+  (let ((path (buffer-file-name (current-buffer)))
+        (buffer (current-buffer)))
+    (when path
+      (with-temp-buffer
+        (let ((tmp (current-buffer)))
+          (with-current-buffer buffer
+            (let* ((status (call-process-region
+                            (point-min) (point-max)
+                            "buildifier" nil tmp nil
+                            (concat "-path=" path)))
+                   (output (with-current-buffer tmp (buffer-string))))
+              (if (zerop status)
+                  (progn
+                    (let ((pt (point)))
+                    (delete-region (point-min) (point-max))
+                    (insert output)
+                    (goto-char pt)))
+                (message output)))))))))
+
+(add-to-list 'auto-mode-alist (cons "/BUILD\\(\\..*\\)?$" 'bazel-mode))
+(add-to-list 'auto-mode-alist (cons "/WORKSPACE\\(\\..*\\)?$" 'bazel-mode))
+(add-to-list 'auto-mode-alist (cons "\\.bzl$" 'bazel-mode))
+
+;; ein
+; (eval-after-load 'ein
+;   '(progn
+;      (define-key ein:notebook-mode-map (kbd "<C-return>") 'ein:worksheet-execute-cell)
+;      (define-key ein:notebook-mode-map (kbd "M-n") 'ein:worksheet-goto-next-input-km)
+;      (define-key ein:notebook-mode-map (kbd "M-p") 'ein:worksheet-goto-prev-input-km)
+;      (define-key ein:notebook-mode-map (kbd "M-m b") 'ein:worksheet-insert-cell-below-km)
+;      (define-key ein:notebook-mode-map (kbd "M-m a") 'ein:worksheet-insert-cell-above-km)
+;      (define-key ein:notebook-mode-map (kbd "M-m d") 'ein:worksheet-delete-cell)))
+
+;; cmake
+(put 'cmake-tab-width 'safe-local-variable 'integerp)
+
+;;C and c derivatives
+(defun my-c-mode-common-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (c-set-offset 'substatement-open 0)
+  (setq c-basic-offset 4
+        dabbrev-case-fold-search nil))
+
+(let ((clangd-versions (file-expand-wildcards "/usr/bin/clangd-*")))
+  (when clangd-versions
+    (setq lsp-clients-clangd-executable (car (sort clangd-versions #'string>)))))
+
+;; enable static analysis
+(setq flycheck-clangcheck-analyze nil)
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'c-mode-common-hook 'define-bracket-keys)
+
+(defun pidof (name)
+  (with-temp-buffer
+    (if (zerop (shell-command (concat "pidof " name) (current-buffer)))
+        (string-to-number (buffer-string))
+      nil)))
+
+(defvar clang-format-before-save-p nil
+  "Should we run `clang-format` on buffer before save?")
+(make-variable-buffer-local 'clang-format-before-save-p)
+(put 'clang-format-before-save-p 'safe-local-variable 'booleanp)
+(defun maybe-clang-format-before-save ()
+  (when clang-format-before-save-p
+    (clang-format-buffer)))
+(add-hook 'before-save-hook 'maybe-clang-format-before-save)
+
+(c-add-style "my-cc-style"
+             '("cc-mode"
+               (c-basic-offset . 2)
+               (indent-tabs-mode . nil)
+               (c-offsets-alist
+                . (
+                   (innamespace . 0)
+                   (arglist-intro . ?+)
+                   (arglist-close . ?-)
+                   ))))
+
+(c-add-style "llvm.org"
+             '("gnu"
+               (fill-column . 80)
+               (c++-indent-level . 2)
+               (c-basic-offset . 2)
+               (indent-tabs-mode . nil)
+               (c-offsets-alist . ((arglist-intro . ++)
+                                   (innamespace . 0)
+                                   (member-init-intro . ++)))))
+
+;;;Java
+(add-hook 'java-mode-hook 'define-bracket-keys)
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+
+;; Javascript
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+; (add-hook 'js2-mode-hook 'js2-enter-mirror-mode)
+(add-hook 'js2-mode-hook 'my-js2-mode-hook)
+; (add-hook 'js2-mode-hook 'define-bracket-keys)
+(setq js2-use-font-lock-faces t
+      js2-allow-keywords-as-property-names t
+      js2-mode-show-strict-warnings nil
+      js2-bounce-indent-p t)
+(setq-default js2-basic-offset 2
+              js-indent-level 2)
+(put 'svelte-basic-offset 'safe-local-variable 'integerp)
+(put 'sgml-basic-offset 'safe-local-variable 'integerp)
+
+(defadvice js2-enter-key (after js2-enter-key-indent)
+  (let ((js2-bounce-indent-flag nil))
+    (js2-indent-line)))
+; (ad-activate 'js2-enter-key)
+
+; (eval-after-load 'js2-mode
+;   '(progn
+;      (set-face-attribute 'js2-warning-face nil :underline "cyan")
+;      (set-face-attribute 'js2-error-face nil   :underline "OrangeRed")))
+
+(defun my-js2-mode-hook ()
+  (local-set-key (kbd "C-a") 'beginning-of-line-dwim)
+  (local-set-key (kbd "C-x `") 'next-error)
+  (local-set-key (kbd "M-TAB") 'dabbrev-completion)
+  (setq forward-sexp-function nil))
+
+(put 'js2-basic-offset 'safe-local-variable 'integerp)
+
+(defun my-javascript-mode-hook ()
+  (require 'moz))
+
+;; use local eslint from node_modules before global
+;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
+(defun my-use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/.bin/eslint"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+(add-hook 'flycheck-mode-hook #'my-use-eslint-from-node-modules)
+
+(defun my-eslint-fix ()
+  "Format the current file with ESLint."
+  (interactive)
+  (if flycheck-javascript-eslint-executable
+      (progn (call-process flycheck-javascript-eslint-executable  nil "*ESLint Errors*" nil "--fix" buffer-file-name)
+             (revert-buffer t t t))
+    (message "ESLint not found.")))
+
+(setq lsp-clients-typescript-prefer-use-project-ts-server t)
+(add-hook 'typescript-ts-mode-hook 'lsp)
+(defun my-typescript-hook ()
+  )
+(add-hook 'typescript-ts-mode-hook 'my-typescript-hook)
+
+;;; prettier
+(setq prettier-js-command "npx"
+      prettier-js-args '("prettier"))
+
+(defvar prettier-prettify-on-save nil "Whether to run prettier-js on save")
+(make-variable-buffer-local 'prettier-prettify-on-save)
+(put 'prettier-prettify-on-save 'safe-local-variable 'booleanp)
+(defun my-javascript-prettier-hook ()
+  (when prettier-prettify-on-save (prettier-js-mode))
+  (add-hook 'hack-local-variables-hook 'my-javascript-prettier-hook))
+(add-hook 'typescript-mode-hook 'my-javascript-prettier-hook)
+(add-hook 'js2-mode-hook 'my-javascript-prettier-hook)
+
+;;; web-mode
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(setq-default web-mode-code-indent-offset 2
+              web-mode-markup-indent-offset 2
+              web-mode-enable-auto-quoting nil
+              web-mode-enable-auto-indentation nil
+              )
+(with-eval-after-load 'flycheck
+  '(flycheck-add-mode 'javascript-eslint
+                      'web-mode))
+
+(defun my-web-mode-hook ()
+  (local-set-key (kbd "C-c C-e") 'web-mode-element-close)
+  (local-set-key (kbd "C-M-f") 'web-mode-element-sibling-next)
+  (local-set-key (kbd "C-M-b") 'web-mode-element-sibling-previous)
+  (local-set-key (kbd "C-M-u") 'web-mode-element-parent)
+  (local-set-key (kbd "C-M-d") 'web-mode-element-next)
+  (local-set-key (kbd "M-k") 'web-mode-element-kill))
+
+(add-hook 'web-mode-hook 'my-web-mode-hook)
+
+
+;;;LaTeX
+(add-hook 'latex-mode-hook 'my-latex-mode-hook)
+(add-hook 'LaTeX-mode-hook 'my-latex-mode-hook)
+(add-hook 'TeX-mode-hook 'my-latex-mode-hook)
+(add-hook 'tex-mode-hook 'my-latex-mode-hook)
+
+(defun my-latex-mode-hook ()
+  (require 'reftex)
+  (local-set-key "{" '(lambda ()
+                        (interactive)
+                        (let ((parens-require-spaces nil))
+                          (insert-pair))))
+  (local-set-key "}" 'insert-close)
+  (reftex-mode 1))
+
+(with-eval-after-load 'tex-mode
+  (setq TeX-command-list
+        (cons '("Gv" "gv %s.ps" TeX-run-background t t :help "Run gv on postscript")
+              TeX-command-list))
+  (setq TeX-command-list
+        (cons '("Evince" "evince %s.ps" TeX-run-background t t :help "Run evince on postscript")
+              TeX-command-list))
+  (setq TeX-command-list
+        (cons '("xpdf" "xpdf %s.pdf" TeX-run-background t t :help "Run xpdf on PDF")
+              TeX-command-list))
+  (setq TeX-command-list
+        (cons '("PDF" "dvipdf %s.dvi" TeX-run-background t t :help "Generate a PDF")
+              TeX-command-list))
+  (setq TeX-command-list
+        (cons '("PDFLatex" "pdflatex %s.tex" TeX-run-background t t :help "Run pdflatex")
+              TeX-command-list))
+  (let ((pdfview (assoc-string "^pdf$" TeX-output-view-style)))
+    (setcdr (cdr pdfview) (list "evince %o")))
+  (setq TeX-print-command "pdf2ps %s.pdf - | lpr -P%p -h")
+  (TeX-global-PDF-mode))
+
+(defun TeX-count-words ()
+  (interactive)
+  (save-excursion
+    (shell-command-on-region (point-min) (point-max) "detex | wc -w")))
+
+(with-eval-after-load 'info
+  (setq Info-directory-list
+        (cons "~/.elisp/auctex/doc" Info-default-directory-list))
+  (define-key Info-mode-map "B" 'Info-history-back)
+  (define-key Info-mode-map "F" 'Info-history-forward))
+
+;;; Typst
+
+;; (typst-ts-mc-install-grammar)
+;; (when (not (treesit-grammar-location 'typst))
+;;  (typst-ts-mc-install-grammar))
+
+;;;Lisps
+;;;Scheme
+
+(defun pretty-lambdas ()
+  (font-lock-add-keywords
+   nil `(("\\<lambda\\>"
+          (0 (progn (compose-region (match-beginning 0) (match-end 0)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+
+
+(add-to-list 'auto-mode-alist
+             (cons (concat "/\\."
+                           (regexp-opt '("guile"
+                                         "mzscheme"
+                                         "kawarc.scm"
+                                         "scheme.init"
+                                         "edwin") t)
+                           "$") 'scheme-mode))
+
+(add-to-list 'auto-mode-alist
+             (cons "\\.arc$" 'scheme-mode))
+
+(autoload 'run-scheme "cmuscheme" "Run an inferior scheme process." t)
+
+(setq save-abbrevs nil)
+
+(defun my-scheme-mode-hook ()
+  (pretty-lambdas))
+
+(add-hook 'scheme-mode-hook 'define-lisp-keys t)
+(add-hook 'inferior-scheme-mode-hook 'define-lisp-keys t)
+(add-hook 'scheme-mode-hook 'my-scheme-mode-hook)
+(add-hook 'inferior-scheme-mode-hook 'my-scheme-mode-hook)
+
+(setq comint-scroll-to-bottom-on-ouput t)
+
+(add-to-list 'auto-mode-alist
+             (cons (concat "/\\."
+                           (regexp-opt '("sbclrc"
+                                         "cmucl-init"
+                                         "clrc") t)
+                           "$") 'lisp-mode))
+
+(add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+(add-hook 'lisp-mode-hook 'my-lisp-mode-common-hook)
+(add-hook 'lisp-mode-hook 'pretty-lambdas)
+
+(add-hook 'lisp-data-mode-hook 'my-lisp-mode-hook)
+(add-hook 'lisp-data-mode-hook 'my-lisp-mode-common-hook)
+(add-hook 'lisp-data-mode-hook 'pretty-lambdas)
+(add-hook 'lisp-data-mode-hook 'define-elisp-keys)
+
+(defun my-lisp-mode-hook ()
+  )
+
+(setq common-lisp-hyperspec-root "file:///usr/share/doc/hyperspec/")
+
+(add-to-list 'auto-mode-alist (cons "\\.asd\\'" 'lisp-mode))
+
+(add-hook 'clojure-mode-hook 'define-lisp-keys)
+
+;;;elisp
+(add-hook 'emacs-lisp-mode-hook 'define-elisp-keys)
+(add-hook 'emacs-lisp-mode-hook 'my-lisp-mode-common-hook)
+(add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
+(add-hook 'lisp-interaction-mode-hook 'define-elisp-keys)
+(add-hook 'lisp-interaction-mode-hook 'my-lisp-mode-common-hook)
+(add-hook 'lisp-interaction-mode-hook 'pretty-lambdas)
+(add-hook 'lisp-data-mode 'define-elisp-keys)
+
+;;Lisp keybindings
+
+(defun define-lisp-keys ()
+;;   (local-set-key "[" 'insert-parentheses)
+;;   (local-set-key "]" (lambda () (interactive) (insert-close "")))
+;;   (local-set-key "(" (lambda () (interactive) (insert "[")))
+;;  (local-set-key ")" (lambda () (interactive) (insert "]")))
+
+  (local-set-key "(" 'insert-parentheses)
+  (local-set-key ")" 'insert-close)
+
+  (local-set-key (kbd "M-t") 'transpose-sexps)
+  (local-set-key (kbd "M-b") 'backward-sexp)
+  (local-set-key (kbd "M-f") 'forward-sexp)
+  (local-set-key (kbd "M-a") 'beginning-of-defun)
+  (local-set-key (kbd "M-e") 'end-of-defun)
+  (local-set-key (kbd "M-_") 'unwrap-next-sexp)
+  (local-set-key (kbd "M-q") 'indent-sexp)
+  (local-set-key (kbd "M-(") 'blink-matching-open)
+  (local-set-key (kbd "M-u") 'backward-up-list)
+  (local-set-key (kbd "M-d") 'down-list)
+  (local-set-key (kbd "M-k") 'kill-sexp)
+  (local-set-key (kbd "M-DEL") 'backward-kill-sexp)
+  (local-set-key (kbd "DEL") 'backspace-unwrap-sexp)
+
+  (local-set-key (kbd "C-M-q") 'fill-paragraph)
+  (local-set-key (kbd "TAB") 'indent-and-complete-symbol-generic))
+
+(defun define-elisp-keys ()
+  (define-lisp-keys))
+
+(defun my-lisp-mode-common-hook ()
+  (setq indent-tabs-mode nil))
+
+;;;Haskell
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(add-to-list 'auto-mode-alist (cons "\\.l?hsc?$" 'haskell-mode))
+
+(setq haskell-program-name "ghci")
+
+;; ruby
+; (autoload 'ruby-mode "ruby-mode" "" t)
+(add-to-list 'auto-mode-alist (cons "\\.rb$" 'ruby-mode))
+(add-to-list 'auto-mode-alist (cons "\\.rbi$" 'ruby-mode))
+; gdash graphs are .graph
+(add-to-list 'auto-mode-alist (cons "\\.graph$" 'ruby-mode))
+(add-to-list 'auto-mode-alist (cons "\\.gemspec$" 'ruby-mode))
+(add-to-list 'auto-mode-alist (cons "\\.fixturerb$" 'ruby-mode))
+(add-to-list 'interpreter-mode-alist (cons "ruby" 'ruby-mode))
+
+; (autoload 'run-ruby "inf-ruby" "Run an inferior ruby process" t)
+; (autoload 'inf-ruby-keys "inf-ruby" "Set local key defs for inf-ruby in ruby-mode")
+; (add-hook 'ruby-mode-hook 'inf-ruby-keys)
+(add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
+(defun my-ruby-mode-hook ()
+  (require 'rubocop)
+  (rubocop-mode 1)
+  (local-set-key (kbd "TAB") 'indent-and-complete-symbol-generic)
+  (remove-hook 'after-save-hook 'ruby-mode-set-encoding t)
+  (setq ruby-deep-indent-paren nil))
+
+(font-lock-add-keywords
+ 'ruby-mode
+ '(("=>"
+    (0 (progn (compose-region (match-beginning 0) (match-end 0)
+                              "⇒")
+              nil)))
+   ("!="
+    (0 (progn (compose-region (match-beginning 0) (match-end 0)
+                              "≠")
+              nil)))))
+
+(define-derived-mode ruby-dsl-mode ruby-mode "ruby-dsl")
+(defun my-ruby-dsl-mode-hook ()
+  (setq rubocop-autocorrect-on-save nil))
+
+(add-hook 'ruby-dsl-mode-hook 'my-ruby-dsl-mode-hook)
+(add-to-list 'auto-mode-alist (cons "\\(Rake\\|Gem\\|Guard\\|Vagrant\\)file-[a-z]+$" 'ruby-dsl-mode))
+
+(defvar rubocop-exclude-cops nil
+  "Cops to exclude from autocorrecting in the editor")
+(make-variable-buffer-local 'rubocop-exclude-cops)
+(put 'rubocop-exclude-cops 'safe-local-variable 'list-of-stringsp)
+(defun list-of-stringsp (lst)
+  (and (listp lst)
+       (-all? 'stringp lst)))
+
+(setq-default rubocop-autocorrect-on-save nil)
+(make-variable-buffer-local 'rubocop-autocorrect-on-save)
+(put 'rubocop-autocorrect-on-save 'safe-local-variable 'booleanp)
+
+(with-eval-after-load 'rubocop
+  (defun rubocop-build-command (command path)
+    (concat command
+            (if rubocop-exclude-cops
+                (concat
+                 " --except="
+                 (string-join rubocop-exclude-cops ",")
+                 " ")
+              "")
+            (rubocop-build-requires)
+            " "
+            path)))
+
+;; Matlab
+
+(autoload 'matlab-mode "matlab" "Enter MATLAB mode." t)
+(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
+(autoload 'matlab-shell "matlab" "Interactive MATLAB mode." t)
+(fset 'run-matlab 'matlab-shell)
+
+(setq matlab-shell-command "octave")
+(setq matlab-shell-command-switches '())
+
+;; LLVM development
+
+(let ((llvm-el (expand-file-name "~/code/llvm/llvm/utils/emacs")))
+  (when (file-exists-p llvm-el)
+    (load-file (concat llvm-el "/emacs.el"))
+    (add-to-list 'load-path llvm-el nil 'string=)
+    (require 'llvm-mode)
+    (require 'tablegen-mode)))
+
+;; Apache mode
+(autoload 'apache-mode "apache-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.htaccess\\'"   . apache-mode))
+(add-to-list 'auto-mode-alist '("httpd\\.conf\\'"  . apache-mode))
+(add-to-list 'auto-mode-alist '("srm\\.conf\\'"    . apache-mode))
+(add-to-list 'auto-mode-alist '("access\\.conf\\'" . apache-mode))
+(add-to-list 'auto-mode-alist '("sites-\\(available\\|enabled\\)/" . apache-mode))
+
+
+;;Evil DOS file endings, eeeeeeeeevil
+(add-hook 'find-file-hook 'find-file-check-line-endings)
+(setq find-file-visit-truename t)
+
+;; automatically set mode after I type a shebang
+(defun magic-mode-newline-and-indent ()
+  (interactive "*")
+  (let ((shebang (and (eq major-mode 'fundamental-mode)
+                      (save-excursion
+                        (beginning-of-line)
+                        (looking-at "#!")))))
+    (newline-and-indent)
+    (when shebang
+      (normal-mode))))
+(global-set-key (kbd "C-m") 'magic-mode-newline-and-indent)
+
+;; smerge-mode
+(with-eval-after-load "smerge-mode"
+  (set-face-background 'smerge-refined-change "#003333")
+  (setq smerge-base-re "^|||||||.*\n"))
+
+(defun sm-try-smerge ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+(add-hook 'find-file-hook 'sm-try-smerge t)
+(add-hook 'after-revert-hook 'sm-try-smerge)
+
+(defun dos-file-endings-p ()
+  (string-match "dos" (symbol-name buffer-file-coding-system)))
+
+(defun find-file-check-line-endings ()
+  (when (dos-file-endings-p)
+    (set-buffer-file-coding-system 'undecided-unix)
+    (set-buffer-modified-p nil)
+    ))
+
+;;nxml-mode
+; (load "~/.elisp/nxml/rng-auto.el")
+(fset 'xml-mode 'nxml-mode)
+(add-to-list 'auto-mode-alist
+             (cons (concat "\\."
+                           (regexp-opt '("xml" "xsd" "sch"
+                                         "rng" "xslt" "svg"
+                                         "rss" "plist"
+                                         "xhtml") t) "\\'")
+                   'nxml-mode))
+
+(add-to-list 'magic-mode-alist
+             (cons "<\\?xml" 'nxml-mode))
+
+(add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
+
+(defun my-nxml-mode-hook ()
+  (local-set-key (kbd "C-c C-e") 'nxml-finish-element)
+  (local-set-key (kbd "C-M-f") 'nxml-forward-element)
+  (local-set-key (kbd "C-M-b") 'nxml-backward-element)
+  (local-set-key (kbd "C-M-u") 'nxml-up-element)
+  (local-set-key (kbd "C-M-d") 'nxml-down-element)
+  (local-set-key (kbd "M-k") 'nxml-kill-element)
+  (local-set-key (kbd "C-c ]") 'nxml-finish-element)
+  (setq next-error-function 'nxml-next-error))
+
+(defun nxml-next-error (arg reset)
+  (if reset (rng-first-error))
+  (rng-next-error arg))
+
+(defadvice nxml-up-element (after nxml-up-element-goto-start)
+  "Make nxml-up-element go to the start, not end, of the
+surrounding xml expression"
+  (nxml-backward-element))
+
+(ad-activate 'nxml-up-element)
+
+(defun nxml-kill-element ()
+  (interactive)
+  (let ((start (point)))
+    (nxml-forward-element)
+    (kill-region start (point))))
+
+(setq sgml-set-face t
+      sgml-indent-data t
+      sgml-auto-activate-dtd t)
+
+;;; Zen Coding
+(autoload 'zencoding-mode "zencoding-mode" "Minor mode to enable Zen coding")
+; (add-hook 'sgml-mode-hook 'zencoding-mode)
+; (add-hook 'nxml-mode-hook 'zencoding-mode)
+
+;; html
+(add-hook 'html-mode-hook 'my-html-mode-hook)
+
+(defun my-html-mode-hook ()
+  (local-set-key (kbd "C-c C-e") 'sgml-close-tag))
+
+;;; ESS
+
+; (require 'ess-site)
+; (ess-restore-asm-extns)
+
+(setq-default backup-inhibited t)
+
+;; puppet
+
+(autoload 'puppet-mode "puppet-mode" "Major mode for editing puppet manifests")
+
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+
+;; golang
+
+(defun golang-roots ()
+  (let ((goroot (getenv "GOROOT"))
+        (gopath (getenv "GOPATH"))
+        (roots '()))
+    (when goroot
+      (setq roots (cons goroot roots)))
+    (when gopath
+      (setq roots (append (split-string gopath ":") roots)))
+    roots))
+
+(defun golang-require (path feature)
+  (let ((dir (cl-member-if (lambda (dir) (file-directory-p (concat dir "/" path))) (golang-roots))))
+    (when dir
+      (add-to-list 'load-path (expand-file-name (concat (car dir) "/" path)) nil 'string=)
+      (require feature))))
+
+(defun golang-load (path)
+  (let ((dir (cl-member-if (lambda (dir) (file-exists-p (concat dir "/" path))) (golang-roots))))
+    (when dir
+      (load (concat (car dir) "/" path)))))
+
+(golang-require "misc/emacs" 'go-mode-load)
+(golang-require "src/github.com/golang/lint/misc/emacs" 'golint)
+
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+(defun my-go-mode-hook ()
+  ;;(set (make-local-variable 'company-backends) '(company-go))
+  ;; (set (make-local-variable 'company-minimum-prefix-length) 2)
+  ;; (local-set-key (kbd "M-.") 'godef-jump)
+  (lsp-deferred))
+(when (fboundp 'gofmt-before-save)
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (add-to-list 'safe-local-variable-values '(gofmt-command . "goimports"))
+  (add-to-list 'safe-local-variable-values '(gofmt-command . "gofmt"))
+  (let ((goimports (shell-command-to-string "which goimports")))
+    (when (not (string-equal "" goimports))
+      (setq gofmt-command (replace-regexp-in-string "\n$" "" goimports)))))
+
+(with-eval-after-load 'flycheck
+  (let ((govet (flycheck-checker-get 'go-vet 'command)))
+    (when (equal (cadr govet) "tool")
+      (setf (cdr govet) (cddr govet)))))
+
+;; YAML
+(add-hook 'yaml-mode 'ruler-mode)
+
+;; Rust
+(add-hook 'rust-mode-hook #'flycheck-rust-setup)
+(with-eval-after-load 'rust-ts-mode
+  (require 'lsp-rust)
+  (lsp-rust-switch-server 'rust-analyzer)
+  (add-hook 'rust-ts-mode-hook #'lsp-deferred)
+  (add-hook 'rust-ts-mode-hook #'apheleia-mode))
+; (add-hook 'racer-mode-hook #'eldoc-mode)
+
+(with-eval-after-load 'verilog-mode
+  (setq verilog-indent-level 2
+        verilog-indent-level-module 2
+        verilog-indent-level-declaration 2)
+
+  (defun verilog-set-compile-command ()))
+
+(defun my-verilog-mode-hook ()
+  (let ((ent (assq 'verilog-verilator compilation-error-regexp-alist-alist)))
+    (when ent
+      (setcar (cdr ent) "%\\(Error\\|Warning\\)\\(-[^:]+\\|\\):[\n ]*\\([^ \t:]+\\):\\([0-9]+\\):\\([0-9]+\\):")
+      (setcdr (cdr ent) '(3 4 5))
+      (add-to-list 'compilation-error-regexp-alist 'verilog-verilator)))
+  (setq-local lsp-enable-indentation nil))
+(add-hook 'verilog-mode-hook 'my-verilog-mode-hook)
+
+;; Proof General and Coq
+(setq
+ ;; proof-auto-raise-buffers t
+ proof-three-window-enable t
+ proof-output-tooltips t
+ proof-three-window-mode-policy 'smart)
+
+(with-eval-after-load 'proof-faces
+  (set-face-attribute proof-locked-face nil
+                      :background "navy")
+
+  (set-face-attribute proof-mouse-highlight-face nil
+                      :background "DarkGoldenrod4"))
+
+;; nix
+(with-eval-after-load 'nix-mode
+  (add-to-list 'nix-mode-hook 'apheleia-mode))
+
+;; gptel
+
+(defun my-claude-api-key ()
+  (auth-source-pick-first-password :host "api.anthropic.com"))
+
+(with-eval-after-load 'gptel
+  (setq
+   gptel-model 'claude-sonnet-4-5-20250929
+   gptel-backend (gptel-make-anthropic "Claude"
+                                       :stream t :key #'my-claude-api-key)))
+
+(defun gptel-context-clear ()
+  (interactive)
+  (setq gptel-context--alist nil))
+
+(defun my--gptel-load-system-prompts ()
+    (let ((prompt-dir (expand-file-name "~/Sync/config/system-prompts/")))
+      (when (file-directory-p prompt-dir)
+        (mapcar
+         (lambda (name)
+           (cons (intern (file-name-sans-extension name))
+                 (with-temp-buffer
+                   (insert-file (f-join prompt-dir name))
+                   (string-trim (buffer-string)))))
+         (directory-files prompt-dir nil "^[^.].*\\.md$")))))
+
+(defun my-gptel-reload-prompts (&optional arg)
+  (interactive "p")
+  (let ((prompts (my--gptel-load-system-prompts)))
+    (dolist (prompt prompts)
+      (setq gptel-directives
+            (cons prompt (assq-delete-all (car prompt) gptel-directives))))
+    (when arg
+      (message "Loaded %d prompts (%d total)" (length prompts) (length gptel-directives)))))
+
+(defun my-gptel-restore-props ()
+  (interactive)
+  (if (not gptel-mode)
+      (error "gptel-mode must be active!"))
+  (if (not (derived-mode-p 'markdown-mode))
+      (error "Buffer is not a Markdown buffer"))
+  (save-excursion
+    (remove-text-properties (point-min) (point-max) '(gptel))
+    (goto-char (point-min))
+    (when (looking-at-p "^---")
+      (forward-line)
+      (re-search-forward "^---")
+      (put-text-property (point-min) (point) 'gptel 'ignore))
+    (let ((start (point))
+          (speaker nil))
+      (while (re-search-forward "^### " nil t)
+        (let ((bol (save-excursion (beginning-of-line) (point))))
+          (when (equalp speaker "Claude")
+            (put-text-property start bol 'gptel 'response))
+          (setq speaker (thing-at-point 'word t))
+          (forward-line 1)
+          (setq start (point)))))))
+
+(defun my-gptel-debug-prompt ()
+  (interactive)
+  (let ((prompt (gptel--create-prompt))
+        (debug-buffer (get-buffer-create "*gptel-debug-prompt*")))
+    (with-current-buffer debug-buffer
+      (emacs-lisp-mode)
+      (read-only-mode 1)
+      (let ((inhibit-read-only t))
+        (delete-region (point-min) (point-max))
+        (pp prompt debug-buffer))
+      (message "Prompt dumped to %s" (buffer-name debug-buffer)))))
+
+(with-eval-after-load 'gptel
+  (setf (cdr (assq 'markdown-mode gptel-prompt-prefix-alist)) "### Prompt\n")
+  (setf (cdr (assq 'markdown-mode gptel-response-prefix-alist)) "### Claude\n")
+
+  (my-gptel-reload-prompts))
+
+(progn
+  (add-hook 'gptel-mode-hook 'visual-line-mode)
+
+  (defvar gptel-menu-map (make-sparse-keymap "LLM"))
+  (add-to-list 'yank-excluded-properties 'gptel)
+
+  (define-key global-map (kbd "C-x g") gptel-menu-map)
+  (define-key gptel-menu-map "g" '("Open chat buffer" . gptel))
+  (define-key gptel-menu-map "a" '("Add to context" . gptel-add))
+  (define-key gptel-menu-map "m" '("Menu" . gptel-menu))
+  (define-key gptel-menu-map "x" '("Clear context" . gptel-context-clear)))
+
+
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;; Org mode
+
+(setq org-directory "~/Sync/org")
+
+(setq org-hide-leading-stars t
+      org-log-done 'time
+      org-agenda-files (list (concat org-directory "/todo.org"))
+      org-default-notes-file (concat org-directory "/notes.org")
+      org-todo-keywords
+      '((sequence "TODO" "|" "DONE" "CANCELED"))
+      org-agenda-window-setup 'current-window
+      org-agenda-restore-windows-after-quit t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-todo-keyword-format "%-6s"
+      org-agenda-todo-ignore-deadlines t
+      org-deadline-warning-days 0
+      org-return-follows-link t
+      org-export-with-sub-superscripts nil
+      org-export-with-section-numbers nil
+      org-use-sub-superscripts nil
+      org-export-initial-scope 'subtree
+      org-export-with-toc nil
+      org-html-postamble nil)
+
+(with-eval-after-load 'org-agenda
+  (set-face-attribute 'org-todo nil
+                      :inverse-video nil)
+  (define-key org-mode-map (kbd "C-<return>") 'org-insert-heading))
+
+; (org-remember-insinuate)
+(global-set-key (kbd "C-c r") 'org-remember)
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+(defun my--org-timestamp ()
+  (interactive)
+  (org-timestamp-inactive '(16)))
+
+(with-eval-after-load 'org
+  (add-to-list 'org-export-backends 'md)
+  (define-key org-mode-map (kbd "C-c t") 'org-todo)
+  (define-key org-mode-map (kbd "M-TAB") 'org-cycle)
+  (define-key org-mode-map (kbd "M-p") 'outline-backward-same-level)
+  (define-key org-mode-map (kbd "M-n") 'outline-forward-same-level)
+  (define-key org-mode-map (kbd "C-c L") 'org-toggle-link-display)
+  (define-key org-mode-map (kbd "C-c T") 'my--org-timestamp)
+                                        ;(define-key org-mode-map (kbd "RET") 'org-meta-return)
+  (set-face-foreground 'org-todo "#FF6666")
+  (set-face-foreground 'org-done "#00FF00"))
+
+(with-eval-after-load 'calendar
+  (setq calendar-week-start-day 1)
+  (calendar-set-date-style 'iso))
+
+;; visual-line-mode
+;; https://www.emacswiki.org/emacs/UnfillParagraph
+(defun unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-paragraph nil region)))
+
+(defun unfill-region (min max)
+  "Convert multi-line paragraphs into single lines of text."
+  (interactive "r")
+  (barf-if-buffer-read-only)
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-region min max)))
+
+(define-key visual-line-mode-map (kbd "C-a") 'beginning-of-visual-line)
+(define-key visual-line-mode-map (kbd "M-q") 'unfill-paragraph)
+(define-key visual-line-mode-map (kbd "DEL") 'delete-backward-char)
+(setq visual-line-fringe-indicators '(nil right-curly-arrow)
+      word-wrap-by-category t)
+(defun my-visual-line-mode-hook ()
+  (visual-fill-column-mode (if visual-line-mode 1 -1))
+  (when (derived-mode-p 'markdown-mode 'org-mode)
+    (adaptive-wrap-prefix-mode 1)))
+(add-hook 'visual-line-mode-hook 'my-visual-line-mode-hook)
+
+(defun my-truncate-lines ()
+  (interactive)
+  (visual-line-mode -1)
+  (setq truncate-lines t))
+
+;;; Allow line-ewrapping inside of URLs
+(modify-category-entry ?- ?|)
+(modify-category-entry ?/ ?|)
+
+;; Markdown
+(defun my-markdown-mode-hook ()
+  (company-mode -1)
+  (setq-local adaptive-fill-regexp "[ \t]*")
+  (setq-local fill-column 90)
+  (require 'flycheck-aspell)
+  (setq flycheck-checker 'markdown-aspell-dynamic)
+  (visual-line-mode 1))
+(add-hook 'markdown-mode-hook 'my-markdown-mode-hook)
+(add-hook 'gfm-mode-hook 'my-markdown-mode-hook)
+(add-to-list 'auto-mode-alist (cons "\\.calca$" 'markdown-mode))
+
+(defun hugo-insert-shortcode (shortcode)
+  (interactive "MShortcode: ")
+  (let* ((code (car (split-string shortcode " ")))
+         (prefix (concat "{{<" shortcode ">}}"))
+         (suffix (concat "{{</" code ">}}") ))
+    (if (region-active-p)
+        (let ((start (region-beginning))
+              (end (region-end)))
+          (save-excursion
+            (goto-char end)
+            (insert suffix "\n")
+            (goto-char start)
+            (insert prefix "\n")))
+      (insert prefix)
+      (save-excursion
+        (insert suffix)))))
+
+(defun my-markdown-outdent-line ()
+  "Outdent the current line.
+
+Toggle through indentation positions in reverse order."
+  (interactive)
+  (let ((positions (markdown-calc-indents))
+        (point-pos (current-column))
+        (_ (back-to-indentation))
+        (cur-pos (current-column)))
+    (setq positions (sort (delete-dups positions) '<))
+    (let* ((next-pos (markdown-outdent-find-next-position cur-pos positions))
+           (new-point-pos (max (+ point-pos (- next-pos cur-pos)) 0)))
+      (indent-line-to next-pos)
+      (move-to-column new-point-pos))))
+
+(defun my-markdown-shifttab ()
+  "Handle S-TAB keybinding based on context.
+When in a table, move backward one cell.
+Otherwise, unindent."
+  (interactive)
+  (cond ((markdown-table-at-point-p)
+         (call-interactively #'markdown-table-backward-cell))
+        (t (my-markdown-outdent-line))))
+
+
+
+(with-eval-after-load 'markdown-mode
+  (define-key markdown-mode-map (kbd "C-c s") 'hugo-insert-shortcode)
+  (define-key markdown-mode-map (kbd "C-c C-c") 'markdown-do)
+  (define-key markdown-mode-map (kbd "M-n") 'markdown-outline-next)
+  (define-key markdown-mode-map (kbd "M-p") 'markdown-outline-previous)
+  (define-key markdown-mode-map (kbd "M-<down>") 'markdown-move-down)
+  (define-key markdown-mode-map (kbd "M-<up>") 'markdown-move-up)
+  (define-key markdown-mode-map (kbd "M-<right>") 'markdown-demote-list-item)
+  (define-key markdown-mode-map (kbd "M-<left>") 'markdown-promote-list-item)
+
+  (define-key markdown-mode-map (kbd "S-<tab>") 'my-markdown-shifttab)
+
+  (setq markdown-list-indent-width 2))
+
+;; Obsidian
+(defun my-obsidian-jump-or-create ()
+  "Jump to or create Obsidian note."
+  (interactive)
+  (obsidian-update)
+  (let* ((files (obsidian-files))
+         (dict (make-hash-table :test 'equal))
+         (_ (-map (lambda (f)
+                    (puthash (file-relative-name f obsidian-directory) f dict))
+                  files))
+         (choices (-sort #'string< (-distinct (-concat (obsidian-aliases) (hash-table-keys dict)))))
+         (choice (completing-read "Jump to: " choices))
+         (target (obsidian--get-alias choice (s-concat obsidian-directory "/" choice))))
+    (find-file target)))
+
+(defun my-obsidian-mode-hook ()
+  (setq-local markdown-list-indent-width 4)
+  (add-to-list 'flycheck-disabled-checkers 'markdown-aspell-dynamic))
+
+(defun obsidian-insert-template (path)
+    (interactive (let ((template-dir (f-join obsidian-directory obsidian-templates-directory)))
+                   (list
+                    (f-join template-dir
+                            (completing-read
+                             "Insert template: "
+                             (directory-files template-dir nil "^[^.].*\\.md$"))))))
+    (obsidian-apply-template path))
+
+(with-eval-after-load 'obsidian
+  (safe-require 'obsidian-scan)
+
+  (setopt obsidian-use-update-timer nil)
+
+  (let ((vault-dir (expand-file-name "~/Obsidian/nelhage/")))
+    (when (file-directory-p vault-dir)
+      (setopt obsidian-directory vault-dir
+              obsidian-daily-notes-directory "Daily"
+              obsidian-templates-directory "Templates"
+              obsidian-daily-note-template "Daily.md")
+      (global-obsidian-mode t)))
+
+  (add-hook 'obsidian-mode-hook 'auto-revert-mode)
+  (add-hook 'obsidian-mode-hook 'visual-line-mode)
+  (add-hook 'obsidian-mode-hook 'my-obsidian-mode-hook)
+
+  (defvar obsidian-menu-map (make-sparse-keymap "Obsidian"))
+  (define-key global-map (kbd "C-x /") obsidian-menu-map)
+  (define-key obsidian-menu-map "c" '("Capture note" . obsidian-capture))
+  (define-key obsidian-menu-map "n" '("daily Note" . obsidian-daily-note))
+  (define-key obsidian-menu-map "." 'obsidian-daily-note)
+  (define-key obsidian-menu-map "f" '("Follow link" . obsidian-follow-link-at-point))
+  (define-key obsidian-menu-map "j" '("Jump" . my-obsidian-jump-or-create))
+  (define-key obsidian-menu-map "l" '("Link" . obsidian-insert-link))
+  (define-key obsidian-menu-map "T" '("Template" . obsidian-insert-template))
+  (define-key obsidian-menu-map "q" 'keyboard-quit)
+  (define-key obsidian-menu-map (kbd "C-g") 'keyboard-quit)
+  (define-key obsidian-menu-map "s" '("Search" . obsidian-search))
+  (define-key obsidian-menu-map "t" '("Tag find" . obsidian-find-tag))
+  (define-key obsidian-menu-map "u" '("Update" . obsidian-update))
+  (define-key obsidian-menu-map "w" '("Wikilink" . obsidian-insert-wikilink)))
+
+;; lean4-mode
+(add-to-list 'load-path (expand-file-name "~/.elisp/lean4-mode/") nil 'string=)
+(safe-require 'lean4-mode)
+
+(with-eval-after-load 'lean4-mode
+  (defun my-lean4-mode-hook ()
+    ; (lsp-ui-sideline-mode 1)
+    ; (setq-local lsp-ui-sideline-show-hover t)
+  )
+  (add-hook 'lean4-mode-hook 'my-lean4-mode-hook))
+
+;; SES mode
+(add-hook 'ses-mode-hook 'my-ses-mode-hook)
+(defun my-ses-mode-hook ()
+  (whitespace-mode -1))
+
+;; egglog
+(require 'egglog-mode)
+
+(defun my-egglog-mode-hook ()
+  (define-lisp-keys))
+(add-hook 'egglog-mode-hook 'my-egglog-mode-hook)
+
+;; spellchecking
+(setq ispell-program-name "aspell")
+(setq ispell-silently-savep t)
+
+;;Disabled commands
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
+
+;;Setup my working emacs session
+
+(add-hook 'emacs-startup-hook 'my-startup-hook)
+
+(defun my-startup-hook ()
+  (set-frame-font default-font t)
+  (unless (getenv "EMACS_NO_SERVER")
+    (server-start)
+    (global-set-key (kbd "C-x C-c") 'server-edit))
+  (find-file-noselect "~/.elisp/dot-emacs"))
+
+;;; Misc stuff
+
+(setq asm-comment-char ?\;)
+
+(add-hook 'asm-mode-hook 'my-asm-mode-hook)
+
+(defun my-asm-mode-hook ()
+  (define-key asm-mode-map (kbd "#") 'self-insert-command))
+
+(add-to-list 'auto-mode-alist (cons "/Makefrag$" 'makefile-mode))
+(add-to-list 'auto-mode-alist (cons "/Makefile[^/]+$" 'makefile-mode))
+
+;(setq browse-url-browser-function 'w3m-other-window-new-session)
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program
+      (cond
+       ((eq system-type 'darwin) "open")
+       (t "xdg-open"))
+      w3m-home-page  "http://google.com")
+
+(put 'asm-comment-char 'safe-local-variable 'characterp)
+
+(setq custom-file (expand-file-name "~/.elisp/custom.el"))
+(load custom-file)
+
+(let ((local-config (expand-file-name "~/.elisp/local.el")))
+  (when (file-exists-p local-config)
+    (load local-config)))
+
+(defun my-remove-defunct-packages (&optional arg)
+  (interactive "P")
+  (let ((elpa-root (expand-file-name "~/.emacs.d/elpa/"))
+        (installed-names)
+        (disk-names))
+    (dolist (path load-path)
+      (let ((abspath (expand-file-name path)))
+        (when (string-prefix-p elpa-root abspath)
+          (push (string-remove-prefix elpa-root abspath) installed-names))))
+
+    (dolist (path (directory-files elpa-root t))
+      (let ((base (file-name-nondirectory path)))
+        (when (and (file-directory-p path)
+                   (not (string-prefix-p "." base))
+                   (not (string-equal base "archives")))
+          (push base disk-names))))
+
+    (dolist (victim (seq-difference disk-names installed-names))
+      (let ((abs (file-name-concat elpa-root victim)))
+        (if arg
+            (delete-directory abs t)
+          (message "Would delete: %s" abs))))))
