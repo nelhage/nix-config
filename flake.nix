@@ -116,9 +116,7 @@
 
       overlays.default = final: prev: {
         hugo = self.packages.${prev.stdenv.hostPlatform.system}.hugo-pinned;
-        nelhage = self.packages.${prev.stdenv.hostPlatform.system} // {
-          inherit (nix-dash-docsets.legacyPackages.${prev.stdenv.hostPlatform.system}) mkNixDocsetFeed;
-        };
+        nelhage = self.packages.${prev.stdenv.hostPlatform.system};
         # nixpkgs already packages emacs 31 as `emacs31`, but still points the
         # unversioned `emacs` at the 30.x series. Pull the alias forward until it
         # catches up; the `throw` fires once it does, so this can't silently
@@ -155,6 +153,31 @@
           claude-code-wrapper = pkgs.callPackage ./pkgs/claude-code-wrapper { };
         }
       );
+
+      # The Dash/Zeal docset feed published at https://nelhage.com/nix-docsets.
+      #
+      # This deliberately is not referenced from nelhage.com's system closure:
+      # the feed renders the complete NixOS and home-manager option
+      # documentation, so merely *evaluating* it forces `options.json` and both
+      # reference manuals. Reaching it from an activation script added ~2.7s to
+      # every `nixos-rebuild` of hw4 -- about 40% of the total evaluation -- for
+      # an artifact that changes only when nixpkgs does. `bin/deploy-docsets`
+      # publishes it out of band instead.
+      #
+      # It is `legacyPackages` rather than `packages` so that `nix flake check
+      # --all-systems` does not evaluate it. nix-dash-docsets builds its own
+      # source with `lib.fileset.gitTracked`, which yields a store path that a
+      # cold store cannot realise during a `--no-build` check:
+      #
+      #     error: path '/nix/store/pnr78...-source' is not valid
+      #
+      # It builds fine when actually deployed; it just is not something a flake
+      # check can evaluate, which is exactly what `legacyPackages` is for.
+      legacyPackages = forAllSystems (system: {
+        docset-feed = nix-dash-docsets.legacyPackages.${system}.mkNixDocsetFeed {
+          baseURL = "https://nelhage.com/nix-docsets";
+        };
+      });
 
       devShells = forAllSystems (
         system:

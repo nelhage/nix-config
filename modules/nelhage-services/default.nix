@@ -202,6 +202,9 @@ in
           useACMEHost = "nelhage.com";
           forceSSL = true;
 
+          # Contents are managed outside nix, with one exception: /nix-docsets
+          # is a symlink into the store, published by `bin/deploy-docsets`
+          # rather than by activation. See `docset-feed` in flake.nix for why.
           root = "/data/www/nelhage.com";
 
           extraConfig = hstsConfig + ''

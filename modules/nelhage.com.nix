@@ -13,7 +13,6 @@ in
   imports = [
     ./agenix.nix
     ./nelhage-services
-    ./nix-docsets.nix
     ./oauth2-proxy.nix
   ];
 
