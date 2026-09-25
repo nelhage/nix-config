@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -eu
+
+die() {
+    echo "$@" >&2
+    exit 1
+}
+
+# Publish the Dash/Zeal docset feed into nelhage.com's webroot.
+#
+# The feed is not part of the system closure on purpose -- evaluating it forces
+# the full NixOS and home-manager option documentation, which cost ~2.7s on
+# every nixos-rebuild. See the `docset-feed` comment in flake.nix.
+#
+# Run this on nelhage.com itself, from a checkout of this config; there is no
+# activation hook, so the feed only picks up new nixpkgs when this is re-run.
+
+webroot=/data/www/nelhage.com/nix-docsets
+
+[ -d "$(dirname "$webroot")" ] ||
+    die "$(dirname "$webroot") does not exist -- run this on nelhage.com"
+
+cd "$(dirname "$0")/.."
+
+system="$(nix eval --raw --impure --expr builtins.currentSystem)"
+
+# --out-link does double duty: it points the webroot symlink at the new feed
+# *and* registers that symlink as an indirect GC root. The root matters --
+# nothing else refers to the feed now that it is out of the system closure, so
+# without it the next nix-collect-garbage would delete the feed out from under
+# nginx. The webroot is owned by nelhage, so this needs no sudo.
+nix build ".#legacyPackages.${system}.docset-feed" --out-link "$webroot" "$@"
+
+echo "published $(readlink "$webroot") -> $webroot"
