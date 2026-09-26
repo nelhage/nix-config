@@ -41,6 +41,18 @@ in
       description = "Port to listen on";
     };
 
+    sock = lib.mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "If set, listen on this UNIX socket instead of bind/port";
+    };
+
+    sockMode = lib.mkOption {
+      type = types.str;
+      default = "0600";
+      description = "Permissions mode for the UNIX socket";
+    };
+
     extraConfig = lib.mkOption {
       type = types.str;
       default = "";
@@ -61,8 +73,18 @@ in
         c = get_config()
         c.LabServerApp.open_browser = False
         c.ServerApp.root_dir = '${opts.root_dir}'
-        c.ServerApp.ip = '${opts.bind}'
-        c.ServerApp.port = ${toString opts.port}
+        ${
+          if opts.sock != null then
+            ''
+              c.ServerApp.sock = '${opts.sock}'
+              c.ServerApp.sock_mode = '${opts.sockMode}'
+            ''
+          else
+            ''
+              c.ServerApp.ip = '${opts.bind}'
+              c.ServerApp.port = ${toString opts.port}
+            ''
+        }
         ${opts.extraConfig}
       '';
     in

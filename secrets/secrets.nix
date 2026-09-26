@@ -14,5 +14,4 @@ in
   "gcp-service.json.age".publicKeys = nelhage_com ++ me;
   "garmin.password.age".publicKeys = nelhage_com ++ me;
   "oauth2-proxy.env.age".publicKeys = nelhage_com ++ me;
-  "jupyter-auth.age".publicKeys = nelhage_com ++ me;
 }
