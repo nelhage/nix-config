@@ -11,6 +11,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     ../../modules/nelhage.com.nix
     ../../modules/nixos.nix
+    ../../modules/calibre-server.nix
     ./hardware-configuration.nix
     ./disk-config.nix
   ];
