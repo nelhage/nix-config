@@ -9,6 +9,7 @@
     ./tailscale-completion.nix
     ./gcloud.nix
     ./aws.nix
+    ./claude-remote.nix
   ];
 
   home = {

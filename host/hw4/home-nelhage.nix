@@ -27,6 +27,22 @@
 
   nelhage.obsidian-sync.enable = true;
 
+  nelhage.claude-remote = {
+    enable = true;
+    projects =
+      let
+        project = dir: {
+          directory = "${config.home.homeDirectory}/${dir}";
+          sessionNamePrefix = "hw4:${baseNameOf dir}";
+        };
+      in
+      {
+        sandbox = project "code/sandbox";
+        obsidian = project "Obsidian";
+        nix-config = project "code/nix-config";
+      };
+  };
+
   nelhage.dotfiles.symlink = true;
   nelhage.dotfiles.checkout_path = "/etc/nixos";
 }
