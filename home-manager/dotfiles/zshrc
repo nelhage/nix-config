@@ -45,7 +45,7 @@ do_init_path() {
 
 do_init_path
 
-if [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ "$SHLVL" -eq 1 ]; then
+if [ -t 1 ] && [ -z "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ "$SHLVL" -eq 1 ]; then
     base16-isotope
 fi
 
