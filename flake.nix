@@ -206,9 +206,15 @@
       );
 
       templates.default = {
-        path = ./template;
+        path = ./template/default;
         description = "Development template";
         welcomeText = "Add your packages to flake.nix";
+      };
+
+      templates.python = {
+        path = ./template/python;
+        description = "nix+Python development";
+        welcomeText = "Add your packages to flake.nix. Manage Python dependencies with uv.";
       };
     };
 }

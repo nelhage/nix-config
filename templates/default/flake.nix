@@ -1,6 +1,7 @@
 {
   description = "direnv development template";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.nelhage.url = "github:nelhage/nix-config";
+  inputs.nixpkgs.follows = "nelhage/nixpkgs";
 
   outputs =
     { nixpkgs, ... }:
