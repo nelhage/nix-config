@@ -158,7 +158,7 @@ in
       };
       certs = {
         "nelhage.com" = {
-          extraDomainNames = [ "www.nelhage.com" ];
+          extraDomainNames = [ "*.nelhage.com" ];
         };
         "livegrep.com" = {
           extraDomainNames = [ "www.livegrep.com" ];

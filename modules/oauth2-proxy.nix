@@ -61,9 +61,8 @@
 
   # The central auth endpoint. The oauth2-proxy nginx module automatically adds
   # the `/oauth2/` location here; everything else just 404s.
-  security.acme.certs."auth.nelhage.com" = { };
   services.nginx.virtualHosts."auth.nelhage.com" = {
-    useACMEHost = "auth.nelhage.com";
+    useACMEHost = "nelhage.com";
     forceSSL = true;
     locations."/".return = "404";
   };

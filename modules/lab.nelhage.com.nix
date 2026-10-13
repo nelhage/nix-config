@@ -4,8 +4,6 @@ let
   sock = "${sockDir}/jupyter.sock";
 in
 {
-  security.acme.certs."lab.nelhage.com" = { };
-
   # Expose lab.nelhage.com publicly, gated by Google login. The oauth2-proxy
   # engine lives in modules/oauth2-proxy.nix.
   services.oauth2-proxy.nginx.virtualHosts."lab.nelhage.com" = {
@@ -22,7 +20,7 @@ in
   ];
 
   services.nginx.virtualHosts."lab.nelhage.com" = {
-    useACMEHost = "lab.nelhage.com";
+    useACMEHost = "nelhage.com";
     forceSSL = true;
 
     locations."/" = {
