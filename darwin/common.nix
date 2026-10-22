@@ -3,6 +3,7 @@
   imports = [
     ../modules/common.nix
     ../modules/agenix.nix
+    ../modules/emudhra.nix
     ./homebrew.nix
   ];
 
