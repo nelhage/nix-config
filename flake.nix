@@ -133,7 +133,8 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
-        {
+        # Only expose packages that meta.platforms says build on this system.
+        lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform) {
           base16-shell = pkgs.callPackage ./pkgs/base16-shell.nix { };
           garmindb = pkgs.callPackage ./pkgs/garmindb { python3 = pkgs.python312; };
           hugo-pinned = pkgs.callPackage ./pkgs/hugo-pinned.nix { };
