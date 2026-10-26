@@ -7,7 +7,7 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       # Lets modules adjust for CI via builtins.getEnv; only visible to
       # --impure evaluation, so it can never affect real builds.
