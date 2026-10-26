@@ -97,16 +97,6 @@
         ];
       };
 
-      nixosConfigurations.avdVM = lib.nixosSystem {
-        system = "aarch64-linux";
-        inherit specialArgs;
-        modules = [
-          darwinVMHost
-          ./modules/vm-base.nix
-          ./modules/avd-vm.nix
-        ];
-      };
-
       nixosModules.overlays = {
         nixpkgs.overlays = [
           agenix.overlays.default
