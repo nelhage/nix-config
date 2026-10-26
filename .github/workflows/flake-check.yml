@@ -7,15 +7,15 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       # Lets modules adjust for CI via builtins.getEnv; only visible to
       # --impure evaluation, so it can never affect real builds.
       NIX_CONFIG_CI: 1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: cachix/install-nix-action@v30
+      - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes

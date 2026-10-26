@@ -130,6 +130,12 @@ let
       passthru = {
         inherit requirements pkgs;
       };
+
+      # Downloaded wheels are platform-specific, so we can only build on
+      # systems we have a pinned hash for.
+      meta = lib.optionalAttrs (builtins.isAttrs packagesHash) {
+        platforms = builtins.attrNames packagesHash;
+      };
     };
 in
 venv
