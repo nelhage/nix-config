@@ -4,6 +4,7 @@
     ../../home-manager/litestream.nix
     ../../home-manager/jupyterlab.nix
     ../../home-manager/obsidian-sync.nix
+    ../../home-manager/syncflowy.nix
   ];
 
   nelhage.garmindb.enable = true;
@@ -26,6 +27,7 @@
   nelhage.aws.enable = true;
 
   nelhage.obsidian-sync.enable = true;
+  nelhage.syncflowy.enable = true;
 
   nelhage.claude-remote = {
     enable = true;
