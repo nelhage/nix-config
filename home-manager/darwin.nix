@@ -2,6 +2,10 @@
   pkgs,
   ...
 }:
+let
+  inherit (pkgs) lib;
+  inherit (lib.attrsets) genAttrs mapAttrs;
+in
 {
   imports = [
     ./iterm2.nix
@@ -9,25 +13,48 @@
 
   home.packages = [ pkgs.reattach-to-user-namespace ];
 
-  home.file = {
-    tailscale = {
-      target = "bin/tailscale";
-      text = ''
-        #!/usr/bin/env bash
-        exec /Applications/Tailscale.app/Contents/MacOS/Tailscale "$@"
-      '';
-      executable = true;
-    };
+  home.file =
+    let
+      appWrappers = {
+        tailscale = {
+          application = "Tailscale.app";
+          command = "Tailscale";
+        };
+        mw = {
+          application = "MacWhisper.app";
+          command = "mw";
+        };
+      }
+      //
+        genAttrs
+          [
+            "ebook-convert"
+            "ebook-device"
+            "ebook-edit"
+            "ebook-meta"
+            "ebook-polish"
+            "ebook-viewer"
 
-    mw = {
-      target = "bin/mw";
-      text = ''
-        #!/usr/bin/env bash
-        exec /Applications/MacWhisper.app/Contents/MacOS/mw "$@"
-      '';
-      executable = true;
-    };
-  };
+          ]
+          (_: {
+            application = "calibre.app";
+          });
+    in
+    mapAttrs (
+      name: config:
+      let
+        application = config.application;
+        binary = config.command or name;
+      in
+      {
+        target = "bin/${name}";
+        text = ''
+          #!/usr/bin/env bash
+          exec /Applications/${application}/Contents/MacOS/${binary} "$@"
+        '';
+        executable = true;
+      }
+    ) appWrappers;
 
   nelhage.iterm2.enable = true;
 
