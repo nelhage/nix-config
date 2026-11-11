@@ -11,7 +11,7 @@ let
 
   caddyWithDns = pkgs.caddy.withPlugins {
     plugins = [ "github.com/caddy-dns/googleclouddns@v1.1.0" ];
-    hash = "sha256-oj4m3W5yiXNRZSI4Bnbpy2irIsF7A+cnWMR3ep9RvAw=";
+    hash = "sha256-ZRasiI2rdtWxQsYa+foNddHh8iP26ws8oqcWnRashfY=";
   };
 
   # Normalize each site value to an attrset, so a bare port is treated as
