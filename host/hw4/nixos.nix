@@ -71,5 +71,9 @@
     }
   ];
 
+  boot.kernel.sysctl = {
+    "kernel.perf_event_paranoid" = 1;
+  };
+
   home-manager.users.nelhage = import ./home-nelhage.nix;
 }
