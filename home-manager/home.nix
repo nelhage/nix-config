@@ -36,8 +36,6 @@
               ]
               ++ (with pkgs.aspellDicts; [
                 en
-                en-computers
-                en-science
               ]);
             };
           in
@@ -64,7 +62,7 @@
         hugo
         ## N.B. see https://nixos.wiki/wiki/Google_Cloud_SDK
         google-cloud-sdk
-        awscli
+        awscli2
         s5cmd
         gdu
         zstd
