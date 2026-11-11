@@ -30,6 +30,27 @@ In general, I often want all three of the above setups (macOS, NixOS, other Linu
 
 My NixOS and Darwin machines configure `home-manager` through NixOS or nix-darwin, and then include modules shared between them and between other home configurations. I run a number of services out of `home-manager`'s systemd and launchd configuration.
 
+## Temporary workarounds
+
+When working around something that will be fixed upstream (a vulnerable package, a stale alias, a bad CA root), guard the workaround on the nixpkgs version that fixes it and `throw` once that version arrives, so it can't silently outlive its usefulness:
+
+```nix
+emacs =
+  if prev.lib.versionAtLeast prev.emacs.version "31" then
+    throw ''
+      nixpkgs' `emacs` is now version ${prev.emacs.version}, so the emacs31
+      alias in this flake is obsolete: remove the `emacs` attribute from
+      `overlays.default` in flake.nix.
+    ''
+  else
+    final.emacs31;
+```
+
+- Add a comment explaining why the workaround exists (CVE or advisory ID, upstream PR).
+- Make the error message say exactly what to delete, with the right file paths, including every place that imports a module (NixOS and nix-darwin).
+- Put a workaround that is more than a line or two in its own module (e.g. `modules/<name>.nix`), so removing it is just deleting the file and its imports.
+- Before overriding a package in `overlays.default`, check how much it rebuilds (`nix build --dry-run` on hw4's toplevel). Overriding anything low in the dependency graph (curl, brotli, ...) rebuilds a large part of the system. For a security fix, graft a patched build with `system.replaceDependencies.replacements` instead (NixOS only). Note that grafting doesn't rewrite a package's references to its own store path, so un-grafted copies can stay in the closure; check with `nix why-depends`.
+
 ## Reminders
 
 - You must `git add` new files in order for the nix flake to see them.
