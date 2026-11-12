@@ -56,6 +56,7 @@
         jq
         htop
         nelhage.scripts
+        nelhage.stitch
         _1password-cli
 
         # Other tooling

@@ -129,6 +129,7 @@
           jupyterlab = pkgs.callPackage ./pkgs/jupyterlab { python3 = pkgs.python313; };
           claude-code-wrapper = pkgs.callPackage ./pkgs/claude-code-wrapper { };
           syncflowy = pkgs.callPackage ./pkgs/syncflowy { };
+          stitch = pkgs.callPackage ./pkgs/stitch { };
         }
       );
 
