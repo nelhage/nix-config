@@ -60,7 +60,7 @@
 [rerere]
 	enabled = true
 [branch]
-	autosetupmerge = false
+	autoSetupMerge = simple
         sort = -committerdate
 [tag]
         sort = version:refname
