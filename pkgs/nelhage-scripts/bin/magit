@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -eu
+
+where="-t"
+
+if [ "$#" -gt 0 ]; then
+    case "$1" in
+        -n|-t)
+            where="$1"
+            shift
+            ;;
+        *)
+    esac
+fi
+
+dir=$(pwd)
+if [ "$#" -gt 0 ]; then
+    dir="$1"
+fi
+
+exec emacsclient "$where" -e '
+  (let ((default-directory "'"$dir"'"))
+    (magit-status))
+'
