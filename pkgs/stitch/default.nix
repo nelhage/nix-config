@@ -11,8 +11,8 @@ rustPlatform.buildRustPackage {
   src = fetchFromGitHub {
     owner = "nelhage";
     repo = "stitch";
-    rev = "1dd2c351b28d18025022eb375482e0160effba19";
-    hash = "sha256-0ucq3VpLSpubkk9r3/8WPNEZXnifGX3bMX5SiGpzrrs=";
+    rev = "d60620960d129d8c4545802870f1e0e0cd0cc0b6";
+    hash = "sha256-n4wmaL/StTWXjdMaFQ8IpVPUwtuaqVpKVhv+jDKbiKw=";
   };
 
   cargoHash = "sha256-KvMbWMHBwFs+YDIxSa3nGCNmWbvb3Yy2JfhDkQhhIyc=";
