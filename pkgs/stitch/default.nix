@@ -6,13 +6,13 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "stitch";
-  version = "0.1.0-unstable-2026-11-12";
+  version = "0.1.0-unstable-2026-11-14";
 
   src = fetchFromGitHub {
     owner = "nelhage";
     repo = "stitch";
-    rev = "d60620960d129d8c4545802870f1e0e0cd0cc0b6";
-    hash = "sha256-n4wmaL/StTWXjdMaFQ8IpVPUwtuaqVpKVhv+jDKbiKw=";
+    rev = "ac8c552661b484a3c6993baa6d3f0659cc916e4d";
+    hash = "sha256-naHg9KNUb3KLnvgYzuzCovfDciCNZpLBgx0jowcVcy4=";
   };
 
   cargoHash = "sha256-KvMbWMHBwFs+YDIxSa3nGCNmWbvb3Yy2JfhDkQhhIyc=";
