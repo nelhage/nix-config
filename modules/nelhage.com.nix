@@ -13,7 +13,6 @@ in
   imports = [
     ./agenix.nix
     ./nelhage-services
-    ./nginx-cve-2026-123007.nix
     ./oauth2-proxy.nix
   ];
 
