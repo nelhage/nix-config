@@ -26,6 +26,7 @@
         atuin
         nelhage.base16-shell
         gh
+        gh-markdown-preview
         ispell
         (
           let
